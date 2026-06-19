@@ -1,5 +1,137 @@
 # Use Case Requirements Analysis
 
+## Current Refresh Summary
+This refresh supersedes the older AWS/contact-form assumptions in this document without deleting the historical analysis below.
+
+Current use case set:
+
+| Use Case ID | Use Case Name | Priority | Current Status | Notes |
+|---|---|---|---|---|
+| UC-001 | View Wedding Information | High | Implemented / live | GitHub Pages serves the home/story/event content. |
+| UC-002 | Browse Travel and Local Information | High | Partially implemented | Internal pages work; stale external hotel/activity links remain. |
+| UC-003 | Read Information Page | Medium | Implemented / live | Replaces old contact/address submission use case; no collection path is intended. |
+| UC-004 | Publish Static Website | High | Partially implemented | GitHub Pages publication works; GoDaddy forwarding works on phone but not yet from the user's home browser. |
+| UC-005 | Maintain Website Content | Medium | Ongoing | Next likely work: external link refresh, dead asset cleanup, documentation reconciliation. |
+
+## Refreshed Behavioral Matrices
+
+### UC-002: Browse Travel and Local Information
+
+#### Use Case Summary
+| Field | Value |
+|---|---|
+| Use Case ID | UC-002 |
+| Use Case Name | Browse Travel and Local Information |
+| Primary Actor | Visitor / Guest |
+| Trigger | Visitor selects Travel, Hotels, or Local Entertainment/Syracuse content. |
+| Goal | Visitor can read useful hotel and Syracuse guidance and avoid obviously stale/dead external destinations. |
+| Priority | High |
+| Preconditions | GitHub Pages site is reachable. |
+| Postconditions | Visitor has viewed current internal travel/local guidance or intentionally opened a current external resource. |
+| Evidence | Internal behavior observed; external freshness partially unknown/stale. |
+
+#### Main Success Scenario
+| Step | Actor / Operator | System | External Entity | Behavior | Interface / Message | Candidate Requirement ID | Candidate Requirement | Evidence |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Visitor | Navigation | Browser | Visitor opens the Travel menu. | Bootstrap dropdown / links | UC-002-CR-001 | The system shall be able to expose hotel and local entertainment page links from the shared navigation. | Observed |
+| 2 | Visitor | Hotels page | Browser | System renders lodging names, context, distances, and cost guidance. | `hotels.html` | UC-002-CR-002 | The system shall be able to present lodging information for visitors. | Observed |
+| 3 | Visitor | Syracuse page | Browser | System renders local activity thumbnails and guidance. | `syracuse.html` | UC-002-CR-003 | The system shall be able to present local entertainment information for visitors. | Observed |
+| 4 | Visitor | External link | Third-party site | Visitor opens a hotel, venue, or activity link. | Outbound URL | UC-002-CR-004 | The system shall be able to provide outbound links to relevant venue, hotel, and local activity resources. | Observed |
+| 5 | Maintainer | Content | External websites | Maintainer updates or removes stale links before public-domain promotion. | Link audit | UC-002-CR-007 | The system shall keep visitor-facing external travel and activity links current enough to avoid known closed, rebranded, or dead destinations. | Proposed |
+
+#### Alternate Flows
+| Flow ID | Condition | Steps | System Response | Candidate Requirement ID | Candidate Requirement | Evidence |
+|---|---|---|---|---|---|---|
+| UC-002-A1 | Specific business link is stale or closed | Maintainer replaces it with a durable official destination hub. | Travel page remains useful without promising an obsolete business. | UC-002-CR-008 | The system shall allow stale business-specific external links to be replaced with durable official destination or tourism resources. | Proposed |
+| UC-002-A2 | External site is temporarily unavailable | Visitor still reads internal hotel/event context. | Core internal content remains available. | UC-002-CR-005 | The system shall keep core travel and event information available without requiring third-party links to load. | Inferred |
+
+#### Exception Flows
+| Flow ID | Failure / Exception | System Response | Recovery / Mitigation | Candidate Requirement ID | Candidate Requirement | Evidence |
+|---|---|---|---|---|---|---|
+| UC-002-E1 | Local thumbnail path is missing or case-mismatched | Static scan fails or hosted image breaks. | Correct asset reference before release. | UC-002-CR-006 | The system shall use case-correct image references for travel and local information pages. | Implemented |
+| UC-002-E2 | Known stale link remains | Visitor may reach a closed/rebranded business or dead page. | Audit and patch `hotels.html` / `syracuse.html`. | UC-002-CR-009 | The system shall identify known stale external travel/local links before advertising the public domain. | Proposed |
+
+#### Test Implications
+| Test ID | Behavior or Requirement | Test Idea | Method |
+|---|---|---|---|
+| TEST-004 | Travel/local pages render | Open `hotels.html` and `syracuse.html`. | Demonstration |
+| TEST-005 | Local image refs resolve | Run static scan and expect no missing references. | Automated script |
+| TEST-012 | External links are current enough | Audit outbound travel/local URLs and record keep/update/remove decisions. | Manual/web-assisted review |
+
+### UC-003: Read Information Page
+
+#### Use Case Summary
+| Field | Value |
+|---|---|
+| Use Case ID | UC-003 |
+| Use Case Name | Read Information Page |
+| Primary Actor | Visitor / Guest |
+| Trigger | Visitor opens `contact.html` through the `Info` navigation item. |
+| Goal | Visitor understands the site is informational and is not collecting addresses, RSVPs, or messages. |
+| Priority | Medium |
+| Preconditions | GitHub Pages site is reachable. |
+| Postconditions | Visitor does not encounter a broken form or misleading submission path. |
+| Evidence | Observed in current `contact.html`. |
+
+#### Main Success Scenario
+| Step | Actor / Operator | System | External Entity | Behavior | Interface / Message | Candidate Requirement ID | Candidate Requirement | Evidence |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Visitor | Info page | Browser | Visitor opens `contact.html`. | Page request | UC-003-CR-001 | The system shall be able to present an information page from the primary navigation. | Observed |
+| 2 | Visitor | Info page | Browser | System states that addresses, RSVPs, and messages are not collected through the website. | Static page copy | UC-003-CR-011 | The system shall clearly state when no visitor message, RSVP, or address collection path is available. | Observed |
+| 3 | Visitor | Info page | Browser | Visitor can navigate back to wedding, hotel, or Syracuse information. | Internal links/nav | UC-003-CR-012 | The system shall preserve internal navigation from the information page. | Observed |
+
+#### Exception Flows
+| Flow ID | Failure / Exception | System Response | Recovery / Mitigation | Candidate Requirement ID | Candidate Requirement | Evidence |
+|---|---|---|---|---|---|---|
+| UC-003-E1 | Old form/contact code is reintroduced | Static scan/source search should flag PHP/form dependencies. | Remove backend-dependent flow or make it a deliberate new feature. | UC-003-CR-004 | The system shall not depend on a PHP runtime when deployed as a static website. | Implemented |
+| UC-003-E2 | Placeholder contact destination appears | Source search should fail release checks. | Remove placeholder destination. | UC-003-CR-009 | The system shall avoid displaying placeholder contact destinations in visitor-facing states. | Implemented |
+
+#### Test Implications
+| Test ID | Behavior or Requirement | Test Idea | Method |
+|---|---|---|---|
+| TEST-006 | Info page clarity | Verify no form exists and no-collection copy is present. | Inspection/demonstration |
+| TEST-007 | No placeholder email | Search visitor-facing assets for `me@example.com`. | Inspection |
+| TEST-008 | PHP independence | Static scan flags no required PHP runtime path. | Automated script |
+
+### UC-004: Publish Static Website
+
+#### Use Case Summary
+| Field | Value |
+|---|---|
+| Use Case ID | UC-004 |
+| Use Case Name | Publish Static Website |
+| Primary Actor | Site Maintainer |
+| Trigger | Maintainer wants updated content publicly visible. |
+| Goal | GitHub Pages serves verified static content over HTTPS; GoDaddy forwarding is verified when available. |
+| Priority | High |
+| Preconditions | GitHub repository and Pages configuration exist. |
+| Postconditions | GitHub Pages URL serves expected content; public domain forwarding is either verified or explicitly pending. |
+| Evidence | GitHub Pages implemented; GoDaddy partially verified on phone. |
+
+#### Main Success Scenario
+| Step | Actor / Operator | System | External Entity | Behavior | Interface / Message | Candidate Requirement ID | Candidate Requirement | Evidence |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Maintainer | Repository | GitHub | Maintainer commits verified static files. | Git commit | UC-004-CR-001 | The system shall maintain deployable static website files in the GitHub repository. | Observed |
+| 2 | Maintainer | Repository | GitHub Pages | Maintainer merges/pushes to `main`. | Git push | UC-004-CR-002 | The system shall be deployable to GitHub Pages from the GitHub repository. | Observed |
+| 3 | GitHub Pages | Website | Browser | GitHub Pages serves the public HTTPS URL. | HTTPS request | UC-004-CR-003 | The system shall be publicly reachable through an HTTPS hosting URL after deployment. | Observed |
+| 4 | Maintainer | Website | Browser | Maintainer verifies pages, assets, navigation, and content checks. | Acceptance check | UC-004-CR-005 | The deployment process shall provide a post-deployment verification path for pages, assets, navigation, and information-page behavior. | Observed |
+| 5 | Maintainer | GoDaddy | GitHub Pages | Maintainer verifies domain forwarding from phone and home browser. | Forwarded request | UC-004-CR-004 | The system shall support access through a GoDaddy-forwarded public URL. | Partial |
+
+#### Exception Flows
+| Flow ID | Failure / Exception | System Response | Recovery / Mitigation | Candidate Requirement ID | Candidate Requirement | Evidence |
+|---|---|---|---|---|---|---|
+| UC-004-E1 | Static scan fails | Deployment should be delayed or corrected. | Fix missing assets/runtime references before publishing. | UC-004-CR-007 | The deployment process shall identify missing local asset references before public release. | Implemented |
+| UC-004-E2 | GoDaddy forwarding works on phone but not home browser | Public domain behavior differs by device/network/browser. | Check cache, local DNS resolver, browser state, and propagation; retest from more than one network. | UC-004-CR-008 | The deployment process shall verify the GoDaddy-forwarded URL after configuration. | Partial |
+| UC-004-E3 | GitHub Pages edge temporarily serves stale/404 content after push | Maintainer retries after build/propagation. | Confirm Pages API and live page responses. | UC-004-CR-009 | The deployment process shall tolerate short GitHub Pages propagation windows by retrying live verification. | Observed |
+
+#### Test Implications
+| Test ID | Behavior or Requirement | Test Idea | Method |
+|---|---|---|---|
+| TEST-009 | GitHub Pages hosted URL | Open GitHub Pages URL and verify all five pages. | Demonstration |
+| TEST-010 | GoDaddy forwarding | Open custom domain and confirm expected page. | Demonstration |
+| TEST-011 | Pre-release scan | Run static scan before forwarding/public promotion. | Automated script |
+
+
 ## Source Inputs
 - `documentation/requirements/current-state-design.md`
 - Repository files: `index.html`, `about.html`, `contact.html`, `hotels.html`, `syracuse.html`, `css/style.css`, `js/contact_me.js`, `bin/contact_me.php`
