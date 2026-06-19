@@ -1,9 +1,110 @@
 # Current State Design
 
 ## Implementation Update
-The GitHub Pages publication sprint removed the obsolete PHP contact path from the public site. `contact.html` is now a static informational page, root HTML pages no longer load `js/contact_me.js` or `js/jqBootstrapValidation.js`, and `bin/contact_me.php` / `js/contact_me.js` were deleted. The earlier contact-form sequence and FMEA notes remain useful as historical analysis of the removed behavior.
+Current authoritative state as of the latest refresh: the website is a static GitHub Pages site published from `main` at `https://skeller01.github.io/wedding-website/`. `development` and `main` both point at commit `82487fd`.
+
+The GitHub Pages publication sprint removed the obsolete PHP contact path from the public site. `contact.html` is now a static informational page, root HTML pages no longer load `js/contact_me.js` or `js/jqBootstrapValidation.js`, and `bin/contact_me.php` / `js/contact_me.js` were deleted.
+
+The UX polish sprint changed the public site from an invitation/address collection workflow to an archival/static wedding information site. Current live behavior includes the `Info` and `Travel` navigation labels, a home CTA to hotel/Syracuse details, mobile viewport metadata, improved page titles and alt text, and hotel cost wording of `See hotel site`.
+
+Remaining known work: GoDaddy forwarding is partially verified because it works on the user's phone but not yet from the user's home browser, several external hotel/activity links are stale or suspect, and unused countdown/validation assets remain in the repository. Mobile responsiveness has been observed on the user's phone. Older sections below may still describe AWS/PHP/form-era risks; treat the refresh notes at the top of each rerun section as authoritative for current planning.
 
 ## Context Diagram and Matrix
+
+### Current Authoritative Snapshot
+
+This rerun updates the context model from "AWS static hosting with a PHP/contact-form conflict" to "GitHub Pages static publication with stale external-link and domain-forwarding follow-up work."
+
+#### Source Inputs
+- Current repository state: root HTML/CSS/JS/image files on `development` and `main` at `82487fd`.
+- Current live deployment: GitHub Pages from `main`, path `/`, HTTPS enforced.
+- Static scan: 5 HTML pages, 65 local references resolved, 0 missing references, 0 server-side runtime references, 0 PHP files.
+- User updates: GoDaddy forwarding works on phone but not yet from the user's home browser; mobile presentation looks responsive on phone; some travel/local links are stale, including Jefferson Clinton rebranding and the kayak business likely being closed.
+- Planning artifacts: `documentation/planning/working/refactor-plan.md`, `documentation/planning/sprints/github-pages-publication.md`, `documentation/planning/working/prototype-lab.md`.
+
+#### System Boundary
+The system is the "Sonia and Steve Wedding Website": static HTML, CSS, JavaScript, and images served through GitHub Pages. The system includes public pages, local assets, client-side navigation/tooltip behavior, and the static no-collection information page. It excludes GoDaddy forwarding setup, third-party hotel/activity websites, and any RSVP/contact-form backend.
+
+#### Inside the System
+| Internal Element | Description | Evidence |
+|---|---|---|
+| Static HTML pages | Home, story, info, hotels, and Syracuse guide pages. | Root `*.html` files. |
+| Styling and layout | Bootstrap CDN plus `css/style.css`. | HTML links and CSS file. |
+| Client-side behavior | Bootstrap navigation/tooltips plus remaining legacy countdown code. | Script tags and `js/*`. |
+| Image assets | Local image files used by pages. | `images/*`; static scan passes. |
+| Static verification scripts | PowerShell/Python prototype scanners. | `documentation/planning/working/prototypes/*`. |
+| Documentation workspace | Requirements, design, sprint, prototype, and refactor docs. | `documentation/*`. |
+
+#### Outside the System
+| External Entity | Type | Current Role |
+|---|---|---|
+| Visitor / Guest | Person | Reads public wedding, hotel, and Syracuse information. |
+| Site Maintainer | Person | Edits content, verifies checks, and publishes through Git/GitHub. |
+| Browser | Runtime | Requests and renders pages/assets. |
+| GitHub Repository | External service | Stores source and branch history. |
+| GitHub Pages | External host | Publishes the static site from `main`. |
+| GoDaddy Forwarding | External service | Partially verified public-domain forwarding to GitHub Pages. |
+| External CDNs | External services | Serve Bootstrap, jQuery, and Google Fonts. |
+| Venue / Hotel / Activity Sites | External websites | Linked destinations; some are stale/suspect. |
+| Bot / Crawler | Unintended actor | May request public pages or removed legacy paths. |
+
+#### Mermaid Context Diagram
+
+```mermaid
+flowchart LR
+  Guest[External Entity: Visitor / Guest]
+  Maintainer[External Entity: Site Maintainer]
+  Browser[External Entity: Browser]
+  GitHub[External Entity: GitHub Repository]
+  Pages[External Entity: GitHub Pages]
+  GoDaddy[External Entity: GoDaddy Forwarding]
+  CDN[External Entity: Bootstrap / jQuery / Google Fonts CDNs]
+  ExternalSites[External Entity: Venue, Hotel, Activity Sites]
+  Bot[External Entity: Bot / Crawler]
+
+  subgraph System["System Boundary: Sonia and Steve Wedding Website"]
+    Site((Static HTML/CSS/JS/Image Website))
+  end
+
+  Guest -->|Open site URL and navigate pages| Browser
+  Browser -->|Fetch hosted static files| Pages
+  Pages -->|Serve main branch content| Site
+  Site -->|Render wedding and travel information| Guest
+  Site -->|Load frontend libraries/fonts| CDN
+  Guest -->|Open detail links| ExternalSites
+  Maintainer -->|Commit, merge, push updates| GitHub
+  GitHub -->|Publish main branch root| Pages
+  GoDaddy -->|Forward domain when configured| Pages
+  Bot -->|Request public pages/stale paths| Pages
+```
+
+#### Context Matrix
+| External Entity | Interaction | Direction | Category | Current Status / Constraint |
+|---|---|---|---|---|
+| Visitor / Guest | View wedding information | In/Out | Query/response | Implemented and live on GitHub Pages. |
+| Visitor / Guest | Browse travel/local information | In/Out | Query/response | Implemented, but external destination freshness is pending. |
+| Visitor / Guest | Read static info page | In/Out | Query/response | Implemented; no address, RSVP, or message collection. |
+| Browser | Load local assets | In/Out | Startup/query | Static scan passes. |
+| Browser | Load external CDN assets | Out/In | Startup/query | Required script URLs are HTTPS. |
+| Site Maintainer | Update and publish content | In | Maintenance | `development` -> `main` workflow works; Pages publishes from `main`. |
+| GitHub Pages | Serve public HTTPS site | Out | Runtime | Implemented; Pages API reports built/public/HTTPS-enforced. |
+| GoDaddy Forwarding | Route public domain | In/Out | Network | Partially verified on phone; home browser still failing. |
+| Venue / Hotel / Activity Sites | Provide offsite detail pages | Out/In | Query/response | Known risk: stale/rebranded/closed destinations. |
+
+#### High-Value Use Case Candidates
+| Priority | Use Case ID | Use Case | Primary Actor | Current Planning Note |
+|---|---|---|---|---|
+| High | UC-001 | View Wedding Information | Visitor / Guest | Implemented/live. |
+| High | UC-002 | Browse Travel and Local Information | Visitor / Guest | Implemented, but link freshness needs a sprint. |
+| Medium | UC-003 | Read Information Page | Visitor / Guest | Replaces old contact/address form use case. |
+| High | UC-004 | Publish Static Website | Site Maintainer | Implemented for GitHub Pages; GoDaddy forwarding partially verified on phone. |
+| Medium | UC-005 | Maintain Website Content | Site Maintainer | Next work: external links, dead assets, doc reconciliation. |
+
+#### Current Gaps and Questions
+- What exact GoDaddy domain should be recorded, and why does it work on phone but not home browser?
+- Which stale external links should be replaced with durable Visit Syracuse/current hotel links versus removed?
+- Should the `Info` page stay in navigation if there is no contact channel?
+- Should unused countdown and validation assets be deleted in the next sprint?
 
 ### Source Inputs
 - User goal: host the wedding website cheaply on AWS, then point a GoDaddy URL to the hosted link.
@@ -123,6 +224,80 @@ flowchart LR
 - FMEA: contact failure, mixed content, broken image paths, stale links, deployment drift.
 
 ## Use Case Diagram
+
+### Current Authoritative Snapshot
+
+#### Source Inputs
+- Refreshed Context Diagram and Matrix snapshot above.
+- Current root HTML pages and navigation labels.
+- GitHub Pages deployment state.
+- User statement that GoDaddy forwarding works on phone but not home browser, mobile layout looks responsive, and travel/local links are stale.
+
+#### System Boundary
+System boundary: Sonia and Steve Wedding Website. The boundary includes static public content and client-side behavior served through GitHub Pages. It excludes third-party linked websites, GoDaddy account configuration, and any RSVP/contact backend.
+
+#### Actors
+| Actor ID | Actor | Type | Description | Source |
+|---|---|---|---|---|
+| A-001 | Visitor / Guest | Person | Reads public wedding, hotel, and Syracuse information. | Site content. |
+| A-002 | Site Maintainer | Person | Updates content and publishes through Git/GitHub. | Current workflow. |
+| A-003 | Browser | Runtime | Requests and renders pages/assets. | Static website behavior. |
+| A-004 | External Content Provider | External system | CDN or linked venue/hotel/activity site. | External references. |
+| A-005 | GitHub Pages | External service | Publishes `main` branch static content. | Current deployment. |
+| A-006 | GoDaddy Forwarder | External service | Redirect from public domain to GitHub Pages; currently works on phone but not home browser. | User update. |
+| A-007 | Bot / Crawler | Unintended actor | Requests public pages or removed legacy paths. | Public website risk. |
+
+#### Use Cases
+| Use Case ID | Use Case | Goal | Primary Actor | Priority | Source Interaction |
+|---|---|---|---|---|---|
+| UC-001 | View Wedding Information | Read names, date framing, story, and event summary. | Visitor / Guest | High | Page request/navigation. |
+| UC-002 | Browse Travel and Local Information | Find hotel and Syracuse activity guidance. | Visitor / Guest | High | Travel navigation and external links. |
+| UC-003 | Read Information Page | Understand the site is informational and not collecting addresses, RSVPs, or messages. | Visitor / Guest | Medium | `Info` page request. |
+| UC-004 | Publish Static Website | Serve verified content through GitHub Pages. | Site Maintainer | High | Merge/push to `main`, Pages build. |
+| UC-005 | Maintain Website Content | Refresh stale links, remove dead assets, and keep docs/checks current. | Site Maintainer | Medium | Git workflow. |
+
+#### Mermaid Use Case Diagram
+
+```mermaid
+flowchart LR
+  Guest[Actor: Visitor / Guest]
+  Maintainer[Actor: Site Maintainer]
+  Browser[Actor: Browser]
+  External[Actor: External Content Provider]
+  Pages[Actor: GitHub Pages]
+  GoDaddy[Actor: GoDaddy Forwarder]
+  Bot[Actor: Bot / Crawler]
+
+  subgraph System["System Boundary: Sonia and Steve Wedding Website"]
+    UC001((View Wedding Information))
+    UC002((Browse Travel and Local Information))
+    UC003((Read Information Page))
+    UC004((Publish Static Website))
+    UC005((Maintain Website Content))
+  end
+
+  Guest --> UC001
+  Guest --> UC002
+  Guest --> UC003
+  Browser --> UC001
+  Browser --> UC002
+  External --> UC002
+  Maintainer --> UC004
+  Maintainer --> UC005
+  UC004 --> Pages
+  GoDaddy --> UC004
+  Bot --> UC001
+```
+
+#### Relationship Notes
+| Source | Relationship | Target | Meaning |
+|---|---|---|---|
+| UC-002 | Dependency note | External Content Provider | Travel/local pages can link outward, but external sites are outside system control. |
+| UC-004 | Dependency note | GoDaddy Forwarder | GoDaddy verification is partially complete on phone; home-browser behavior still needs diagnosis. |
+| UC-005 | Dependency note | UC-002 | Content maintenance should refresh stale hotel/activity links. |
+
+#### Follow-On Behavioral Models
+Highest-value behavioral matrices: UC-002 Browse Travel and Local Information, UC-004 Publish Static Website, and UC-005 Maintain Website Content. UC-001 and UC-003 are stable and simple.
 
 ### Source Inputs
 - Context Diagram and Matrix section above.
@@ -424,6 +599,129 @@ sequenceDiagram
 - If a real form is needed later, design a small serverless backend with spam controls rather than hosting PHP.
 
 ## Functional Flow Block Diagram
+
+### Current Authoritative Snapshot
+
+#### Source Inputs
+- Refreshed Context Diagram and Matrix.
+- Refreshed Use Case Diagram.
+- Current GitHub Pages deployment and static scan results.
+- User update: GoDaddy forwarding works on phone but not home browser; mobile presentation looks responsive; some hotel/activity links are stale.
+
+#### Functional Flow Summary
+The current system flow is a static browsing and publishing flow. Visitors request the GitHub Pages URL or GoDaddy-forwarded domain, the browser loads static pages and assets, visitors read internal content, and optional external links take them to third-party resources outside the system. Maintainers update content on `development`, verify it, merge/push to `main`, and GitHub Pages publishes it. Remaining flow risk is concentrated in stale external links and the split GoDaddy result: works on phone, not yet in the user's home browser.
+
+#### Top-Level FFBD
+
+```text
+[F.1 Ref: Visitor URL Request]
+          |
+          v
++-----------------------------+
+| Function 1                  |
+| Serve Static Site           |
++-----------------------------+
+          |
+          v
++-----------------------------+
+| Function 2                  |
+| Present Wedding Information |
++-----------------------------+
+          |
+          v
++-----------------------------+
+| Function 3                  |
+| Support Visitor Navigation  |
++-----------------------------+
+          |
+          v
+        [OR]
+       /    \
+      v      v
++-----------------------------+      +-----------------------------+
+| Function 4                  |      | Function 5                  |
+| Present Internal Travel     |      | Open External Resource      |
+| and Info Content            |      | Link                        |
++-----------------------------+      +-----------------------------+
+      |                                      |
+      v                                      v
+[F.2 Ref: Internal Content Viewed]   [F.3 Ref: Third-Party Site Opened]
+```
+
+#### Publishing FFBD
+
+```text
+[F.4 Ref: Maintainer Change]
+          |
+          v
++-----------------------------+
+| Function 6                  |
+| Edit Static Content         |
++-----------------------------+
+          |
+          v
++-----------------------------+
+| Function 7                  |
+| Verify Static Site          |
++-----------------------------+
+          |
+          v
+        [AND]
+       /     \
+      v       v
++-----------------------------+      +-----------------------------+
+| Function 8                  |      | Function 9                  |
+| Merge and Push Main         |      | Verify GitHub Pages         |
++-----------------------------+      +-----------------------------+
+          \                         /
+           \                       /
+            v                     v
+        [F.5 Ref: Published HTTPS Site]
+                    |
+                    v
++-----------------------------+
+| Function 10                 |
+| Verify GoDaddy Forwarding   |
++-----------------------------+
+                    |
+                    v
+[F.6 Ref: Public Domain Verified or Pending]
+```
+
+#### Function Dictionary
+| Function | Name | Purpose | Inputs | Outputs | Preconditions | Failure Modes | Evidence |
+|---|---|---|---|---|---|---|---|
+| 1 | Serve Static Site | Return HTML/CSS/JS/images from GitHub Pages. | URL request | Static response | Pages enabled from `main`. | Pages disabled, wrong branch, CDN propagation delay. | Observed |
+| 2 | Present Wedding Information | Show home/story/event information. | HTML/assets | Readable wedding content | Static assets resolve. | Broken images, unreadable mobile layout. | Observed |
+| 3 | Support Visitor Navigation | Provide internal links among pages. | Link click | Requested page | Bootstrap/HTML links present. | Wider browser sweep still useful. | Observed/User verified on phone |
+| 4 | Present Internal Travel and Info Content | Show hotel, Syracuse, and no-collection info pages. | Page request | Internal content | Pages exist. | Stale internal copy. | Observed |
+| 5 | Open External Resource Link | Send visitor to third-party site. | Link click | External navigation | Link exists. | Destination moved, closed, or rebranded. | Observed/Pending refresh |
+| 6 | Edit Static Content | Update HTML/CSS/docs. | Maintainer changes | Git worktree diff | Repo access. | Duplicated markup causes missed edits. | Observed |
+| 7 | Verify Static Site | Run static scan/source/live checks. | Changed files | Pass/fail evidence | Scripts and network available. | Visual browser tooling unavailable. | Observed |
+| 8 | Merge and Push Main | Publish verified content source. | Development commit | Updated `main` | Clean branch/remote. | Merge conflict or wrong branch. | Observed |
+| 9 | Verify GitHub Pages | Confirm live URL and content. | Pages URL | Live evidence | Pages build complete. | Temporary edge/cache 404 during publish. | Observed |
+| 10 | Verify GoDaddy Forwarding | Confirm public domain reaches site. | Domain URL | Forwarding pass/fail | GoDaddy setup complete. | Home-browser DNS/cache/propagation issue. | Partial |
+
+#### Gate Logic Notes
+- Function 3 branches with an OR: visitors can stay on internal pages or open third-party resources.
+- Functions 8 and 9 are AND for release confidence: code should be pushed and the live GitHub Pages site should be verified.
+- Function 10 is downstream of GitHub Pages publication and is partially complete because the GoDaddy link works on phone.
+
+#### Reliability Notes
+- Total public-site success currently depends on GitHub Pages serving the five internal pages and local assets.
+- Core information does not depend on external hotel/activity sites, but travel usefulness does.
+- GoDaddy forwarding is a release/discoverability function, not a blocker for the `github.io` URL.
+- Mobile responsiveness has been observed on the user's phone; home-browser forwarding behavior remains the check gap.
+
+#### Assumptions
+- GitHub Pages remains the production hosting path.
+- GoDaddy forwarding will target the GitHub Pages URL.
+- No RSVP/contact backend will be reintroduced.
+
+#### Gaps and Questions
+- Which external destinations should replace stale hotel/activity links?
+- Should stale business-specific links be replaced with durable Visit Syracuse hub pages?
+- Should dead countdown/form-era assets be removed before the domain is advertised?
 
 ### Source Inputs
 - Current-state context and use case sections.
