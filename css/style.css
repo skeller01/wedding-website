@@ -130,6 +130,34 @@ hr {
     
 }
 
+@media(max-width: 767px){
+  #weddingStyle {
+    font-size: 48px;
+  }
+
+  .soniaSteve {
+    font-size: 32px;
+  }
+
+  .saveDate {
+    font-size: 22px;
+  }
+
+  .carousel-inner > .item{
+    height: 460px;
+  }
+
+  .carousel-caption {
+    left: 8%;
+    right: 8%;
+    padding-bottom: 24px;
+  }
+
+  .navbar-brand {
+    font-size: 16px;
+  }
+}
+
 
 /******************************************
 /* LAYOUT
