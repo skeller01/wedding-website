@@ -41,10 +41,12 @@ html, body{
     font-weight: 400;
     font-size: 16px;
     line-height: 1.7;
-    background-color: #fff;
+    background-color: #fffdf9;
+    color: #242220;
 }
 h1, h2, h3, h4{
-    font-family: 'Open Sans', sans-serif;   
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 400;
 }
 b, strong{
     font-weight: 400;
@@ -69,7 +71,7 @@ b, strong{
 }
 
 .aboutBlock{
-  background: #ffeeee;
+  background: #fffdf9;
 }
 
 .saveDate{
@@ -79,9 +81,9 @@ b, strong{
 
 
 .navbar-default {
-    background-color: white;
-    border-color: #ffffff;
-    box-shadow: 0 1px 18px rgba(0, 0, 0, 0.08);
+    background-color: rgba(255, 253, 249, 0.96);
+    border-color: #d9d2c8;
+    box-shadow: none;
 }
 
 .padButton{
@@ -101,14 +103,14 @@ b, strong{
 .navbar-default .navbar-nav .navbar-btn:hover,
 .navbar-default .navbar-nav .navbar-btn:focus,
 .navbar-default .navbar-nav .active{
-  border-color: #536d5d;
-  background: #f4f6f1;
-  color: #1e2a23;
+  border-color: #64766a;
+  background: #f4f1ed;
+  color: #242220;
 }
 
 .navbar-default .navbar-nav .btn-primary{
-  background: #536d5d;
-  border-color: #536d5d;
+  background: #64766a;
+  border-color: #64766a;
 }
 
 .carousel-inner > .item > img{
@@ -140,70 +142,160 @@ b, strong{
     padding: 100px 15px;
 }
 
+.page-journal-header + .container.padded{
+  padding-top: 48px;
+}
+
+.page-journal-header + .aboutBlock .container{
+  padding-top: 40px;
+  padding-bottom: 56px;
+}
+
+.location{
+  padding: 52px 0;
+  border-top: 1px solid #d9d2c8;
+  background: #f4f1ed;
+}
+
+.location h3{
+  margin-top: 0;
+}
+
+.thumbnail,
+.img-circle{
+  border-radius: 0;
+}
+
+.thumbnail{
+  border-color: #d9d2c8;
+  padding: 0;
+}
+
+.thumbnail img{
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
 .section-kicker{
   margin: 0 0 10px;
-  color: #536d5d;
+  color: #8f3f4d;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0;
   text-transform: uppercase;
 }
 
-.archive-hero{
-  min-height: calc(100vh - 110px);
+.journal-hero{
   margin-top: 50px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(330px, .88fr);
+  min-height: 590px;
+  background: #fff;
+  border-bottom: 1px solid #d9d2c8;
+}
+
+.journal-photo{
+  min-height: 590px;
+  background: #f4f1ed;
+}
+
+.journal-photo img{
+  width: 100%;
+  height: 100%;
+  min-height: 590px;
+  object-fit: cover;
+}
+
+.journal-text{
   display: flex;
-  align-items: flex-end;
-  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.58)), url("../images/white_flowers.jpg");
-  background-size: cover;
-  background-position: center center;
-  color: #fff;
+  flex-direction: column;
+  justify-content: center;
+  padding: 76px 44px;
+  background: #fffdf9;
 }
 
-.archive-hero-content{
-  width: min(100%, 1060px);
-  padding: 72px 30px 60px;
-  margin: 0 auto;
-  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
+.journal-text h1,
+.journal-text h2{
+  margin: 8px 0 14px;
+  font-size: 48px;
+  line-height: 1.05;
+  font-weight: 400;
 }
 
-.archive-hero .section-kicker{
-  color: #f4f6f1;
-}
-
-.archive-hero h1{
-  margin: 0;
-  font-size: 72px;
-  line-height: 1;
-  font-weight: 300;
+.journal-text p{
+  max-width: 560px;
+  color: #5e5a54;
+  font-size: 18px;
 }
 
 .archive-hero-subtitle{
   max-width: 680px;
-  margin: 18px 0 28px;
-  font-size: 22px;
+  margin: 0 0 12px;
+  font-size: 20px;
+  color: #242220;
 }
 
-.archive-chapters{
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.archive-chapters a{
-  display: inline-block;
-  padding: 10px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  color: #fff;
-  background: rgba(0, 0, 0, 0.18);
-  text-decoration: none;
-}
-
-.archive-chapters a:hover,
-.archive-chapters a:focus{
-  color: #1e2a23;
+.journal-list{
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-bottom: 1px solid #d9d2c8;
   background: #fff;
+}
+
+.journal-list a{
+  min-height: 132px;
+  padding: 22px;
+  border-right: 1px solid #d9d2c8;
+  color: #242220;
   text-decoration: none;
+}
+
+.journal-list a:last-child{
+  border-right: 0;
+}
+
+.journal-list strong{
+  display: block;
+  color: #64766a;
+  font: 700 13px/1.2 Arial, Helvetica, sans-serif;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.journal-list span{
+  display: block;
+  margin-top: 10px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.journal-list a:hover,
+.journal-list a:focus{
+  background: #f4f1ed;
+  text-decoration: none;
+}
+
+.page-journal-header{
+  margin-top: 50px;
+  padding: 86px 24px 38px;
+  border-bottom: 1px solid #d9d2c8;
+  background: #fff;
+}
+
+.page-journal-header .container{
+  max-width: 980px;
+}
+
+.page-journal-header h1{
+  margin: 8px 0 10px;
+  font-size: 42px;
+}
+
+.page-journal-header p{
+  max-width: 720px;
+  color: #5e5a54;
+  font-size: 18px;
 }
 
 .gallery-intro{
@@ -212,13 +304,13 @@ b, strong{
 }
 
 .gallery-summary{
-  color: #536d5d;
+  color: #64766a;
   font-weight: 700;
 }
 
 .gallery-albums{
   display: grid;
-  gap: 48px;
+  gap: 36px;
 }
 
 .album-section{
@@ -246,39 +338,41 @@ b, strong{
 
 .generated-gallery-grid{
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 18px;
 }
 
 .generated-gallery-card{
   display: block;
   width: 100%;
   padding: 0;
-  border: 1px solid #ddd;
+  border: 1px solid #e0ddd6;
   background: #fff;
   text-align: left;
   cursor: pointer;
+  box-shadow: none;
 }
 
 .generated-gallery-card:hover,
 .generated-gallery-card:focus{
-  border-color: #536d5d;
-  outline: 2px solid #536d5d;
+  border-color: #64766a;
+  outline: 2px solid #64766a;
   outline-offset: 2px;
 }
 
 .generated-gallery-card img{
   display: block;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 3 / 2;
   object-fit: cover;
 }
 
 .generated-gallery-caption{
   display: block;
-  min-height: 54px;
-  padding: 12px;
+  min-height: 48px;
+  padding: 12px 14px;
   color: #333;
+  font-size: 15px;
 }
 
 .gallery-lightbox{
@@ -380,25 +474,37 @@ hr {
     font-size: 16px;
   }
 
-  .archive-hero{
-    min-height: calc(100vh - 90px);
+  .journal-hero,
+  .journal-list{
+    grid-template-columns: 1fr;
   }
 
-  .archive-hero-content{
-    padding: 52px 18px 42px;
+  .journal-hero{
+    min-height: 0;
   }
 
-  .archive-hero h1{
-    font-size: 46px;
+  .journal-photo,
+  .journal-photo img{
+    min-height: 320px;
   }
 
-  .archive-hero-subtitle{
-    font-size: 18px;
+  .journal-text{
+    padding: 38px 22px;
   }
 
-  .archive-chapters a{
-    flex: 1 1 45%;
-    text-align: center;
+  .journal-text h1,
+  .journal-text h2{
+    font-size: 36px;
+  }
+
+  .journal-list a{
+    min-height: 104px;
+    border-right: 0;
+    border-bottom: 1px solid #d9d2c8;
+  }
+
+  .page-journal-header{
+    padding: 72px 18px 30px;
   }
 
   .album-header{

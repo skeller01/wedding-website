@@ -3,6 +3,7 @@
 
   var hero = document.getElementById("archive-hero");
   if (!hero) return;
+  var heroImage = document.getElementById("archive-hero-image");
 
   var data = window.WEDDING_GALLERY_DATA || {};
   var heroPhotos = (data.heroPhotos || []).filter(function (photo) {
@@ -31,8 +32,10 @@
   function applyHero(photo) {
     var src = photo ? photo.hero : fallback;
     var point = photo && photo.focalPoint ? photo.focalPoint : { x: 50, y: 50 };
-    hero.style.backgroundImage = "linear-gradient(to bottom, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.58)), url('" + src + "')";
-    hero.style.backgroundPosition = Number(point.x || 50) + "% " + Number(point.y || 50) + "%";
+    if (heroImage) {
+      heroImage.src = src;
+      heroImage.style.objectPosition = Number(point.x || 50) + "% " + Number(point.y || 50) + "%";
+    }
   }
 
   applyHero(chooseHero());

@@ -276,6 +276,18 @@ function Invoke-Generate {
   $photos = @()
   $warnings = @()
   $placeholderHeroCount = 0
+  $placeholderPublishNames = @(
+    "sonia_steve_resized.jpg",
+    "sonia_steve.jpg",
+    "sonia_steve2.jpg",
+    "IMG_07791.jpg",
+    "IMG_07791 (1).jpg",
+    "IMG_43151.jpg",
+    "IMG_43821.jpg",
+    "IMG_56321.jpg",
+    "golden_rose.jpg",
+    "rose_border.jpg"
+  )
   $placeholderHeroNames = @(
     "sonia_steve_resized.jpg",
     "sonia_steve.jpg",
@@ -283,10 +295,37 @@ function Invoke-Generate {
     "IMG_07791.jpg",
     "IMG_07791 (1).jpg"
   )
+  $placeholderTitles = @{
+    "sonia_steve_resized.jpg" = "Sonia and Steve"
+    "sonia_steve.jpg" = "Together"
+    "sonia_steve2.jpg" = "Wedding Memory"
+    "IMG_07791.jpg" = "Portrait"
+    "IMG_07791 (1).jpg" = "Portrait"
+    "IMG_43151.jpg" = "Wedding Day"
+    "IMG_43821.jpg" = "Celebration"
+    "IMG_56321.jpg" = "Weekend"
+    "golden_rose.jpg" = "Golden Rose"
+    "rose_border.jpg" = "Floral Detail"
+  }
+  $placeholderCaptions = @{
+    "sonia_steve_resized.jpg" = "A favorite opening image for the archive."
+    "sonia_steve.jpg" = "A quiet moment from the wedding collection."
+    "sonia_steve2.jpg" = "One of the small memories worth keeping close."
+    "IMG_07791.jpg" = "A portrait placeholder until the full photo set arrives."
+    "IMG_07791 (1).jpg" = "A second portrait placeholder from the existing archive."
+    "IMG_43151.jpg" = "A wedding day placeholder for the future gallery."
+    "IMG_43821.jpg" = "A celebration image from the current checked-in set."
+    "IMG_56321.jpg" = "A weekend memory from the current checked-in set."
+    "golden_rose.jpg" = "A detail image to support the album tone."
+    "rose_border.jpg" = "A floral detail from the existing site assets."
+  }
 
   foreach ($item in $items) {
     $defaultState = "unreviewed"
     $sourceName = Split-Path -Leaf $item.fullPath
+    if ($UseExistingAsPlaceholders -and -not ($placeholderPublishNames -contains $sourceName)) {
+      continue
+    }
     if ($UseExistingAsPlaceholders -and $placeholderHeroNames -contains $sourceName -and $placeholderHeroCount -lt 4) {
       $defaultState = "hero"
       $placeholderHeroCount += 1
@@ -335,7 +374,16 @@ function Invoke-Generate {
 
     $title = $entry["title"]
     if ([string]::IsNullOrWhiteSpace($title)) {
-      $title = (Get-Culture).TextInfo.ToTitleCase(([System.IO.Path]::GetFileNameWithoutExtension($item.relativePath) -replace "[-_]+", " "))
+      if ($UseExistingAsPlaceholders -and $placeholderTitles.ContainsKey($sourceName)) {
+        $title = $placeholderTitles[$sourceName]
+      }
+      else {
+        $title = (Get-Culture).TextInfo.ToTitleCase(([System.IO.Path]::GetFileNameWithoutExtension($item.relativePath) -replace "[-_]+", " "))
+      }
+    }
+    $caption = $entry["caption"]
+    if ([string]::IsNullOrWhiteSpace($caption) -and $UseExistingAsPlaceholders -and $placeholderCaptions.ContainsKey($sourceName)) {
+      $caption = $placeholderCaptions[$sourceName]
     }
     $isHero = $entry["state"] -eq "hero"
     $photo = @{
@@ -343,7 +391,7 @@ function Invoke-Generate {
       albumId = $item.albumId
       sourcePath = $item.relativePath
       title = $title
-      caption = $entry["caption"]
+      caption = $caption
       state = $entry["state"]
       isHero = $isHero
       focalPoint = $entry["focalPoint"]
