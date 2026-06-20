@@ -34,5 +34,5 @@ Current high-level truth:
 - Domain: GoDaddy forwarding/redirect is working.
 - Backend/data: no RSVP, address, message, email form, PHP endpoint, database, or server runtime is current scope.
 - Product framing: this is a shareable archival wedding memory site, not active guest logistics.
-- Future scope: a simple static photo gallery is a likely next feature; uploads, tagging, private sharing, or backend albums are out of scope unless explicitly approved later.
-- Next likely work: refresh stale external links as historical/archive context, remove or archive unused legacy interaction assets, and plan the static gallery.
+- Gallery: an initial static `gallery.html` page exists; uploads, tagging, private sharing, or backend albums are out of scope unless explicitly approved later.
+- Next likely work: refresh stale external links as historical/archive context, remove or archive remaining unused legacy interaction assets, and curate/expand gallery captions and photos.

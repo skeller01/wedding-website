@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Throwaway Gallery Layout Variants</title>
+  <style>
+    :root {
+      --ink: #222;
+      --muted: #666;
+      --paper: #fff;
+      --wash: #f7f4f2;
+      --line: #ddd;
+      --accent: #7d3341;
+      --accent-dark: #4d2630;
+      --sage: #64766a;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.55;
+    }
+
+    header {
+      padding: 32px 24px 18px;
+      border-bottom: 1px solid var(--line);
+      background: var(--wash);
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+      font-weight: 600;
+    }
+
+    header p {
+      max-width: 760px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    nav {
+      display: flex;
+      gap: 8px;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      overflow-x: auto;
+    }
+
+    nav a {
+      color: var(--accent-dark);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 8px 10px;
+      text-decoration: none;
+      white-space: nowrap;
+      font-size: 14px;
+    }
+
+    main {
+      padding: 28px 24px 44px;
+    }
+
+    section {
+      max-width: 1120px;
+      margin: 0 auto 48px;
+    }
+
+    section h2 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    section > p {
+      max-width: 760px;
+      margin: 0 0 20px;
+      color: var(--muted);
+    }
+
+    .variant-label {
+      display: inline-block;
+      margin-bottom: 10px;
+      color: var(--sage);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .masonry {
+      column-count: 3;
+      column-gap: 16px;
+    }
+
+    .masonry figure {
+      break-inside: avoid;
+      margin: 0 0 16px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    figcaption {
+      padding: 10px 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .featured-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(260px, .8fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .feature-photo,
+    .side-stack figure,
+    .story-card {
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .feature-photo img {
+      height: 100%;
+      object-fit: cover;
+      min-height: 460px;
+    }
+
+    .side-stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .side-stack figure {
+      margin: 0;
+    }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .story-card img {
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+    }
+
+    .story-card div {
+      padding: 14px;
+    }
+
+    .story-card h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+    }
+
+    .story-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .result {
+      border-left: 4px solid var(--accent);
+      padding: 14px 16px;
+      background: var(--wash);
+    }
+
+    @media (max-width: 820px) {
+      .masonry {
+        column-count: 2;
+      }
+
+      .featured-grid,
+      .story-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .feature-photo img {
+        min-height: 0;
+      }
+    }
+
+    @media (max-width: 520px) {
+      header,
+      main,
+      nav {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .masonry {
+        column-count: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Static Gallery Layout Variants</h1>
+    <p>Throwaway prototype for the wedding archive. The test uses existing checked-in images only, no uploads, no accounts, no build step, and no backend.</p>
+  </header>
+
+  <nav aria-label="Prototype variants">
+    <a href="#variant-a">Variant A: Memory Wall</a>
+    <a href="#variant-b">Variant B: Featured Moment</a>
+    <a href="#variant-c">Variant C: Story Cards</a>
+  </nav>
+
+  <main>
+    <section id="variant-a">
+      <span class="variant-label">Variant A</span>
+      <h2>Memory Wall</h2>
+      <p>A compact, scan-friendly gallery page. Best when the goal is to show many photos with minimal ceremony.</p>
+      <div class="masonry">
+        <figure>
+          <img src="../../../../images/sonia_steve_resized.jpg" alt="Sonia and Steve together">
+          <figcaption>Sonia and Steve</figcaption>
+        </figure>
+        <figure>
+          <img src="../../../../images/IMG_07791.jpg" alt="Sonia and Steve portrait">
+          <figcaption>Portrait</figcaption>
+        </figure>
+        <figure>
+          <img src="../../../../images/IMG_43151.jpg" alt="Wedding day portrait">
+          <figcaption>Wedding day</figcaption>
+        </figure>
+        <figure>
+          <img src="../../../../images/IMG_43821.jpg" alt="Wedding celebration">
+          <figcaption>Celebration</figcaption>
+        </figure>
+        <figure>
+          <img src="../../../../images/IMG_56321.jpg" alt="Wedding memory">
+          <figcaption>Memory</figcaption>
+        </figure>
+        <figure>
+          <img src="../../../../images/rose_border.jpg" alt="Wedding flowers">
+          <figcaption>Details</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="variant-b">
+      <span class="variant-label">Variant B</span>
+      <h2>Featured Moment</h2>
+      <p>A stronger first impression for a small archive: one large emotional image, then supporting photos beside it.</p>
+      <div class="featured-grid">
+        <figure class="feature-photo">
+          <img src="../../../../images/sonia_steve.jpg" alt="Sonia and Steve featured portrait">
+          <figcaption>Featured archive photo</figcaption>
+        </figure>
+        <div class="side-stack">
+          <figure>
+            <img src="../../../../images/IMG_07791.jpg" alt="Sonia and Steve smiling">
+            <figcaption>Portrait</figcaption>
+          </figure>
+          <figure>
+            <img src="../../../../images/golden_rose.jpg" alt="Golden rose detail">
+            <figcaption>Wedding detail</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="variant-c">
+      <span class="variant-label">Variant C</span>
+      <h2>Story Cards</h2>
+      <p>Best if each photo should carry a short memory or context note. This makes the gallery feel like part of the archive, not just a media dump.</p>
+      <div class="story-grid">
+        <article class="story-card">
+          <img src="../../../../images/hotel_syracuse.jpg" alt="Hotel Syracuse">
+          <div>
+            <h3>Sangeet</h3>
+            <p>Hotel Syracuse anchors the first night of the wedding weekend.</p>
+          </div>
+        </article>
+        <article class="story-card">
+          <img src="../../../../images/sonia_steve2.jpg" alt="Sonia and Steve">
+          <div>
+            <h3>Together</h3>
+            <p>A simple card format leaves room for short captions later.</p>
+          </div>
+        </article>
+        <article class="story-card">
+          <img src="../../../../images/white_flowers.jpg" alt="White flowers">
+          <div>
+            <h3>Details</h3>
+            <p>Decorative images can support the memory-site tone without needing a backend.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="result">
+      <h2>Prototype Read</h2>
+      <p>Variant C best matches the archive/memory-site direction because it turns photos into contextual memories and keeps image count small. Variant A is useful once many final photos exist. Variant B is visually strong but depends heavily on choosing one perfect hero image.</p>
+    </section>
+  </main>
+</body>
+</html>

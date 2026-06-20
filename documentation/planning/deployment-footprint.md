@@ -6,8 +6,8 @@
 - Ordered systems refresh in `documentation/requirements/current-state-design.md`.
 - Ordered behavioral refresh in `documentation/requirements/use-case-requirements.md`.
 - Ordered requirements refresh in `documentation/requirements/requirements.md`.
-- Current repository files: five root HTML pages, `css/style.css`, local JS files, and image assets.
-- Static scan result: 5 HTML pages, 65 resolved local references, 0 missing references, 0 server-side runtime references, 0 PHP files, 13 external references.
+- Current repository files: six root HTML pages, `css/style.css`, Bootstrap/jQuery CDN behavior, remaining unused legacy JS files, and image assets.
+- Static scan result after gallery absorption: 6 HTML pages, 78 resolved local references, 0 missing references, 0 server-side runtime references, 0 PHP files, 13 external references.
 
 ### Footprint Type
 Current-state hosted static wedding archive footprint with fallback planning.
@@ -45,8 +45,8 @@ Fallback: AWS static hosting only if GitHub Pages is blocked or the user chooses
 | GoDaddy forwarding | Forwarded domain reaches the hosted site | Working; exact domain should be recorded | Re-check after future publication changes |
 | Internal static content | Polished wedding archive context | Some external links may be stale or misleading as live recommendations | Audit and patch/remove/convert links before wider sharing |
 | Static scan | Repeatable release guard | Script remains in working/prototype area | Promote or document as release check if recurring |
-| Source hygiene | Repo reflects current static/no-collection behavior | Countdown and validation assets remain unused | Cleanup sprint can remove/archive them |
-| Static gallery | Share wedding photos without backend scope | Not yet implemented | Add static gallery page/assets when selected photos are ready |
+| Source hygiene | Repo reflects current static/no-collection behavior | Public pages no longer load countdown scripts; unused countdown/validation files remain | Cleanup sprint can remove/archive remaining files |
+| Static gallery | Share wedding photos without backend scope | Initial `gallery.html` implemented | Curate/expand selected photos and captions when ready |
 
 ### Mermaid Architecture Diagram
 ```mermaid
@@ -83,7 +83,7 @@ flowchart LR
 | Domain forwarding | Route public domain to hosted URL. | GoDaddy forwarding | REQ-017 | Working per user update |
 | Verification | Static and smoke checks. | Prototype static scan plus manual browser checks | REQ-016 | Scan passes |
 | External links | Provide offsite or historical context. | Third-party URLs/plain text | REQ-009 | Needs archive-polish audit |
-| Future gallery | Share selected wedding photos. | Static HTML/images | Future scope | Proposed |
+| Static gallery | Share selected wedding photos. | Static HTML/images | REQ-021 | Initial page implemented |
 
 ### Deployment Footprint
 | Layer | Resource / Service / Capability | Purpose | Current or Proposed | Notes |
@@ -94,7 +94,7 @@ flowchart LR
 | Domain | GoDaddy forwarding | User-facing public URL. | Current / working | Needs exact domain and target recorded. |
 | Backend | None | Keep no-collection static scope. | Current | Do not add PHP/serverless without new decision. |
 | Storage | Repository/static host only | Store static assets. | Current | No visitor data. |
-| Photo assets | Repository/static host only | Store future selected gallery photos. | Proposed | Keep first gallery static; optimize if needed. |
+| Photo assets | Repository/static host only | Store selected gallery photos. | Current | Keep gallery static; optimize further if many more photos are added. |
 | Observability | Static scan/manual checks | Release confidence. | Current / partial | External link audit remains. |
 | Fallback host | AWS static hosting | Alternative if needed. | Deferred | No provisioning now. |
 
@@ -108,7 +108,7 @@ flowchart LR
 ### Data Architecture
 - Static content only: HTML, CSS, JavaScript, and images.
 - No database, object upload flow, queue, cache, or visitor storage.
-- Future gallery work should start as static assets and pages; larger image volume can trigger image optimization or a later asset strategy.
+- Gallery work has started as static assets and pages; larger image volume can trigger image optimization or a later asset strategy.
 - Future form work would require a new PRD/requirements/deployment refresh because it changes privacy and runtime scope.
 
 ### Observability
@@ -119,7 +119,7 @@ flowchart LR
 | Mobile navigation smoke | Confirm collapsed nav/dropdown. | Needed after JS cleanup. | REQ-005, REQ-016 |
 | GoDaddy forwarding smoke | Confirm public domain reaches the hosted site. | Working per user update; re-check after future changes. | REQ-017 |
 | External link audit | Confirm destinations are not misleading for an archive. | Pending. | REQ-009 |
-| Static gallery smoke | Confirm future gallery loads selected images without backend calls. | Future scope. | Future gallery requirement |
+| Static gallery smoke | Confirm gallery loads selected images without backend calls. | Static scan passes for `gallery.html`; browser smoke still useful. | REQ-021 |
 
 ### CI/CD and Environments
 - No CI/CD service is required for the current no-build site.
@@ -139,7 +139,7 @@ flowchart LR
 | Public Domain Confidence | GoDaddy forwarding to hosted URL | Record exact working domain and target. | Full DNS/custom domain. | Forwarded domain reaches expected page. |
 | Archive Polish | Same static host | Refresh stale links as historical context. | Redesign/dynamic features. | No known misleading recommendations remain. |
 | Source Cleanup | Same static host | Remove/archive dead interaction assets. | New interaction features. | Reference search and scan pass. |
-| Static Gallery | Same static host | Add selected photos as static assets/pages. | Uploads, tagging, private sharing. | Gallery loads selected photos without backend calls. |
+| Static Gallery | Same static host | Initial `gallery.html` with selected static photos. | Uploads, tagging, private sharing. | Gallery loads selected photos without backend calls. |
 | Optional AWS Fallback | AWS static hosting | Nothing now. | GitHub Pages blocked or user preference changes. | Equivalent HTTPS static site exists. |
 
 ### Provider Mapping
@@ -158,7 +158,7 @@ flowchart LR
 | REQ-012 | Keep no server runtime or PHP dependency. |
 | REQ-009 | Treat external link polish as an archive-content task. |
 | REQ-020 | Remove/archive unused legacy interaction assets as cleanup work. |
-| Future static gallery | Keep first photo gallery static unless later scope changes. |
+| REQ-021 | Keep photo gallery static unless later scope changes. |
 
 ### Sprint Planning Translation
 | Architecture Decision | Implementation Workstream | Candidate Stories / Tasks | Dependencies | Risk / Priority |
@@ -166,23 +166,23 @@ flowchart LR
 | Record forwarded domain | Domain documentation | Record exact working domain and target URL; re-check after changes. | GoDaddy access if target changes. | High |
 | Keep site static | Static release checks | Preserve scan and five-page smoke check. | Prototype script or equivalent. | Medium |
 | Refresh external links | Archive polish | Audit and patch/remove/convert hotel/activity/venue links. | Owner preference/current web info. | High |
-| Plan static gallery | Archive enhancement | Select photos, choose gallery page location, define image sizing. | Photo selection. | Medium |
-| Clean dead assets | Source hygiene | Remove/archive countdown and validation assets after search. | Confirmation that no countdown/form behavior is wanted. | Medium |
+| Refine static gallery | Archive enhancement | Curate final photos/captions and image sizing. | Photo/caption selection. | Medium |
+| Clean dead assets | Source hygiene | Remove/archive remaining countdown and validation files after search. | Confirmation that no countdown/form behavior is wanted. | Medium |
 | Keep AWS as fallback | Deployment fallback | No action unless GitHub Pages blocked. | Future decision. | Low |
 
 ### Risks and Tradeoffs
 - GoDaddy forwarding is simple, cheap, and currently working, but should be re-checked after future domain/hosting changes.
 - GitHub Pages has minimal operations burden but should not be stretched into backend behavior.
 - External links are the largest current visitor-facing archive-polish risk.
-- Removing legacy assets reduces confusion but makes future countdown/form revival a deliberate rebuild.
-- A static gallery keeps costs and privacy simple; dynamic photo features would require a new deployment/privacy decision.
+- Removing remaining legacy assets reduces confusion but makes future countdown/form revival a deliberate rebuild.
+- The static gallery keeps costs and privacy simple; dynamic photo features would require a new deployment/privacy decision.
 
 ### Open Questions
 - What exact GoDaddy domain and target URL should be recorded?
 - Which stale external links should be replaced, removed, or converted to historical plain text?
-- Should dead countdown/validation assets be removed now?
+- Should remaining dead countdown/validation assets be removed now?
 - Should the Info page filename eventually move from `contact.html` to a clearer path?
-- Which photos should seed the first static gallery?
+- Which additional photos or final captions should refine the first static gallery?
 
 ## Historical Archive
 

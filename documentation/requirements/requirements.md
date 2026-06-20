@@ -7,7 +7,7 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 ### Source Inputs
 - `documentation/requirements/current-state-design.md` ordered systems refresh.
 - `documentation/requirements/use-case-requirements.md` ordered behavioral refresh.
-- Current repository files and static scan result: 5 HTML pages, 65 resolved local references, 0 missing references, 0 server-side runtime references, 0 PHP files.
+- Current repository files and static scan result after gallery absorption: 6 HTML pages, 78 resolved local references, 0 missing references, 0 server-side runtime references, 0 PHP files.
 - `documentation/planning/deployment-footprint.md` and `documentation/planning/prd.md`.
 
 ### Requirement Table
@@ -32,8 +32,8 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | REQ-017 | Support GoDaddy Forwarding | The system shall support access through a GoDaddy-forwarded public URL. | Deployment/Interface | High | UC-004-CR-005, UC-004-CR-007 | Demonstration | Working per user update |
 | REQ-018 | Support Static Maintenance | The system shall allow static content and asset updates without requiring a build or backend deployment. | Maintainability | Medium | UC-005-CR-002 | Demonstration | Plain HTML/CSS/JS repo |
 | REQ-019 | Update Docs On Behavior Change | The maintenance process shall update durable planning or requirements docs when behavior, deployment, or scope changes. | Maintainability | Medium | UC-005-CR-004 | Inspection | Documentation workspace |
-| REQ-020 | Remove Or Archive Dead Legacy Assets | The repository shall remove or explicitly archive unused legacy interaction assets when the related public behavior has been intentionally removed. | Maintainability | Medium | UC-005-CR-005 | Inspection | Countdown/validation assets remain |
-| REQ-021 | Support Static Photo Gallery | The system shall be able to present a static wedding photo gallery without backend calls, uploads, or visitor accounts. | Future Functional | Medium | UC-006-CR-001, UC-006-CR-002, UC-006-CR-003, UC-006-CR-004 | Test/Demonstration | Future scope |
+| REQ-020 | Remove Or Archive Dead Legacy Assets | The repository shall remove or explicitly archive unused legacy interaction assets when the related public behavior has been intentionally removed. | Maintainability | Medium | UC-005-CR-005 | Inspection | Public pages no longer load countdown scripts; unused validation/countdown files remain |
+| REQ-021 | Support Static Photo Gallery | The system shall be able to present a static wedding photo gallery without backend calls, uploads, or visitor accounts. | Functional | Medium | UC-006-CR-001, UC-006-CR-002, UC-006-CR-003, UC-006-CR-004 | Test/Demonstration | `gallery.html`; static scan passes |
 
 ### Candidate Requirement Mapping
 | Candidate ID | Source Use Case / Step | Final Req ID | Mapping Status | Notes |
@@ -69,7 +69,7 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | UC-005-CR-003 | Maintenance verification | REQ-016 | Mapped | Affected-flow checks. |
 | UC-005-CR-004 | Docs update | REQ-019 | Mapped | Keep docs current. |
 | UC-005-CR-005 | Legacy assets | REQ-020 | Mapped | Cleanup work. |
-| UC-006-CR-001 | Gallery page or section | REQ-021 | Mapped | Future static gallery. |
+| UC-006-CR-001 | Gallery page or section | REQ-021 | Mapped | Implemented static gallery. |
 | UC-006-CR-002 | Static gallery images | REQ-021 | Mapped | No backend/uploads/accounts. |
 | UC-006-CR-003 | Gallery navigation | REQ-003, REQ-021 | Merged | Shared navigation. |
 | UC-006-CR-004 | Gallery asset sizing/paths | REQ-004, REQ-021 | Merged | Static image verification. |
@@ -96,8 +96,8 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | REQ-017 | Implemented | GoDaddy redirect is working per user update. |  | Record exact domain/target. |
 | REQ-018 | Active | Static maintenance model. |  |  |
 | REQ-019 | Active | Needed because docs previously drifted. |  |  |
-| REQ-020 | Planned | Dead assets remain and should be removed or archived deliberately. |  |  |
-| REQ-021 | Future | Static gallery is desired future scope but not yet implemented. |  |  |
+| REQ-020 | Active / Partial | Public pages no longer load obsolete countdown scripts and countdown CSS/commented markup was removed; unused legacy files still need deletion or explicit archive. |  | Remaining files: `js/app.js`, `js/jquery.countdown.js`, `js/jqBootstrapValidation.js`, `css/jquery.countdown.js`, ReactiveRaven vendor files |
+| REQ-021 | Implemented | `gallery.html` presents selected static photos, is linked from navigation, and passes static scan with no backend/upload/account behavior. |  | Captions/photos can be curated later. |
 
 ### Requirement Constants
 | Constant | Meaning | Current Value | Source / How To Determine |
@@ -110,7 +110,7 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | PUBLIC_FORWARDING_DOMAIN | Final user-facing domain. | TBD | Must be recorded from working redirect setup |
 | CONTACT_COLLECTION_ENABLED | Whether site collects visitor messages, RSVPs, or addresses. | `false` | Current Info page/product decision |
 | PRODUCT_FRAMING | Current product identity. | Shareable wedding archive / memory site | User update |
-| STATIC_GALLERY_ENABLED | Whether a static photo gallery exists. | `false` currently; future planned | User update |
+| STATIC_GALLERY_ENABLED | Whether a static photo gallery exists. | `true`; initial `gallery.html` implemented | User update plus prototype absorption |
 | STATIC_SCAN_TARGET | Minimum scan result before release. | 0 missing local refs, 0 server-runtime refs, 0 PHP files | Prototype/static scan |
 
 ### Quality Check
@@ -120,7 +120,7 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | REQ-007-REQ-009 | Yes | Yes | Yes | Yes | Yes | Yes | External references still need archive-polish audit evidence. |
 | REQ-010-REQ-013 | Yes | Yes | Yes | Yes | Yes | Yes | Current no-collection scope is consistent. |
 | REQ-014-REQ-017 | Yes | Yes | Yes | Yes | Yes | Yes | Exact GoDaddy domain/target should be recorded. |
-| REQ-018-REQ-021 | Yes | Yes | Yes | Yes | Yes | Yes | REQ-020 is planned cleanup; REQ-021 is future gallery scope. |
+| REQ-018-REQ-021 | Yes | Yes | Yes | Yes | Yes | Yes | REQ-020 remains partial cleanup; REQ-021 is implemented as an initial static gallery. |
 
 ### Traceability
 | Req ID | Source Use Case / Step | Related Candidate ID(s) | Related Interface | Related State | Related Test |
@@ -152,14 +152,14 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 - GoDaddy forwarding is working and targets the hosted site.
 - Visitor-submitted data collection remains disabled.
 - Stale external links should be fixed, removed, or converted to historical plain text before broad archive sharing.
-- Future gallery should be static unless explicitly rebaselined.
+- Gallery remains static unless explicitly rebaselined.
 
 ### Gaps and Questions
 - Exact GoDaddy domain and target URL.
 - Which external links should be replaced, removed, or converted to historical plain text.
-- Whether to delete or archive unused countdown/validation assets now.
+- Whether to delete or archive remaining unused countdown/validation assets now.
 - Whether `contact.html` should be renamed in a future cleanup.
-- Which photos should seed the first static gallery.
+- Which additional photos or final captions should refine the first static gallery.
 
 ## Historical Archive
 

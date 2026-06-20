@@ -6,9 +6,9 @@ This refresh follows the updated context and use case model in `documentation/re
 
 ### Source Inputs
 - `documentation/requirements/current-state-design.md` ordered systems refresh.
-- Root pages: `index.html`, `about.html`, `contact.html`, `hotels.html`, `syracuse.html`.
-- Static assets and scripts: `css/style.css`, `js/app.js`, `js/jquery.countdown.js`, `js/jqBootstrapValidation.js`, `images/*`.
-- Static scan: 5 HTML pages, 65 resolved local references, 0 missing references, 0 server-side runtime references, 0 PHP files.
+- Root pages: `index.html`, `about.html`, `gallery.html`, `contact.html`, `hotels.html`, `syracuse.html`.
+- Static assets and scripts: `css/style.css`, Bootstrap/jQuery CDN behavior for navigation/tooltips, unused legacy validation/countdown files, `images/*`.
+- Static scan after gallery absorption: 6 HTML pages, 78 resolved local references, 0 missing references, 0 server-side runtime references, 0 PHP files.
 - Planning docs: `documentation/planning/deployment-footprint.md`, `documentation/planning/prd.md`, sprint and working notes.
 
 ### Use Case Index
@@ -19,7 +19,7 @@ This refresh follows the updated context and use case model in `documentation/re
 | UC-003 | Read Information Page | Medium | Refreshed | `contact.html` current no-collection content |
 | UC-004 | Publish Static Website | High | Refreshed | GitHub Pages/static publication workflow |
 | UC-005 | Maintain Archive Content | Medium | Refreshed | Refactor/deployment/requirements follow-up |
-| UC-006 | View Static Photo Gallery | Medium | Future | Future simple static gallery |
+| UC-006 | View Static Photo Gallery | Medium | Implemented | Initial simple static gallery |
 
 ### UC-001: View Wedding Archive
 
@@ -234,24 +234,24 @@ This refresh follows the updated context and use case model in `documentation/re
 | Use Case ID | UC-006 |
 | Use Case Name | View Static Photo Gallery |
 | Primary Actor | Visitor / Guest |
-| Trigger | Visitor opens a future gallery page or gallery section. |
+| Trigger | Visitor opens `gallery.html`. |
 | Goal | Visitor can browse selected wedding photos without accounts, uploads, or backend services. |
 | Priority | Medium |
 | Preconditions | Gallery page and selected static photo assets exist. |
 | Postconditions | Visitor has viewed selected photos and can navigate back to other archive pages. |
-| Evidence | Proposed from user update |
+| Evidence | Observed in `gallery.html`; static scan passes |
 
 #### Main Success Scenario
 | Step | Actor / Operator | System | External Entity | Behavior | Interface / Message | Candidate Requirement ID | Candidate Requirement | Evidence |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Visitor | Gallery page | Browser | Visitor opens the gallery. | Page request | UC-006-CR-001 | The system shall be able to present a static wedding photo gallery page or section. | Proposed |
-| 2 | Visitor | Gallery assets | Browser | System renders selected wedding photos from static assets. | Image requests | UC-006-CR-002 | The system shall be able to render selected gallery photos without backend calls, uploads, or visitor accounts. | Proposed |
-| 3 | Visitor | Navigation | Browser | Visitor returns to home/story/info pages. | Internal links/nav | UC-006-CR-003 | The system shall preserve internal navigation from the static gallery. | Proposed |
+| 1 | Visitor | Gallery page | Browser | Visitor opens the gallery. | Page request | UC-006-CR-001 | The system shall be able to present a static wedding photo gallery page or section. | Observed |
+| 2 | Visitor | Gallery assets | Browser | System renders selected wedding photos from static assets. | Image requests | UC-006-CR-002 | The system shall be able to render selected gallery photos without backend calls, uploads, or visitor accounts. | Observed/Tested |
+| 3 | Visitor | Navigation | Browser | Visitor returns to home/story/info pages. | Internal links/nav | UC-006-CR-003 | The system shall preserve internal navigation from the static gallery. | Observed |
 
 #### Exception Flows
 | Flow ID | Failure / Exception | System Response | Recovery / Mitigation | Candidate Requirement ID | Candidate Requirement | Evidence |
 |---|---|---|---|---|---|---|
-| UC-006-E1 | Gallery image path is missing or file is too large | Static scan or browser smoke fails/degrades. | Correct path and resize/optimize image before publication. | UC-006-CR-004 | The system shall use deploy-safe gallery image references and image sizes suitable for static hosting. | Proposed |
+| UC-006-E1 | Gallery image path is missing or file is too large | Static scan or browser smoke fails/degrades. | Correct path and resize/optimize image before publication. | UC-006-CR-004 | The system shall use deploy-safe gallery image references and image sizes suitable for static hosting. | Tested by static scan |
 
 #### Derived Requirements
 | Candidate Requirement ID | Candidate Requirement | Source Step | Verification Method |
@@ -270,7 +270,7 @@ This refresh follows the updated context and use case model in `documentation/re
 | IF-004 | Browser | Venue/hotel/activity sites | External navigation | Link click | Outbound | Observed |
 | IF-005 | GoDaddy forwarding | GitHub Pages URL | Forwarded request | Visitor opens public domain | External | Observed |
 | IF-006 | Maintainer/Git | GitHub repository | Static source changes | Maintenance/publication | Inbound | Observed |
-| IF-007 | Browser | GitHub Pages | Gallery image requests | Future gallery page load | Inbound | Proposed |
+| IF-007 | Browser | GitHub Pages | Gallery image requests | Gallery page load | Inbound | Observed |
 
 ### States Discovered
 | State | Trigger / Cause | Meaning | Related Use Case |
@@ -294,7 +294,7 @@ This refresh follows the updated context and use case model in `documentation/re
 | TEST-006 | Public hosted URL | Open GitHub Pages URL and verify expected site. | Demonstration |
 | TEST-007 | GoDaddy forwarding | Open final public domain after publication changes. | Demonstration |
 | TEST-008 | Legacy asset cleanup | Search for unused countdown/validation references before removal. | Inspection |
-| TEST-009 | Future static gallery | Open gallery page and verify selected photos load without backend requests. | Demonstration |
+| TEST-009 | Static gallery | Open gallery page and verify selected photos load without backend requests. | Demonstration/static scan |
 
 ## Historical Archive
 
