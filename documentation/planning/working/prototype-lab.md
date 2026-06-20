@@ -1,5 +1,9 @@
 # Prototype Lab
 
+## Coherence Status - 2026-06-20
+
+Working evidence, not current source of truth. The AWS static-hosting prototype below is historical. The later hosting comparison remains useful evidence for why GitHub Pages became the current path and AWS became fallback. Current durable docs supersede this working file.
+
 ## Prototype Record: Can the current site deploy cleanly as static AWS-hosted content?
 
 ### Decision

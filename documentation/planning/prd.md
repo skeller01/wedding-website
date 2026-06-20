@@ -1,193 +1,189 @@
 # Product Requirements Document
 
-## Decision Update
-Current recommendation: publish first with GitHub Pages, not AWS Amplify.
+## Ordered Refresh - 2026-06-20
 
-Reason: the user clarified that the site is mostly static wedding information, future photos may be added later, RSVP/email/forms are no longer needed, and cheapest possible hosting is the priority. A hosting comparison prototype in `documentation/planning/working/prototype-lab.md` selected GitHub Pages + cleaned HTTPS CDNs as the best first release path. AWS Amplify is now a fallback if GitHub Pages is blocked.
+### Source Inputs
+- Current user request to rerun systems documentation in logical order before PRD.
+- Ordered systems refresh: `documentation/requirements/current-state-design.md`.
+- Ordered behavioral refresh: `documentation/requirements/use-case-requirements.md`.
+- Ordered requirements refresh: `documentation/requirements/requirements.md`.
+- Ordered deployment refresh: `documentation/planning/deployment-footprint.md`.
+- Repository files and static scan evidence.
 
-## Source Inputs
-- Current user direction: make the wedding website available publicly through cheap AWS hosting and GoDaddy forwarding, with openness to future patches that improve fit and appearance.
-- Repository files: root HTML pages, CSS, JavaScript, image assets, PHP contact script.
-- Requirements artifacts: `documentation/requirements/current-state-design.md`, `documentation/requirements/use-case-requirements.md`, `documentation/requirements/requirements.md`.
-- Deployment artifact: `documentation/planning/deployment-footprint.md`.
-- Prototype artifact: `documentation/planning/working/prototype-lab.md` and static scan scripts.
+### Document Mode
+Existing repository analysis and current product refresh for a static public wedding information website.
 
-## Document Mode
-Existing repository analysis with a recommended MVP release slice for public static hosting.
+### Conflict Notes
+No new material conflict blocks the PRD. Older documentation still contains AWS/PHP/contact-form-era analysis, but the current code and refreshed systems docs establish the active product truth: static GitHub Pages site, no backend, no visitor data collection, and AWS as fallback only.
 
-## Conflict Notes
-No material source conflicts were found. The main architecture mismatch is observed rather than contradictory: the repository contains a PHP contact endpoint, while the user's target deployment is cheap static AWS hosting.
+### Decision Resolution Notes
+- Current hosting decision: GitHub Pages is the active recommended production path; AWS static hosting is fallback.
+- Current data/privacy decision: no RSVP, address, message, email form, PHP endpoint, or database is in scope.
+- Current maintenance decision: stale external links, GoDaddy verification, and dead legacy assets are the next practical risks.
+- No grilling question was needed because the available source evidence supports these defaults.
 
-## Decision Resolution Notes
-- Recommended hosting default: GitHub Pages from the existing GitHub repository, because it is the cheapest path for a static public site when repository visibility/account support allows it.
-- Recommended first release branch: deploy `development` first as a preview, then decide whether `main` becomes the public production branch.
-- Recommended contact default: remove or simplify obsolete form behavior because RSVP, email collection, and backend form handling are no longer needed.
-- No grilling question is blocking the PRD because the recommended defaults are reversible and match the stated low-cost/minimal-change goal.
+### Problem Statement
+The owner has an existing wedding website that should remain publicly readable and inexpensive to maintain, but older code/docs still carry remnants of a previous invitation/contact workflow and hosting exploration.
 
-## Problem Statement
-The owner has an existing wedding website in a local/GitHub repository and wants people to be able to view it through a public URL without paying for or operating a traditional web server.
+### Product Goal
+Provide a simple, low-cost, public static wedding information site where visitors can read wedding/story/travel/local information, while the maintainer has a clear path to publish updates, verify the public URL, and avoid accidentally reintroducing obsolete backend behavior.
 
-## Product Goal
-Publish the existing site cheaply and reliably enough that visitors can open a GoDaddy-forwarded URL, view the wedding content, navigate the pages, and use a clear contact path.
-
-## Users and Stakeholders
+### Users and Stakeholders
 | Actor / Stakeholder | Need | Evidence |
 |---|---|---|
-| Visitor / Guest | View wedding, hotel, local activity, and contact information. | Site content and use cases. |
-| Site Maintainer | Make small safe changes, deploy from GitHub, and avoid direct commits to `main`. | User branch workflow. |
-| Domain Owner | Forward GoDaddy URL to public hosted site. | User goal. |
-| AWS Account Owner | Keep cost and operational complexity low. | User goal. |
+| Visitor / Guest | Read wedding, hotel, Syracuse, and informational content. | Static pages and use cases |
+| Site Maintainer | Update static content safely and publish through GitHub. | Requirements/deployment docs |
+| Domain Owner | Have a GoDaddy-forwarded public domain reach the hosted site. | Deployment docs |
+| Future Maintainer | Understand that form/backend behavior is out of scope unless deliberately reintroduced. | Requirements/FMEA |
 
-## Solution Summary
-Use the existing static site as the product foundation, clean up static-hosting blockers, publish with GitHub Pages, and optionally point GoDaddy forwarding or a GitHub Pages custom domain at the published URL.
+### Solution Summary
+Keep the site as plain static HTML/CSS/JS/images on GitHub Pages, verify the hosted and forwarded URLs, refresh stale outbound links, and clean up unused legacy interaction assets. Treat new backend behavior, forms, analytics, a build system, or AWS migration as separate future product decisions.
 
-## Scope
+### Scope
+#### In Scope
+- Public static pages: Home, About, Info, Hotels, Local Entertainment/Syracuse.
+- Internal navigation and mobile-readable layout.
+- Local asset integrity and static scan verification.
+- Clear no-collection information page.
+- GitHub Pages publication and GoDaddy forwarding verification.
+- External hotel/activity link freshness review.
+- Cleanup of unused countdown/validation-era assets if approved as implementation work.
 
-### In Scope
-- Document current website behavior and architecture.
-- Preserve the existing static pages and visual direction unless a patch improves deployability or polish.
-- Fix static deployment blockers before public release.
-- Host the site on AWS using a very low-cost static hosting approach.
-- Verify the hosted URL and GoDaddy-forwarded URL.
+#### Out of Scope
+- RSVP, address, message, or email form collection.
+- PHP, serverless form endpoints, databases, authentication, admin UI, or uploads.
+- AWS migration unless GitHub Pages becomes unsuitable.
+- Full redesign or static site generator migration.
 
-### Out of Scope
-- Full backend application hosting.
-- Database-backed RSVP/address collection.
-- Authentication or admin editing UI.
-- Route 53 DNS migration unless the user later prefers it.
-- Major redesign before the first hosted release.
+### Recommended MVP / Release Slice
+The MVP is already largely implemented: a static GitHub Pages wedding information site with no backend. The next release slice should be a reliability/cleanup pass:
 
-## Recommended MVP / Release Slice
-MVP: a static, publicly hosted version of the current site.
+1. Record and verify the exact GoDaddy-forwarded domain from multiple contexts.
+2. Audit and patch stale hotel/activity/venue links.
+3. Remove or explicitly archive unused countdown and validation assets.
+4. Keep static scan and five-page smoke checks as the release gate.
 
-Included:
-- Home, About, Contact, Hotels, and Local Entertainment pages.
-- Correct local asset paths.
-- HTTPS-safe external script references.
-- Static-compatible contact path.
-- Amplify-hosted URL.
-- GoDaddy forwarding verification.
+### User Stories
+1. As a visitor, I want to open the wedding website so that I can read the public wedding information.
+2. As a visitor, I want to browse hotel and Syracuse information so that I can understand travel/local options.
+3. As a visitor, I want the Info page to be clear so that I do not try to submit an RSVP, address, or message through a nonexistent form.
+4. As the site maintainer, I want to publish static files from GitHub so that updates stay low-cost and simple.
+5. As the domain owner, I want the GoDaddy-forwarded URL to reach the hosted site so that visitors can use the public domain.
+6. As a future maintainer, I want obsolete interaction assets removed or archived so that I do not mistake them for current behavior.
 
-Deferred:
-- Real serverless contact form.
-- Full visual redesign.
-- Static site generator/template refactor.
-- Ongoing monitoring/analytics.
+### Functional Expectations
+- The site serves `index.html` as the public entry point.
+- Visitors can navigate among Home, About, Info, Hotels, and Local Entertainment.
+- Hotels and Syracuse pages display internal content even if external links are unavailable.
+- Info page states that the site does not collect addresses, RSVPs, or messages.
+- Local assets resolve with deploy-safe paths.
+- GitHub Pages hosted URL and GoDaddy-forwarded URL can be verified.
 
-## User Stories
-1. As a visitor, I want to open the website URL so that I can view the wedding information.
-2. As a visitor, I want to navigate to hotel and local entertainment pages so that I can plan travel.
-3. As a visitor, I want a working contact option so that I can reach the couple or provide information.
-4. As the site maintainer, I want to deploy from GitHub so that updates do not require manual file uploads.
-5. As the domain owner, I want GoDaddy forwarding to reach the hosted site so that visitors can use the public URL I control.
+### Baseline Approach
+Use GitHub Pages for current production static hosting, GoDaddy forwarding for the public domain, and plain file edits for maintenance. Keep AWS static hosting as a fallback, not current work. Keep the no-backend boundary unless a future form/gallery/upload feature gets its own PRD and requirements pass.
 
-## Functional Expectations
-- The site opens at `index.html`.
-- Navigation exposes all five public pages.
-- Images, CSS, and JavaScript load on case-sensitive static hosting.
-- Contact page does not promise a form submission path that cannot work on static hosting.
-- Public hosted URL and GoDaddy-forwarded URL show the expected site.
-
-## Baseline Approach
-Baseline implementation direction:
-- Keep the website static for the first release.
-- Use GitHub Pages for GitHub-connected HTTPS static hosting.
-- Deploy `development` first.
-- Fix the known scan issues before public forwarding.
-- Use a direct email/static fallback for contact unless a backend form becomes a separate feature.
-
-## Non-Functional Expectations
+### Non-Functional Expectations
 | Area | Expectation | Evidence / Status |
 |---|---|---|
-| Cost | Tiny/prototype cost class. | Deployment footprint. |
-| Security | Avoid mixed HTTP script loading on HTTPS pages. | FMEA and requirements. |
-| Privacy | Do not collect address data through an unmaintained PHP endpoint. | Contact flow analysis. |
-| Reliability | Core content remains readable even if third-party links fail. | Requirements. |
-| Maintainability | Keep changes minimal for MVP; consider templates later. | Current duplicated markup. |
-| Deployment | GitHub-to-AWS deploy with branch verification. | Deployment footprint. |
+| Cost | Free or effectively free static hosting. | Deployment footprint |
+| Privacy | No visitor-submitted data collection. | Info page and requirements |
+| Reliability | Core content remains readable without third-party sites. | Requirements |
+| Security | No server runtime, secrets, or backend attack surface. | Static scan and deployment footprint |
+| Maintainability | Static edits remain simple; dead assets should not obscure current behavior. | Class/FMEA/refactor notes |
+| Verification | Static scan plus browser/domain/link smoke checks. | Requirements/deployment |
 
-## Candidate Requirements
-- Serve `index.html` as the default entry point.
-- Provide internal navigation to all public pages.
-- Resolve all local asset references with case-correct paths.
-- Use HTTPS for required third-party scripts.
-- Provide a visitor-usable contact channel without requiring PHP on static hosting.
-- Deploy from GitHub to low-cost static hosting.
-- Verify the AWS hosted URL and GoDaddy-forwarded URL before public release.
+### Candidate Requirements
+- Serve the home page as the default entry point.
+- Present public wedding, story, lodging, local, and info content.
+- Provide internal navigation on desktop and mobile.
+- Keep local asset references deploy-safe and case-correct.
+- Avoid PHP/server runtime dependency.
+- Clearly state no collection of visitor messages, RSVPs, or addresses.
+- Provide current enough outbound venue/hotel/activity links.
+- Publish through GitHub Pages and verify GoDaddy forwarding.
+- Remove or archive unused legacy interaction assets.
 
-## Implementation Decisions
-- Treat `bin/contact_me.php` as incompatible with the MVP deployment target.
-- Keep the repository as plain static files for now; no build system is required.
-- Preserve `development` as the working branch for pre-release changes.
-- Use the static scan prototype or a future cleaned-up version as a release check.
+### Implementation Decisions
+- Keep the current plain static architecture.
+- Do not add a build step for the current maintenance slice.
+- Do not reintroduce form/backend behavior.
+- Treat `js/app.js`, `js/jquery.countdown.js`, `js/jqBootstrapValidation.js`, and extracted validation vendor files as cleanup candidates after reference checks.
+- Treat external link updates as content reliability work, not architecture work.
 
-## Test Seams
-- Static reference scan: catches missing local files, case mismatches, and server runtime dependencies.
-- Hosted browser smoke test: verifies pages, navigation, images, and contact behavior.
-- GoDaddy forwarding check: verifies the public custom URL reaches the hosted site.
+### Test Seams
+- Static scan: local references, PHP/runtime references, missing assets.
+- Five-page browser smoke: Home, About, Info, Hotels, Syracuse.
+- Mobile nav smoke: collapsed navigation and Travel dropdown.
+- Public URL smoke: GitHub Pages URL.
+- Domain smoke: GoDaddy-forwarded URL from more than one context.
+- Link audit: outbound venue/hotel/activity links.
 
-## Testing Decisions
-- Run the static scan before deployment and after contact/asset cleanup.
-- Manually inspect each public page after Amplify deploy.
-- Verify mobile navigation at least once because Bootstrap menu behavior depends on JavaScript.
-- Verify contact page wording and behavior on the hosted URL.
+### Testing Decisions
+- Run the existing static scan before and after cleanup.
+- Inspect `contact.html` to confirm no form and no-collection copy remain.
+- Search for obsolete contact/PHP/form placeholders after cleanup.
+- Verify all five pages after publishing.
+- Record external-link keep/update/remove decisions.
 
-## Release and Rollout
-1. Commit documentation and cleanup changes on `development`.
-2. Deploy `development` through Amplify as a preview.
-3. Verify scan, hosted pages, navigation, and contact behavior.
-4. Merge or promote to `main` when ready, if `main` is chosen for production.
-5. Configure GoDaddy forwarding to the final Amplify URL.
-6. Verify the GoDaddy-forwarded URL.
+### Release and Rollout
+Current release path:
+1. Make content/cleanup changes on `development`.
+2. Run static scan and source searches.
+3. Smoke test changed pages and mobile navigation.
+4. Promote to `main` for GitHub Pages publication.
+5. Verify GitHub Pages URL.
+6. Verify GoDaddy forwarding from multiple browser/network contexts.
 
-Rollback:
-- Revert the problematic commit and let Amplify redeploy, or repoint Amplify to the previous good branch/commit.
-- Remove or update GoDaddy forwarding if the public URL should be paused.
+Rollback: revert or correct the production branch and let GitHub Pages republish; pause or update GoDaddy forwarding if the public domain points to a bad target.
 
-## Risks and Tradeoffs
+### Risks and Tradeoffs
 | Risk / Tradeoff | Impact | Mitigation |
 |---|---|---|
-| PHP contact form fails on static host | Visitors cannot submit form | Convert contact to static-compatible flow. |
-| Mixed HTTP jQuery under HTTPS | Interactive behavior may fail | Use HTTPS script URL. |
-| Case-sensitive image mismatch | Broken image after deploy | Fix path or filename. |
-| External links are stale | Visitors may hit dead third-party pages | Review high-value links when polishing. |
-| GoDaddy forwarding is simple but less integrated than DNS | Redirect behavior may be less seamless | Accept for MVP; migrate DNS later only if needed. |
+| Stale external links | Visitors may receive bad travel/local guidance. | Audit and replace/remove known stale links. |
+| GoDaddy forwarding inconsistency | Public domain may fail for some visitors. | Verify from multiple contexts and record final setup. |
+| Dead legacy assets remain | Maintainers may misunderstand current behavior. | Remove/archive after reference checks. |
+| GitHub Pages dependency | Static hosting depends on GitHub account/repo settings. | Keep AWS static hosting as fallback. |
+| No backend/forms | Cannot collect RSVPs/messages through the site. | This matches current scope; require new PRD if needed later. |
 
-## Success Metrics
+### Success Metrics
 | Metric | Target or Placeholder | Measurement Method | Source / Status |
 |---|---|---|---|
-| Static scan missing references | 0 | Run scan | Prototype-derived |
-| Static scan server runtime blockers | 0 for MVP | Run scan | Prototype-derived |
-| Public page smoke test | 5/5 pages load | Manual browser check | Proposed |
-| Hosted HTTPS URL | Available | Open Amplify URL | Proposed |
-| GoDaddy forwarding | Reaches hosted site | Open public URL | Proposed |
-| Monthly hosting cost | HOSTING_COST_TARGET | AWS bill review | Requirement constant |
+| Static scan missing refs | 0 | Run scan | Current pass |
+| Static scan runtime refs/PHP files | 0 | Run scan | Current pass |
+| Five-page smoke | 5/5 pages load expected content | Browser check | Needed per release |
+| Mobile navigation | Primary nav and Travel menu usable | Phone or responsive browser check | Needed after JS cleanup |
+| GoDaddy forwarding | Final public domain reaches hosted site from at least two contexts | Browser check | Partial/pending |
+| Stale known links | 0 known stale high-value links before public promotion | Link audit | Pending |
 
-## Assumptions
-- The first release should favor speed, low cost, and minimal changes over redesign.
-- Visitors do not need login, RSVP database storage, or personalized content.
-- The contact email visible in `contact.html` is close to the intended public contact, but should be confirmed.
+### Assumptions
+- GitHub Pages remains available and acceptable for this repository.
+- GoDaddy forwarding is the desired domain approach for now.
+- The site should remain historical/informational rather than become an active event-management tool.
+- Link freshness matters more than preserving exact old outbound destinations.
 
-## Gaps and Questions
-- Confirm exact public contact email.
-- Decide whether to keep the address form visually or simplify contact content.
-- Decide whether to update historical wedding date/content before public release.
-- Confirm whether final production deployment should track `main` or remain on `development`.
+### Gaps and Questions
+- What exact GoDaddy domain should be recorded?
+- Which stale external links should be replaced with official current pages versus removed?
+- Should unused countdown and validation assets be removed in the next implementation pass?
+- Should `contact.html` eventually be renamed or redirected to match the visible Info label?
 
-## Follow-On Artifacts
-- Current state design: created.
-- Use case diagram: created.
-- Use case behavioral matrix: created.
-- Requirements: created.
-- Deployment footprint: created.
-- Class diagram: created.
-- Sequence diagram: created.
-- FFBD: created.
-- IDEF0: created.
-- FMEA: created.
-- Sprint plan: recommended next, after choosing the contact behavior.
+### Follow-On Artifacts
+- Context diagram and matrix: refreshed.
+- Use case diagram: refreshed.
+- Use case behavioral matrix: refreshed.
+- Requirements: refreshed.
+- Deployment footprint: refreshed.
+- Class diagram: refreshed.
+- Sequence diagram: refreshed.
+- FFBD: refreshed.
+- IDEF0: refreshed.
+- FMEA: refreshed.
 
-## Cleanup / PR Hygiene
-- Keep durable docs in `documentation/planning/` and `documentation/requirements/`.
-- Treat `documentation/planning/working/prototypes/*` as disposable verification aids unless promoted into a real script location.
-- Before PR/merge, decide whether to keep the prototype scanner, replace it with a polished script, or remove it after findings are implemented.
+### Cleanup / PR Hygiene
+- Keep durable refreshed docs in `documentation/planning/` and `documentation/requirements/`.
+- Treat old AWS/PHP/contact-form archive material as historical unless explicitly promoted again.
+- Do not delete working prototype notes automatically; decide later whether the static scan should be promoted into a maintained release script.
+
+## Historical Archive
+
+Older conflicting sections were moved to [historical-doc-conflicts-2026-06-20.md](archive/historical-doc-conflicts-2026-06-20.md). Treat this file as the current source of truth for Product Requirements Document; use the archive only for historical context.

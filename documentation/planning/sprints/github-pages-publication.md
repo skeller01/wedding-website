@@ -1,5 +1,11 @@
 # Sprint Plan: GitHub Pages Publication
 
+## Coherence Status - 2026-06-20
+
+Historical sprint record. Do not use this file as the current source of truth for deployment status, requirement IDs, or next implementation work. Use `documentation/planning/prd.md`, `documentation/planning/deployment-footprint.md`, and `documentation/requirements/requirements.md` first.
+
+Some implementation notes below were written before the current ordered documentation refresh and may describe GitHub Pages as blocked or pending. Current canonical docs supersede those notes.
+
 ## Source Inputs
 - Newest user decisions:
   - The site is mostly static public wedding information.

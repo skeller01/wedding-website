@@ -1,5 +1,9 @@
 # Refactor Plan
 
+## Coherence Status - 2026-06-20
+
+Working analysis, not current source of truth. This plan is still useful for likely cleanup work, especially external-link refresh and dead interaction asset removal, but current product/deployment/requirement decisions live in the durable docs.
+
 ## Source Inputs
 - User request: look for small UX improvements to the published wedding site.
 - Current deployment goal: cheapest possible static public site on GitHub Pages, with GoDaddy forwarding.

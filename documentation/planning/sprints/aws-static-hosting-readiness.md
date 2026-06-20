@@ -1,7 +1,11 @@
 # Sprint Plan: AWS Static Hosting Readiness
 
+## Coherence Status - 2026-06-20
+
+Fallback/historical sprint record. Do not use this file as the current execution plan. GitHub Pages is the current hosting direction; AWS static hosting is fallback only if GitHub Pages becomes unsuitable or the user explicitly chooses AWS.
+
 ## Status Update
-Superseded as the primary plan by `documentation/planning/sprints/github-pages-publication.md`.
+Superseded as the primary plan by the current durable docs and the GitHub Pages publication sprint history.
 
 This plan remains useful as a fallback if GitHub Pages is blocked by repository visibility, account plan, custom-domain constraints, or a later decision to use AWS. The current recommendation is GitHub Pages first because the project goal shifted to cheapest possible static hosting with no RSVP, email form, or backend.
 
