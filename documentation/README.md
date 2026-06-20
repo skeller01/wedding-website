@@ -31,6 +31,8 @@ Files under `documentation/planning/working/` are analysis and evidence. Files u
 Current high-level truth:
 
 - Hosting: GitHub Pages is current; AWS static hosting is fallback only.
-- Domain: GoDaddy forwarding remains a verification item.
+- Domain: GoDaddy forwarding/redirect is working.
 - Backend/data: no RSVP, address, message, email form, PHP endpoint, database, or server runtime is current scope.
-- Next likely work: verify final domain, refresh stale external links, and remove or archive unused legacy interaction assets.
+- Product framing: this is a shareable archival wedding memory site, not active guest logistics.
+- Future scope: a simple static photo gallery is a likely next feature; uploads, tagging, private sharing, or backend albums are out of scope unless explicitly approved later.
+- Next likely work: refresh stale external links as historical/archive context, remove or archive unused legacy interaction assets, and plan the static gallery.

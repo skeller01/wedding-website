@@ -2,7 +2,7 @@
 
 ## Ordered Refresh - 2026-06-20
 
-This refresh follows the updated context and use case model in `documentation/requirements/current-state-design.md`. It treats the site as a static GitHub Pages wedding information site with no active RSVP, address, message, email form, PHP endpoint, or database behavior.
+This refresh follows the updated context and use case model in `documentation/requirements/current-state-design.md`. It treats the site as a static GitHub Pages wedding archive / memory site with no active RSVP, address, message, email form, PHP endpoint, upload flow, or database behavior.
 
 ### Source Inputs
 - `documentation/requirements/current-state-design.md` ordered systems refresh.
@@ -14,32 +14,33 @@ This refresh follows the updated context and use case model in `documentation/re
 ### Use Case Index
 | Use Case ID | Use Case Name | Priority | Status | Source |
 |---|---|---|---|---|
-| UC-001 | View Wedding Information | High | Refreshed | Static pages and context model |
-| UC-002 | Browse Travel and Local Information | High | Refreshed | Hotels/Syracuse pages and external links |
+| UC-001 | View Wedding Archive | High | Refreshed | Static pages and context model |
+| UC-002 | Browse Historical Travel and Local Context | High | Refreshed | Hotels/Syracuse pages and external links |
 | UC-003 | Read Information Page | Medium | Refreshed | `contact.html` current no-collection content |
 | UC-004 | Publish Static Website | High | Refreshed | GitHub Pages/static publication workflow |
-| UC-005 | Maintain Website Content | Medium | Refreshed | Refactor/deployment/requirements follow-up |
+| UC-005 | Maintain Archive Content | Medium | Refreshed | Refactor/deployment/requirements follow-up |
+| UC-006 | View Static Photo Gallery | Medium | Future | Future simple static gallery |
 
-### UC-001: View Wedding Information
+### UC-001: View Wedding Archive
 
 #### Use Case Summary
 | Field | Value |
 |---|---|
 | Use Case ID | UC-001 |
-| Use Case Name | View Wedding Information |
+| Use Case Name | View Wedding Archive |
 | Primary Actor | Visitor / Guest |
 | Trigger | Visitor opens the hosted site or forwarded public URL. |
-| Goal | Visitor can read the home/story/event information and navigate to supporting pages. |
+| Goal | Visitor can read the home/story/event memory content and navigate to supporting pages. |
 | Priority | High |
 | Preconditions | Static site is hosted and reachable. |
-| Postconditions | Visitor has viewed wedding information or selected another page. |
+| Postconditions | Visitor has viewed wedding archive content or selected another page. |
 | Evidence | Observed |
 
 #### Main Success Scenario
 | Step | Actor / Operator | System | External Entity | Behavior | Interface / Message | Candidate Requirement ID | Candidate Requirement | Evidence |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Visitor | Static host | Browser | Visitor requests `/` or `index.html`. | HTTPS page request | UC-001-CR-001 | The system shall be able to serve a home page as the default public website entry point. | Observed |
-| 2 | Visitor | Home page | Browser | System renders names, wedding weekend framing, dates, locations, and CTA. | HTML/CSS/images | UC-001-CR-002 | The system shall be able to present wedding summary information on the home page. | Observed |
+| 2 | Visitor | Home page | Browser | System renders names, wedding weekend framing, dates, locations, and CTA. | HTML/CSS/images | UC-001-CR-002 | The system shall be able to present wedding archive summary information on the home page. | Observed |
 | 3 | Visitor | Site navigation | Browser | Visitor selects Home, About, Info, Hotels, or Local Entertainment. | Internal link/menu click | UC-001-CR-003 | The system shall be able to provide navigation links to the public content pages. | Observed |
 | 4 | Browser | Asset layer | GitHub Pages/CDNs | Browser loads CSS, JavaScript, fonts, and images. | Asset requests | UC-001-CR-004 | The system shall be able to load required local assets using deploy-safe paths. | Observed/Tested |
 
@@ -58,57 +59,57 @@ This refresh follows the updated context and use case model in `documentation/re
 | Candidate Requirement ID | Candidate Requirement | Source Step | Verification Method |
 |---|---|---|---|
 | UC-001-CR-001 | The system shall be able to serve a home page as the default public website entry point. | Step 1 | Demonstration |
-| UC-001-CR-002 | The system shall be able to present wedding summary information on the home page. | Step 2 | Inspection |
+| UC-001-CR-002 | The system shall be able to present wedding archive summary information on the home page. | Step 2 | Inspection |
 | UC-001-CR-003 | The system shall be able to provide navigation links to the public content pages. | Step 3 | Demonstration |
 | UC-001-CR-004 | The system shall be able to load required local assets using deploy-safe paths. | Step 4 | Test |
 | UC-001-CR-005 | The system shall be able to expose primary navigation on mobile viewport widths. | Alternate A1 | Demonstration |
 | UC-001-CR-006 | The system shall keep primary textual wedding content readable when nonessential external resources fail to load. | Alternate A2 | Demonstration |
 | UC-001-CR-007 | The system shall use case-correct local asset references for static hosting. | Exception E1 | Test |
 
-### UC-002: Browse Travel and Local Information
+### UC-002: Browse Historical Travel and Local Context
 
 #### Use Case Summary
 | Field | Value |
 |---|---|
 | Use Case ID | UC-002 |
-| Use Case Name | Browse Travel and Local Information |
+| Use Case Name | Browse Historical Travel and Local Context |
 | Primary Actor | Visitor / Guest |
 | Trigger | Visitor selects Travel, Hotels, or Local Entertainment. |
-| Goal | Visitor can read lodging/Syracuse guidance and optionally open useful external resources. |
+| Goal | Visitor can read lodging/Syracuse historical context and optionally open useful current or archival external resources. |
 | Priority | High |
 | Preconditions | Static pages and local assets are available. |
-| Postconditions | Visitor has viewed internal travel/local content or intentionally left via an external link. |
+| Postconditions | Visitor has viewed internal historical travel/local content or intentionally left via an external link. |
 | Evidence | Observed with external freshness risk |
 
 #### Main Success Scenario
 | Step | Actor / Operator | System | External Entity | Behavior | Interface / Message | Candidate Requirement ID | Candidate Requirement | Evidence |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Visitor | Navigation | Browser | Visitor opens the Travel dropdown. | Bootstrap dropdown | UC-002-CR-001 | The system shall be able to expose hotel and local entertainment links from navigation. | Observed |
-| 2 | Visitor | Hotels page | Browser | System renders hotel names, descriptions, distances, and cost guidance. | `hotels.html` | UC-002-CR-002 | The system shall be able to present lodging information for visitors. | Observed |
-| 3 | Visitor | Syracuse page | Browser | System renders local activity thumbnails and guidance. | `syracuse.html` | UC-002-CR-003 | The system shall be able to present local entertainment information for visitors. | Observed |
-| 4 | Visitor | External link | Third-party site | Visitor opens a venue, hotel, or activity link. | Outbound URL | UC-002-CR-004 | The system shall be able to provide outbound links to relevant venue, hotel, and local activity resources. | Observed |
+| 2 | Visitor | Hotels page | Browser | System renders hotel names, descriptions, distances, and historical cost/location context. | `hotels.html` | UC-002-CR-002 | The system shall be able to present lodging information as historical wedding-weekend context. | Observed |
+| 3 | Visitor | Syracuse page | Browser | System renders local activity thumbnails and historical guidance. | `syracuse.html` | UC-002-CR-003 | The system shall be able to present local entertainment information as historical wedding-weekend context. | Observed |
+| 4 | Visitor | External link | Third-party site | Visitor opens a venue, hotel, or activity link when it is current enough not to mislead. | Outbound URL | UC-002-CR-004 | The system shall be able to provide outbound links or plain-text historical references to relevant venue, hotel, and local activity resources. | Observed |
 
 #### Alternate Flows
 | Flow ID | Condition | Steps | System Response | Candidate Requirement ID | Candidate Requirement | Evidence |
 |---|---|---|---|---|---|---|
-| UC-002-A1 | External site is stale or unavailable | Visitor still reads internal content. | Core travel/event context remains usable. | UC-002-CR-005 | The system shall keep core travel and event information available without requiring third-party links to load. | Inferred |
-| UC-002-A2 | Specific business is closed/rebranded | Maintainer replaces it with official or durable destination information. | Page remains useful. | UC-002-CR-006 | The system shall allow stale business-specific links to be replaced with current official or destination-hub resources. | Proposed |
+| UC-002-A1 | External site is stale or unavailable | Visitor still reads internal content. | Core historical travel/event context remains usable. | UC-002-CR-005 | The system shall keep core travel and event context available without requiring third-party links to load. | Inferred |
+| UC-002-A2 | Specific business is closed/rebranded | Maintainer replaces, removes, or converts it to plain historical text. | Page remains useful and non-misleading. | UC-002-CR-006 | The system shall allow stale business-specific links to be replaced with current official resources, removed, or converted to plain historical references. | Proposed |
 
 #### Exception Flows
 | Flow ID | Failure / Exception | System Response | Recovery / Mitigation | Candidate Requirement ID | Candidate Requirement | Evidence |
 |---|---|---|---|---|---|---|
-| UC-002-E1 | Known stale external link remains before public promotion | Visitor may reach misleading or dead page. | Audit, replace, or remove the link. | UC-002-CR-007 | The system shall not knowingly present stale, closed, or rebranded external lodging/activity destinations as current recommendations before public-domain promotion. | Proposed |
+| UC-002-E1 | Known stale external link remains before broad archive sharing | Visitor may reach misleading or dead page. | Audit, replace, remove, or convert the link. | UC-002-CR-007 | The system shall not knowingly present stale, closed, or rebranded external lodging/activity destinations as current recommendations when the page is intended as an archive. | Proposed |
 
 #### Derived Requirements
 | Candidate Requirement ID | Candidate Requirement | Source Step | Verification Method |
 |---|---|---|---|
 | UC-002-CR-001 | The system shall be able to expose hotel and local entertainment links from navigation. | Step 1 | Demonstration |
-| UC-002-CR-002 | The system shall be able to present lodging information for visitors. | Step 2 | Inspection |
-| UC-002-CR-003 | The system shall be able to present local entertainment information for visitors. | Step 3 | Inspection |
-| UC-002-CR-004 | The system shall be able to provide outbound links to relevant venue, hotel, and local activity resources. | Step 4 | Inspection |
-| UC-002-CR-005 | The system shall keep core travel and event information available without requiring third-party links to load. | Alternate A1 | Demonstration |
-| UC-002-CR-006 | The system shall allow stale business-specific links to be replaced with current official or destination-hub resources. | Alternate A2 | Inspection |
-| UC-002-CR-007 | The system shall not knowingly present stale, closed, or rebranded external lodging/activity destinations as current recommendations before public-domain promotion. | Exception E1 | Inspection |
+| UC-002-CR-002 | The system shall be able to present lodging information as historical wedding-weekend context. | Step 2 | Inspection |
+| UC-002-CR-003 | The system shall be able to present local entertainment information as historical wedding-weekend context. | Step 3 | Inspection |
+| UC-002-CR-004 | The system shall be able to provide outbound links or plain-text historical references to relevant venue, hotel, and local activity resources. | Step 4 | Inspection |
+| UC-002-CR-005 | The system shall keep core travel and event context available without requiring third-party links to load. | Alternate A1 | Demonstration |
+| UC-002-CR-006 | The system shall allow stale business-specific links to be replaced with current official resources, removed, or converted to plain historical references. | Alternate A2 | Inspection |
+| UC-002-CR-007 | The system shall not knowingly present stale, closed, or rebranded external lodging/activity destinations as current recommendations when the page is intended as an archive. | Exception E1 | Inspection |
 
 ### UC-003: Read Information Page
 
@@ -156,11 +157,11 @@ This refresh follows the updated context and use case model in `documentation/re
 | Use Case Name | Publish Static Website |
 | Primary Actor | Site Maintainer |
 | Trigger | Maintainer wants current content publicly reachable. |
-| Goal | Verified static content is served over HTTPS and public-domain forwarding can be verified. |
+| Goal | Verified static archive content is served over HTTPS and public-domain forwarding remains working. |
 | Priority | High |
 | Preconditions | GitHub repository and GitHub Pages configuration exist. |
-| Postconditions | Hosted URL works; forwarding is verified or explicitly pending. |
-| Evidence | Observed / partially verified |
+| Postconditions | Hosted URL works; forwarding is verified as working. |
+| Evidence | Observed; GoDaddy redirect reported working by user on 2026-06-20 |
 
 #### Main Success Scenario
 | Step | Actor / Operator | System | External Entity | Behavior | Interface / Message | Candidate Requirement ID | Candidate Requirement | Evidence |
@@ -169,13 +170,13 @@ This refresh follows the updated context and use case model in `documentation/re
 | 2 | Maintainer | Repository | GitHub Pages | Maintainer publishes production branch. | GitHub Pages source | UC-004-CR-002 | The system shall be deployable to GitHub Pages from the GitHub repository. | Observed |
 | 3 | GitHub Pages | Static host | Browser | Host serves HTTPS site. | HTTPS request | UC-004-CR-003 | The system shall be publicly reachable through an HTTPS hosting URL after deployment. | Observed |
 | 4 | Maintainer | Verification | Browser/static scan | Maintainer checks pages, assets, navigation, and info behavior. | Acceptance check | UC-004-CR-004 | The deployment process shall provide a post-deployment verification path for pages, assets, navigation, and information-page behavior. | Observed |
-| 5 | Maintainer | Domain forwarding | GoDaddy/GitHub Pages | Maintainer verifies forwarded domain behavior. | Forwarded request | UC-004-CR-005 | The system shall support access through a GoDaddy-forwarded public URL. | Partial |
+| 5 | Maintainer | Domain forwarding | GoDaddy/GitHub Pages | Maintainer records working forwarded domain behavior. | Forwarded request | UC-004-CR-005 | The system shall support access through a GoDaddy-forwarded public URL. | Observed |
 
 #### Exception Flows
 | Flow ID | Failure / Exception | System Response | Recovery / Mitigation | Candidate Requirement ID | Candidate Requirement | Evidence |
 |---|---|---|---|---|---|---|
 | UC-004-E1 | Static scan fails | Publication should pause. | Fix references/runtime issue. | UC-004-CR-006 | The deployment process shall identify missing local asset or server-runtime references before public release. | Tested |
-| UC-004-E2 | Forwarded domain differs by device/network | Forwarding remains pending. | Verify cache, DNS, propagation, and target. | UC-004-CR-007 | The deployment process shall verify the GoDaddy-forwarded URL after configuration. | Partial |
+| UC-004-E2 | Forwarded domain regresses after future changes | Forwarding becomes a release issue. | Re-check target and public URL after publication changes. | UC-004-CR-007 | The deployment process shall verify the GoDaddy-forwarded URL after configuration or target changes. | Proposed |
 
 #### Derived Requirements
 | Candidate Requirement ID | Candidate Requirement | Source Step | Verification Method |
@@ -186,18 +187,18 @@ This refresh follows the updated context and use case model in `documentation/re
 | UC-004-CR-004 | The deployment process shall provide a post-deployment verification path for pages, assets, navigation, and information-page behavior. | Step 4 | Test/Demonstration |
 | UC-004-CR-005 | The system shall support access through a GoDaddy-forwarded public URL. | Step 5 | Demonstration |
 | UC-004-CR-006 | The deployment process shall identify missing local asset or server-runtime references before public release. | Exception E1 | Test |
-| UC-004-CR-007 | The deployment process shall verify the GoDaddy-forwarded URL after configuration. | Exception E2 | Demonstration |
+| UC-004-CR-007 | The deployment process shall verify the GoDaddy-forwarded URL after configuration or target changes. | Exception E2 | Demonstration |
 
-### UC-005: Maintain Website Content
+### UC-005: Maintain Archive Content
 
 #### Use Case Summary
 | Field | Value |
 |---|---|
 | Use Case ID | UC-005 |
-| Use Case Name | Maintain Website Content |
+| Use Case Name | Maintain Archive Content |
 | Primary Actor | Site Maintainer |
-| Trigger | Content, links, assets, or docs need correction. |
-| Goal | Site files and docs remain aligned with current static/no-collection product intent. |
+| Trigger | Content, links, gallery assets, or docs need correction. |
+| Goal | Site files and docs remain aligned with current static wedding-archive/no-collection product intent. |
 | Priority | Medium |
 | Preconditions | Maintainer has repository access. |
 | Postconditions | Updated source passes static/reference checks and docs reflect the change. |
@@ -206,7 +207,7 @@ This refresh follows the updated context and use case model in `documentation/re
 #### Main Success Scenario
 | Step | Actor / Operator | System | External Entity | Behavior | Interface / Message | Candidate Requirement ID | Candidate Requirement | Evidence |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Maintainer | Repository | Git | Maintainer identifies a stale link, obsolete asset, or content mismatch. | Source review | UC-005-CR-001 | The system shall support inspection of visitor-facing content and external links during maintenance. | Inferred |
+| 1 | Maintainer | Repository | Git | Maintainer identifies a stale link, obsolete asset, gallery need, or content mismatch. | Source review | UC-005-CR-001 | The system shall support inspection of visitor-facing archive content and external links during maintenance. | Inferred |
 | 2 | Maintainer | Static files | Browser | Maintainer edits affected HTML/CSS/JS/assets. | File change | UC-005-CR-002 | The system shall allow static content and asset updates without requiring a build or backend deployment. | Observed |
 | 3 | Maintainer | Verification | Static scan/browser | Maintainer verifies local references and visible behavior. | Static scan/smoke test | UC-005-CR-003 | The maintenance process shall verify static references and affected visitor flows after content changes. | Proposed |
 | 4 | Maintainer | Documentation | Docs | Maintainer updates durable docs if product behavior or requirements changed. | Doc edit | UC-005-CR-004 | The maintenance process shall update durable planning or requirements docs when behavior, deployment, or scope changes. | Proposed |
@@ -219,11 +220,46 @@ This refresh follows the updated context and use case model in `documentation/re
 #### Derived Requirements
 | Candidate Requirement ID | Candidate Requirement | Source Step | Verification Method |
 |---|---|---|---|
-| UC-005-CR-001 | The system shall support inspection of visitor-facing content and external links during maintenance. | Step 1 | Inspection |
+| UC-005-CR-001 | The system shall support inspection of visitor-facing archive content and external links during maintenance. | Step 1 | Inspection |
 | UC-005-CR-002 | The system shall allow static content and asset updates without requiring a build or backend deployment. | Step 2 | Demonstration |
 | UC-005-CR-003 | The maintenance process shall verify static references and affected visitor flows after content changes. | Step 3 | Test |
 | UC-005-CR-004 | The maintenance process shall update durable planning or requirements docs when behavior, deployment, or scope changes. | Step 4 | Inspection |
 | UC-005-CR-005 | The repository shall remove or explicitly archive unused legacy interaction assets when the related public behavior has been intentionally removed. | Exception E1 | Inspection |
+
+### UC-006: View Static Photo Gallery
+
+#### Use Case Summary
+| Field | Value |
+|---|---|
+| Use Case ID | UC-006 |
+| Use Case Name | View Static Photo Gallery |
+| Primary Actor | Visitor / Guest |
+| Trigger | Visitor opens a future gallery page or gallery section. |
+| Goal | Visitor can browse selected wedding photos without accounts, uploads, or backend services. |
+| Priority | Medium |
+| Preconditions | Gallery page and selected static photo assets exist. |
+| Postconditions | Visitor has viewed selected photos and can navigate back to other archive pages. |
+| Evidence | Proposed from user update |
+
+#### Main Success Scenario
+| Step | Actor / Operator | System | External Entity | Behavior | Interface / Message | Candidate Requirement ID | Candidate Requirement | Evidence |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Visitor | Gallery page | Browser | Visitor opens the gallery. | Page request | UC-006-CR-001 | The system shall be able to present a static wedding photo gallery page or section. | Proposed |
+| 2 | Visitor | Gallery assets | Browser | System renders selected wedding photos from static assets. | Image requests | UC-006-CR-002 | The system shall be able to render selected gallery photos without backend calls, uploads, or visitor accounts. | Proposed |
+| 3 | Visitor | Navigation | Browser | Visitor returns to home/story/info pages. | Internal links/nav | UC-006-CR-003 | The system shall preserve internal navigation from the static gallery. | Proposed |
+
+#### Exception Flows
+| Flow ID | Failure / Exception | System Response | Recovery / Mitigation | Candidate Requirement ID | Candidate Requirement | Evidence |
+|---|---|---|---|---|---|---|
+| UC-006-E1 | Gallery image path is missing or file is too large | Static scan or browser smoke fails/degrades. | Correct path and resize/optimize image before publication. | UC-006-CR-004 | The system shall use deploy-safe gallery image references and image sizes suitable for static hosting. | Proposed |
+
+#### Derived Requirements
+| Candidate Requirement ID | Candidate Requirement | Source Step | Verification Method |
+|---|---|---|---|
+| UC-006-CR-001 | The system shall be able to present a static wedding photo gallery page or section. | Step 1 | Demonstration |
+| UC-006-CR-002 | The system shall be able to render selected gallery photos without backend calls, uploads, or visitor accounts. | Step 2 | Test/Demonstration |
+| UC-006-CR-003 | The system shall preserve internal navigation from the static gallery. | Step 3 | Demonstration |
+| UC-006-CR-004 | The system shall use deploy-safe gallery image references and image sizes suitable for static hosting. | Exception E1 | Test |
 
 ### Interfaces Discovered
 | Interface ID | Source | Target | Message / Data | Trigger | Direction | Evidence |
@@ -232,18 +268,20 @@ This refresh follows the updated context and use case model in `documentation/re
 | IF-002 | Browser | GitHub Pages | CSS/JS/image request | Page load | Inbound | Observed |
 | IF-003 | Browser | External CDNs | Bootstrap/jQuery/fonts request | Page load | Outbound | Observed |
 | IF-004 | Browser | Venue/hotel/activity sites | External navigation | Link click | Outbound | Observed |
-| IF-005 | GoDaddy forwarding | GitHub Pages URL | Forwarded request | Visitor opens public domain | External | Partial |
+| IF-005 | GoDaddy forwarding | GitHub Pages URL | Forwarded request | Visitor opens public domain | External | Observed |
 | IF-006 | Maintainer/Git | GitHub repository | Static source changes | Maintenance/publication | Inbound | Observed |
+| IF-007 | Browser | GitHub Pages | Gallery image requests | Future gallery page load | Inbound | Proposed |
 
 ### States Discovered
 | State | Trigger / Cause | Meaning | Related Use Case |
 |---|---|---|---|
 | Page Loaded | HTML/assets returned | Visitor can read content. | UC-001 |
-| Travel Page Loaded | Hotels/Syracuse page returned | Visitor can inspect travel/local content. | UC-002 |
+| Travel Page Loaded | Hotels/Syracuse page returned | Visitor can inspect historical travel/local context. | UC-002 |
 | Info Page Loaded | `contact.html` returned | Visitor sees no-collection message. | UC-003 |
 | Public Hosted | GitHub Pages serves expected site | Hosted URL works. | UC-004 |
-| Forwarding Pending | Domain works inconsistently | GoDaddy verification remains incomplete. | UC-004 |
+| Forwarding Working | Domain redirects to hosted site. | GoDaddy forwarding is functioning. | UC-004 |
 | Maintenance Ready | Repo/docs available | Maintainer can update content. | UC-005 |
+| Gallery Viewed | Static gallery page/assets returned | Visitor can browse selected wedding photos. | UC-006 |
 
 ### Test Implications
 | Test ID | Behavior or Requirement | Test Idea | Method |
@@ -254,8 +292,9 @@ This refresh follows the updated context and use case model in `documentation/re
 | TEST-004 | No collection behavior | Verify Info page has no form and no-collection copy. | Inspection |
 | TEST-005 | External link freshness | Audit outbound hotel/activity/venue links. | Inspection/web-assisted check |
 | TEST-006 | Public hosted URL | Open GitHub Pages URL and verify expected site. | Demonstration |
-| TEST-007 | GoDaddy forwarding | Open final public domain from multiple contexts. | Demonstration |
+| TEST-007 | GoDaddy forwarding | Open final public domain after publication changes. | Demonstration |
 | TEST-008 | Legacy asset cleanup | Search for unused countdown/validation references before removal. | Inspection |
+| TEST-009 | Future static gallery | Open gallery page and verify selected photos load without backend requests. | Demonstration |
 
 ## Historical Archive
 

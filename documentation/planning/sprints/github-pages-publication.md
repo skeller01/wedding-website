@@ -8,11 +8,12 @@ Some implementation notes below were written before the current ordered document
 
 ## Source Inputs
 - Newest user decisions:
-  - The site is mostly static public wedding information.
-  - Future photo browsing/gallery may matter later.
+  - The site is an archival wedding memory site for sharing, not active guest logistics.
+  - Future photo browsing/gallery should be a simple static gallery, not uploads, tagging, accounts, or a backend album system.
   - RSVP, email forms, and backend behavior are no longer needed.
   - Cheapest possible hosting is the priority.
   - GitHub Pages is acceptable if it fits.
+  - GoDaddy forwarding/redirect is working as of the user's 2026-06-20 update.
 - Prototype verdict: `documentation/planning/working/prototype-lab.md`
 - Prototype script: `documentation/planning/working/prototypes/hosting_options_compare.ps1`
 - Static scan script: `documentation/planning/working/prototypes/static_site_scan.ps1`

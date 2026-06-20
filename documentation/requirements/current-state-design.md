@@ -21,12 +21,12 @@ Source inputs reviewed:
 - Static scan result from `documentation/planning/working/prototypes/static_site_scan.ps1`.
 
 ### System Boundary
-The Sonia and Steve Wedding Website is a static public information website made of HTML, CSS, JavaScript, and image assets. It includes visitor-facing pages, shared navigation, local media, client-side Bootstrap behavior, and documentation used to maintain and publish the site. It excludes GoDaddy account configuration, GitHub hosting infrastructure, third-party linked websites, CDN infrastructure, and any RSVP/contact-form backend.
+The Sonia and Steve Wedding Website is a static public wedding archive / memory site made of HTML, CSS, JavaScript, and image assets. It includes visitor-facing archive pages, shared navigation, local media, client-side Bootstrap behavior, and documentation used to maintain and publish the site. It excludes GoDaddy account configuration, GitHub hosting infrastructure, third-party linked websites, CDN infrastructure, photo upload services, and any RSVP/contact-form backend.
 
 ### Inside the System
 | Internal Element | Description | Evidence |
 |---|---|---|
-| Static pages | Home, story, information, hotels, and Syracuse guide pages. | Root `*.html` files |
+| Static pages | Home, story, information, hotels, and Syracuse historical context pages. | Root `*.html` files |
 | Shared presentation | Bootstrap classes plus custom styling. | HTML includes and `css/style.css` |
 | Client behavior | Bootstrap navigation/tooltips plus unused legacy countdown initialization. | Root script tags and `js/app.js` |
 | Static assets | Local photos and decorative images. | `images/*`; scan resolves references |
@@ -35,14 +35,15 @@ The Sonia and Steve Wedding Website is a static public information website made 
 ### Outside the System
 | External Entity | Type | Description | Evidence |
 |---|---|---|---|
-| Visitor / Guest | Person | Reads wedding, event, travel, and local information. | Site content |
+| Visitor / Guest | Person | Reads wedding memories, event context, and historical travel/local pages. | Site content |
+| Couple / Family | Person | Shares the archive and may later add a simple static photo gallery. | User update |
 | Site Maintainer | Person | Edits content, verifies static behavior, and publishes changes. | Git/docs workflow |
 | Browser | Runtime | Requests, renders, and navigates static pages/assets. | HTML/CSS/JS site |
 | GitHub Repository | External service | Stores source and production branch. | Current deployment docs |
 | GitHub Pages | External host | Serves the static site over HTTPS. | Deployment footprint |
-| GoDaddy Forwarding | External service | Redirects a public domain to the hosted URL when configured. | Requirements/deployment docs |
+| GoDaddy Forwarding | External service | Redirects a public domain to the hosted URL. | User update: redirect is working |
 | External CDNs | External services | Serve Bootstrap, jQuery, and Google Fonts. | HTML links/scripts |
-| Venue / Hotel / Activity Sites | External websites | Provide offsite details. | External links in HTML |
+| Venue / Hotel / Activity Sites | External websites | Provide offsite or historical context details. | External links in HTML |
 | Bot / Crawler | Unintended actor | Requests public pages or stale paths. | Public static website risk |
 
 ### Mermaid Context Diagram
@@ -67,7 +68,7 @@ flowchart LR
   Guest -->|Open URL and navigate| Browser
   Browser -->|Fetch hosted static files| Pages
   Pages -->|Serve published files| Site
-  Site -->|Render public information| Guest
+  Site -->|Render wedding archive content| Guest
   Site -->|Load libraries/fonts| CDN
   Guest -->|Open outbound detail links| Links
   Maintainer -->|Edit source and docs| Site
@@ -81,46 +82,49 @@ flowchart LR
 ### Context Matrix
 | External Entity | Interaction | Direction | Category | System Input | System Output | Frequency / Volume | Assumptions | Constraints |
 |---|---|---|---|---|---|---|---|---|
-| Visitor / Guest | View wedding information | In/Out | Query/response | Page request | Static wedding and event content | Occasional | Public archival information is the current product. | Must remain readable without backend services. |
-| Visitor / Guest | Browse travel/local information | In/Out | Query/response | Navigation/link click | Hotel and Syracuse pages | Occasional | Internal content is useful even if third-party links drift. | External destination freshness is outside direct control. |
+| Visitor / Guest | View wedding archive | In/Out | Query/response | Page request | Static wedding memory and event context | Occasional | Public wedding archive is the current product. | Must remain readable without backend services. |
+| Visitor / Guest | Browse historical travel/local context | In/Out | Query/response | Navigation/link click | Hotel and Syracuse pages | Occasional | Internal content is useful as historical context even if third-party links drift. | External destinations should not be misleading. |
 | Visitor / Guest | Read information page | In/Out | Query/response | `contact.html` request | No-collection information page | Occasional | No RSVP/address/message collection is intended. | Filename remains historical. |
 | Browser | Load local assets | In/Out | Startup/query | CSS/JS/image requests | Static assets | Per page load | Paths must be deploy-safe. | Static scan currently passes. |
 | Browser | Load CDN assets | Out/In | Startup/query | CDN requests | Libraries/fonts | Per page load | CDN use remains acceptable. | CDN outages degrade styling/interactions. |
 | Site Maintainer | Update content | In | Maintenance | File edits and docs changes | Repository changes | Infrequent | Changes occur before production publication. | Duplicated nav/footer markup creates maintenance risk. |
 | GitHub Pages | Publish site | Out | Runtime | Repository source | HTTPS site | Continuous | GitHub Pages is current production host. | No server runtime. |
-| GoDaddy Forwarding | Route public domain | In/Out | Network | Domain request | Redirected hosted site | Per visitor | Forwarding targets GitHub Pages URL. | Verification is partially complete. |
-| Venue / Hotel / Activity Sites | Provide linked details | Out/In | Query/response | Outbound click | Third-party page | User-driven | Links may be stale. | Must be audited manually or with web checks. |
+| GoDaddy Forwarding | Route public domain | In/Out | Network | Domain request | Redirected hosted site | Per visitor | Forwarding targets GitHub Pages URL. | Working per user update. |
+| Venue / Hotel / Activity Sites | Provide linked or historical details | Out/In | Query/response | Outbound click | Third-party page or historical note | User-driven | Links may be stale. | Must be audited manually or with web checks. |
 
 ### High-Value Use Case Candidates
 | Priority | Use Case ID | Use Case | Primary Actor | Trigger | System Response | Source Interaction | Notes |
 |---|---|---|---|---|---|---|---|
-| High | UC-001 | View Wedding Information | Visitor / Guest | Visitor opens site URL. | Render home/story/event information. | Page request | Core site value. |
-| High | UC-002 | Browse Travel and Local Information | Visitor / Guest | Visitor selects Travel/Hotels/Syracuse. | Render travel pages and outbound links. | Navigation/link click | Stale external links remain the main content risk. |
+| High | UC-001 | View Wedding Archive | Visitor / Guest | Visitor opens site URL. | Render home/story/event memory content. | Page request | Core site value. |
+| High | UC-002 | Browse Historical Travel and Local Context | Visitor / Guest | Visitor selects Travel/Hotels/Syracuse. | Render historical context pages and safe outbound/plain-text references. | Navigation/link click | Stale external links remain the main content risk. |
 | Medium | UC-003 | Read Information Page | Visitor / Guest | Visitor opens Info page. | Explain no collection of addresses, RSVPs, or messages. | `contact.html` request | Replaces historical contact form purpose. |
 | High | UC-004 | Publish Static Website | Site Maintainer | Maintainer wants public updates. | Publish verified static content through GitHub Pages. | Git/GitHub Pages flow | Current production path. |
-| Medium | UC-005 | Maintain Website Content | Site Maintainer | Content, link, or asset cleanup needed. | Update static files/docs and rerun checks. | Maintenance workflow | Next likely implementation slice. |
+| Medium | UC-005 | Maintain Archive Content | Site Maintainer | Content, link, gallery, or asset cleanup needed. | Update static files/docs and rerun checks. | Maintenance workflow | Next likely implementation slice. |
+| Medium | UC-006 | View Static Photo Gallery | Visitor / Guest | Visitor opens future gallery page. | Render selected wedding photos from static assets. | Page request | Future scope. |
 
 ### Secondary / Unintended Use Cases
 | Priority | Use Case | Actor | Risk or Concern | Expected System Response |
 |---|---|---|---|---|
-| Medium | Open stale external link | Visitor / Guest | Closed/rebranded third-party destination. | Keep internal content useful and update known stale links. |
+| Medium | Open stale external link | Visitor / Guest | Closed/rebranded third-party destination. | Keep internal content useful and replace/remove/convert known stale links. |
 | Medium | Request legacy form/backend paths | Bot / Crawler | Old links or probes may request removed PHP/form paths. | Return static host response without executing server code. |
 | Low | CDN resource unavailable | Browser | Styling or dropdown behavior may degrade. | Core text remains readable. |
 
 ### Assumptions
 - GitHub Pages remains the production static host.
 - AWS is a fallback only, not the active deployment path.
-- No backend, RSVP, message, or address collection is in current scope.
-- External link freshness should be corrected before broad public-domain promotion.
+- No backend, RSVP, message, address collection, uploads, or dynamic albums are in current scope.
+- External link polish should be corrected before broadly sharing the archive.
+- A future photo gallery should be static unless later scope explicitly chooses dynamic/private photo features.
 
 ### Gaps and Questions
-- Record the exact GoDaddy domain and final forwarding target.
-- Decide which external hotel/activity links to replace, remove, or keep as historical.
+- Record the exact working GoDaddy domain and final forwarding target.
+- Decide which external hotel/activity links to replace, remove, or keep as historical plain text.
+- Decide which photos should seed the first static gallery.
 - Decide whether to remove unused countdown and validation assets.
 - Decide whether `contact.html` should eventually be renamed to match the visible `Info` label.
 
 ### Follow-On Artifacts
-- Use case diagram and behavioral matrices for UC-001 through UC-005.
+- Use case diagram and behavioral matrices for UC-001 through UC-006, with UC-006 treated as future gallery scope.
 - Final requirements mapping in `documentation/requirements/requirements.md`.
 - FFBD/IDEF0/sequence/class/FMEA sections below.
 - Deployment footprint and PRD refresh in `documentation/planning/`.
@@ -133,28 +137,30 @@ flowchart LR
 - Current deployment, requirements, and planning docs.
 
 ### System Boundary
-System boundary: Sonia and Steve Wedding Website. Actors and hosting/domain services are outside the boundary; static content, navigation, local assets, and maintenance documentation are inside.
+System boundary: Sonia and Steve Wedding Website. Actors and hosting/domain services are outside the boundary; static archive content, navigation, local assets, future static gallery assets, and maintenance documentation are inside.
 
 ### Actors
 | Actor ID | Actor | Type | Description | Source |
 |---|---|---|---|---|
-| A-001 | Visitor / Guest | Person | Reads public information and follows links. | Site content |
+| A-001 | Visitor / Guest | Person | Reads wedding archive content and follows links. | Site content |
 | A-002 | Site Maintainer | Person | Edits, verifies, and publishes the site. | Repo/docs workflow |
 | A-003 | Browser | Runtime | Loads and renders static resources. | Site architecture |
 | A-004 | GitHub Pages | External service | Hosts production static files. | Deployment docs |
-| A-005 | GoDaddy Forwarder | External service | Forwards public domain to hosted URL. | Deployment docs |
+| A-005 | GoDaddy Forwarder | External service | Forwards public domain to hosted URL. | User update |
+| A-008 | Couple / Family | Person | Shares the archive and may curate future gallery photos. | User update |
 | A-006 | External Content Provider | External system | Provides CDN assets or linked third-party pages. | HTML refs |
 | A-007 | Bot / Crawler | Unintended actor | Requests public or stale paths. | Public site risk |
 
 ### Use Cases
 | Use Case ID | Use Case | Goal | Primary Actor | Priority | Source Interaction |
 |---|---|---|---|---|---|
-| UC-001 | View Wedding Information | Read home, story, and event details. | Visitor / Guest | High | Page request |
-| UC-002 | Browse Travel and Local Information | Read hotel/Syracuse guidance and optional external resources. | Visitor / Guest | High | Navigation/link click |
+| UC-001 | View Wedding Archive | Read home, story, and event memory details. | Visitor / Guest | High | Page request |
+| UC-002 | Browse Historical Travel and Local Context | Read hotel/Syracuse historical context and optional safe external resources. | Visitor / Guest | High | Navigation/link click |
 | UC-003 | Read Information Page | Understand that no messages, RSVPs, or addresses are collected. | Visitor / Guest | Medium | Info page request |
 | UC-004 | Publish Static Website | Make verified content publicly reachable. | Site Maintainer | High | GitHub Pages publication |
-| UC-005 | Maintain Website Content | Keep content, links, assets, and docs aligned with current intent. | Site Maintainer | Medium | Maintenance change |
-| UC-006 | Request Public Paths | Crawl or request public paths without privileged access. | Bot / Crawler | Low | Public GET request |
+| UC-005 | Maintain Archive Content | Keep archive content, links, assets, and docs aligned with current intent. | Site Maintainer | Medium | Maintenance change |
+| UC-006 | View Static Photo Gallery | Browse selected wedding photos without backend services. | Visitor / Guest | Medium | Future gallery request |
+| UC-007 | Request Public Paths | Crawl or request public paths without privileged access. | Bot / Crawler | Low | Public GET request |
 
 ### Mermaid Use Case Diagram
 
@@ -169,25 +175,28 @@ flowchart LR
   Bot[Actor: Bot / Crawler]
 
   subgraph System["System Boundary: Sonia and Steve Wedding Website"]
-    UC1((View Wedding Information))
-    UC2((Browse Travel and Local Information))
+    UC1((View Wedding Archive))
+    UC2((Browse Historical Travel and Local Context))
     UC3((Read Information Page))
     UC4((Publish Static Website))
-    UC5((Maintain Website Content))
-    UC6((Request Public Paths))
+    UC5((Maintain Archive Content))
+    UC6((View Static Photo Gallery))
+    UC7((Request Public Paths))
   end
 
   Guest --> UC1
   Guest --> UC2
   Guest --> UC3
+  Guest --> UC6
   Browser --> UC1
   Browser --> UC2
   Provider --> UC2
   Maintainer --> UC4
   Maintainer --> UC5
+  Maintainer --> UC6
   Pages --> UC4
   GoDaddy --> UC4
-  Bot --> UC6
+  Bot --> UC7
 
   UC4 -. "<<include>>" .-> UC5
 ```
@@ -195,10 +204,11 @@ flowchart LR
 ### Relationships
 | Source | Relationship | Target | Meaning |
 |---|---|---|---|
-| Publish Static Website | include | Maintain Website Content | Publication depends on maintained static source and checks. |
+| Publish Static Website | include | Maintain Archive Content | Publication depends on maintained static source and checks. |
 
 ### Scope Notes
-- The site does not include a backend, database, auth, RSVP flow, or contact submission flow.
+- The site does not include a backend, database, auth, RSVP flow, contact submission flow, photo uploads, or dynamic/private albums.
+- Future gallery scope is static checked-in photos/pages unless later rebaselined.
 - External websites are linked destinations, not owned system behavior.
 - GoDaddy and GitHub Pages are external services that support access and publication.
 
@@ -206,18 +216,19 @@ flowchart LR
 | Use Case | Actor | Reason Included | Priority |
 |---|---|---|---|
 | Request Public Paths | Bot / Crawler | Public static sites receive automated requests and stale path probes. | Low |
-| Open Stale External Link | Visitor / Guest | Link freshness affects trust and usefulness. | Medium |
+| Open Stale External Link | Visitor / Guest | Misleading links affect archive polish and trust. | Medium |
 
 ### Assumptions
-- Static public reading is the primary user goal.
+- Static archive reading/sharing is the primary user goal.
 - Maintenance and publication are lightweight manual workflows.
 
 ### Gaps and Questions
 - Confirm final public domain and whether forwarding remains the desired domain model.
 - Decide stale external link remediation strategy.
+- Select initial gallery photos and gallery placement.
 
 ### Follow-On Behavioral Models
-- UC-001, UC-002, UC-003, UC-004, and UC-005 are the useful behavioral matrices for requirements and tests.
+- UC-001 through UC-006 are the useful behavioral matrices for requirements and tests. UC-006 remains future scope until static gallery implementation is selected.
 
 ## Functional Flow Block Diagram
 
@@ -226,7 +237,7 @@ flowchart LR
 - Current requirements and static scan evidence.
 
 ### Functional Flow Summary
-The site flow is static: a visitor reaches the hosted URL or forwarded domain, the browser loads static pages/assets, the visitor reads internal content, and may optionally follow outbound links. Maintainers update files, verify static references, publish through GitHub Pages, and check public access.
+The site flow is static: a visitor reaches the hosted URL or working forwarded domain, the browser loads static pages/assets, the visitor reads archive content, and may optionally follow outbound links. Maintainers update files, verify static references, publish through GitHub Pages, and check public access.
 
 ### Top-Level FFBD
 
@@ -242,7 +253,7 @@ The site flow is static: a visitor reaches the hosted URL or forwarded domain, t
           v
 +-----------------------------+
 | Function 2                  |
-| Present Public Information  |
+| Present Wedding Archive     |
 +-----------------------------+
           |
           v
@@ -257,8 +268,8 @@ The site flow is static: a visitor reaches the hosted URL or forwarded domain, t
       v      v
 +-----------------------------+      +-----------------------------+
 | Function 4                  |      | Function 5                  |
-| Present Internal Travel     |      | Open External Resource      |
-| and Info Content            |      | Link                        |
+| Present Historical Travel   |      | Open External Resource      |
+| and Info Content            |      | or Context Link             |
 +-----------------------------+      +-----------------------------+
       |                                      |
       v                                      v
@@ -302,11 +313,12 @@ The site flow is static: a visitor reaches the hosted URL or forwarded domain, t
 | Function | Function Name | Purpose | Inputs | Outputs | Preconditions | Failure Modes | Evidence |
 |---|---|---|---|---|---|---|---|
 | 1 | Serve Static Website | Return HTML/CSS/JS/images through static hosting. | URL request | Static response | GitHub Pages enabled | Host unavailable, wrong branch | Observed |
-| 2 | Present Public Information | Show wedding/story/event content. | Static files | Readable content | Assets resolve | Broken asset, unreadable layout | Observed |
+| 2 | Present Wedding Archive | Show wedding/story/event memory content. | Static files | Readable content | Assets resolve | Broken asset, unreadable layout | Observed |
 | 3 | Support Navigation | Move among pages and dropdowns. | Link/menu action | Target page | Bootstrap/jQuery load | Mobile/dropdown failure | Observed |
-| 4 | Present Internal Travel and Info Content | Show hotel, Syracuse, and no-collection info. | Page request | Internal details | Pages exist | Stale internal copy | Observed |
-| 5 | Open External Resource Link | Navigate to third-party sites. | Outbound click | Third-party page | Link exists | Stale/dead destination | Observed |
+| 4 | Present Historical Travel and Info Content | Show hotel, Syracuse, and no-collection info as archive context. | Page request | Internal details | Pages exist | Stale or misleading copy | Observed |
+| 5 | Open External Resource or Context Link | Navigate to third-party sites or present historical plain text. | Outbound click | Third-party page or historical note | Link/context exists | Stale/dead destination | Observed |
 | 6 | Maintain and Publish Site | Update, verify, and publish files. | Maintainer changes | Public site update | Repo access | missed duplicated markup, forwarding failure | Observed/Inferred |
+| 7 | Present Static Photo Gallery | Show selected wedding photos without backend services. | Gallery page request | Static photo gallery | Photos selected and optimized | Oversized images, missing assets | Proposed |
 
 ### Gate Logic Notes
 - Function 3 branches with OR: visitors may stay in internal content or open third-party resources.
@@ -315,15 +327,17 @@ The site flow is static: a visitor reaches the hosted URL or forwarded domain, t
 ### Reliability Notes
 - Core success depends on static hosting, local asset integrity, and internal navigation.
 - External resource links improve usefulness but must not be required for core event information.
-- GoDaddy forwarding is a public discoverability layer, not the only access path.
+- GoDaddy forwarding is a working public discoverability layer, not the only access path.
 
 ### Assumptions
 - GitHub Pages remains the production publication path.
 - No form/backend flow is part of the active functional flow.
+- Future gallery flow remains static unless later scope changes.
 
 ### Gaps and Questions
-- Confirm final GoDaddy behavior from more than one network/browser.
-- Complete external-link freshness review.
+- Record final GoDaddy domain/target.
+- Complete external-link archive-polish review.
+- Select initial static gallery photos.
 
 ### Change Recommendations
 - Remove unused countdown and validation assets after confirming no future interactive feature needs them.
@@ -348,15 +362,15 @@ A0: Provide Static Wedding Website
 ### A0 Context Table
 | Function | Inputs | Outputs | Controls | Mechanisms |
 |---|---|---|---|---|
-| A0: Provide Static Wedding Website | Visitor URL requests; maintainer changes; static source files | Rendered public pages; outbound link exits; published HTTPS site; documentation record | No-backend product scope; static hosting constraints; browser behavior; content freshness decisions | HTML/CSS/JS/images; browser; GitHub repository; GitHub Pages; GoDaddy forwarding; maintainer |
+| A0: Provide Static Wedding Archive | Visitor URL requests; maintainer changes; static source files | Rendered archive pages; outbound/context link exits; published HTTPS site; documentation record | No-backend product scope; static hosting constraints; browser behavior; archive-polish decisions | HTML/CSS/JS/images; browser; GitHub repository; GitHub Pages; GoDaddy forwarding; maintainer |
 
 ### Decomposition Table
 | Parent | Function | Inputs | Outputs | Controls | Mechanisms |
 |---|---|---|---|---|---|
 | A0 | A1: Present Wedding Content | Page requests; home/about files | Wedding summary and story content | Browser standards; asset paths | HTML pages; CSS; images |
 | A0 | A2: Support Visitor Navigation | Link/menu selections | Page transitions and dropdown access | Bootstrap behavior; internal URLs | Navbar markup; Bootstrap; jQuery |
-| A0 | A3: Present Travel and Info Content | Hotels/Syracuse/Info requests | Travel guidance; no-collection message | Current product scope; content decisions | Static pages; images |
-| A0 | A4: Route Visitors to External Resources | Outbound clicks | Third-party site navigation | Link freshness; `rel="noopener"` convention | Anchor links; browser |
+| A0 | A3: Present Travel and Info Content | Hotels/Syracuse/Info requests | Historical travel context; no-collection message | Current product scope; content decisions | Static pages; images |
+| A0 | A4: Route Visitors to External Resources | Outbound clicks | Third-party site navigation or historical context | Link polish; `rel="noopener"` convention | Anchor links; browser |
 | A0 | A5: Maintain and Publish Website | Maintainer edits; static scan results | Updated repository and public hosted site | Branch workflow; no-backend requirement; release checks | Git; GitHub; GitHub Pages; docs |
 
 ### ICOM Dictionary
@@ -365,8 +379,8 @@ A0: Provide Static Wedding Website
 | Visitor URL requests | Input | Visitor/browser | A1, A2, A3 | Public read traffic. |
 | Static source files | Input/Mechanism | Repository | A1-A5 | HTML/CSS/JS/images. |
 | No-backend product scope | Control | User direction/docs | A3, A5 | Prevents accidental form/backend reintroduction. |
-| Rendered public pages | Output | A1/A3 | Visitor | Primary product output. |
-| Outbound link exits | Output | A4 | Visitor/external sites | Subject to link freshness risk. |
+| Rendered archive pages | Output | A1/A3 | Visitor | Primary product output. |
+| Outbound/context link exits | Output | A4 | Visitor/external sites | Subject to link polish risk. |
 | Static scan results | Input/Control | Prototype/check script | A5 | Release confidence evidence. |
 | Published HTTPS site | Output | A5 | Visitor/browser | Current production endpoint. |
 
@@ -389,10 +403,10 @@ A0: Provide Static Wedding Website
 - HTML links, script references, deployment docs.
 
 ### Flow Summary
-The highest-value runtime flow is visitor page access through GitHub Pages, with optional GoDaddy forwarding and optional outbound third-party navigation.
+The highest-value runtime flow is visitor page access through GitHub Pages, with working GoDaddy forwarding and optional outbound third-party navigation.
 
 ### Diagram Confidence
-Mixed: static page/resource behavior is observed from code and scan output; GoDaddy forwarding is partially verified from user report.
+Mixed: static page/resource behavior is observed from code and scan output; GoDaddy forwarding is working per user update.
 
 ### Mermaid Sequence Diagram
 
@@ -443,17 +457,18 @@ sequenceDiagram
 - External links are user-driven exits from the system boundary.
 
 ### Alternatives and Errors
-- GoDaddy forwarding may differ by browser/network/cache until fully verified.
+- GoDaddy forwarding is working but should be re-checked after future changes.
 - CDN failure can degrade styling/interactions but should not erase core text.
-- Third-party links may be stale or unavailable.
+- Third-party links may be stale or unavailable and should not mislead archive visitors.
 
 ### Assumptions
 - GitHub Pages URL is the production target for forwarding.
 - External link opening does not need in-site error recovery.
 
 ### Gaps and Questions
-- Exact final GoDaddy domain and observed failure mode from home browser.
-- Which external links should be updated.
+- Exact final GoDaddy domain and target URL.
+- Which external links should be updated, removed, or converted to historical plain text.
+- Initial static gallery photo selection.
 
 ### Change Recommendations
 - Keep external links auditable.
@@ -466,7 +481,7 @@ sequenceDiagram
 - Current requirements, use cases, and deployment docs.
 
 ### System Summary
-This repository is a plain static site, so the useful structural model is a content/module diagram rather than a conventional object-oriented class map.
+This repository is a plain static wedding archive, so the useful structural model is a content/module diagram rather than a conventional object-oriented class map.
 
 ### Diagram Confidence
 Observed from repository structure, with inferred responsibilities.
@@ -505,6 +520,10 @@ classDiagram
     +photos
     +decorativeImages
   }
+  class StaticGallery {
+    +selectedPhotos
+    +galleryPage
+  }
   class ExternalResourceLinks {
     +cdnLinks
     +venueLinks
@@ -522,6 +541,7 @@ classDiagram
   StaticSite --> StyleSheet
   StaticSite --> ClientScript
   StaticSite --> ImageAssets
+  StaticSite --> StaticGallery
   StaticSite --> ExternalResourceLinks
   DocumentationWorkspace --> StaticSite
 ```
@@ -533,20 +553,22 @@ classDiagram
 - StyleSheet: custom site presentation and responsive behavior. Evidence: observed.
 - ClientScript: current active local script initializes a countdown element that is no longer present. Evidence: observed.
 - ImageAssets: local media referenced by pages. Evidence: scan.
+- StaticGallery: proposed future static photo gallery using checked-in images/pages. Evidence: user update.
 - ExternalResourceLinks: CDNs and outbound venue/hotel/activity links. Evidence: scan.
 - DocumentationWorkspace: planning and requirements artifacts. Evidence: observed.
 
 ### Architectural Notes
-- There is no build step, template engine, component system, backend, or database.
+- There is no build step, template engine, component system, backend, upload service, or database.
 - Repeated navigation/footer markup is the main maintainability tradeoff.
 - Legacy countdown and validation assets are cleanup candidates.
 
 ### Assumptions
 - A static structure remains intentionally simple for the current site.
-- Any future gallery can start as static content.
+- Future gallery should start as static content.
 
 ### Gaps and Questions
 - Whether to remove dead local scripts now.
+- Which selected photos should seed the static gallery.
 - Whether to introduce templates only if content maintenance grows.
 
 ### Change Recommendations
@@ -559,54 +581,60 @@ classDiagram
 - Context, use cases, FFBD, IDEF0, sequence/class diagrams, requirements, and scan evidence.
 
 ### Functional FMEA Purpose
-Analyze functional failures that could prevent visitors from reading the site, using navigation, trusting travel information, or reaching the public URL.
+Analyze functional failures that could prevent visitors from reading the archive, using navigation, trusting historical context, viewing future static photos, or reaching the public URL.
 
 ### Subsystem Function List
 | Subsystem | Function ID | Function Name | Function Purpose | Source |
 |---|---|---|---|---|
 | Static Hosting | F1 | Serve Static Website | Return pages and assets. | FFBD Function 1 |
-| Content Presentation | F2 | Present Public Information | Show wedding and info content. | FFBD Function 2 |
+| Content Presentation | F2 | Present Wedding Archive | Show wedding and info content. | FFBD Function 2 |
 | Navigation | F3 | Support Navigation | Move visitors across pages. | FFBD Function 3 |
-| External Links | F4 | Open External Resource Link | Send visitors to offsite resources. | FFBD Function 5 |
+| External Links | F4 | Open External Resource or Context Link | Send visitors to offsite resources or historical notes. | FFBD Function 5 |
+| Static Gallery | F7 | Present Static Photo Gallery | Show selected wedding photos without backend services. | Future UC-006 |
 | Publication | F5 | Maintain and Publish Site | Update, verify, publish, and forward. | FFBD Function 6 |
 | Repository Hygiene | F6 | Maintain Current Source | Keep code/assets aligned with current behavior. | Class diagram |
 
 ### Functional FMEA Table
 | Subsystem | Item / Function | Failure Mode | Potential Impact | Possible Cause | Corrective Action | Severity | Likelihood | Risk Score | Priority |
 |---|---|---|---|---|---|---:|---:|---:|---|
-| Publication | F5 Maintain and Publish Site | GoDaddy forwarding works on one device but fails elsewhere | Visitors cannot use the intended public domain reliably | DNS/browser cache, forwarding propagation, local resolver behavior | Verify from phone, home browser, private window, and alternate network; record final domain | 4 | 3 | 12 | Medium |
-| External Links | F4 Open External Resource Link | Known stale, closed, or rebranded external links remain | Visitors lose trust or receive bad travel guidance | Old wedding-era outbound URLs | Audit and replace/remove stale hotel/activity links | 3 | 4 | 12 | Medium |
+| Publication | F5 Maintain and Publish Site | GoDaddy forwarding regresses after future changes | Visitors cannot use the intended public domain reliably | Domain/hosting target changes or cache behavior | Record current working domain/target and re-check after publication changes | 4 | 2 | 8 | Medium |
+| External Links | F4 Open External Resource or Context Link | Known stale, closed, or rebranded external links remain clickable as recommendations | Visitors lose trust or receive misleading archive context | Old wedding-era outbound URLs | Audit and replace/remove/convert stale hotel/activity links | 3 | 4 | 12 | Medium |
+| Static Gallery | F7 Present Static Photo Gallery | Gallery images are too large or missing | Visitors cannot comfortably view wedding photos | Unoptimized files or broken paths | Select/resize photos and include gallery in static scan/smoke test | 3 | 3 | 9 | Medium |
 | Repository Hygiene | F6 Maintain Current Source | Dead countdown/validation assets confuse future work | Maintainer may revive obsolete behavior or carry unnecessary JS | Legacy scripts retained after form/countdown removal | Remove or explicitly archive unused assets after reference check | 2 | 4 | 8 | Medium |
 | Navigation | F3 Support Navigation | Mobile dropdown fails | Visitors cannot reach secondary pages easily | CDN/script failure or Bootstrap dependency issue | Smoke test mobile navigation and keep HTTPS script refs | 3 | 2 | 6 | Low |
 | Static Hosting | F1 Serve Static Website | Local asset reference breaks after edit | Broken images or styling | Manual HTML edits, case mismatch | Keep static scan as release check | 3 | 2 | 6 | Low |
 | Content Presentation | F2 Present Public Information | Historical wording conflicts with no-collection scope | Visitors misunderstand what action is expected | Old invitation workflow copy returns | Inspect pages for RSVP/address/form promises | 3 | 2 | 6 | Low |
 
 ### Highest-Risk Items
-- GoDaddy forwarding verification and stale external links are tied as the highest current risk items.
+- Stale external links are the highest current archive-polish risk.
+- Future gallery asset quality is a medium risk once gallery work begins.
 - Dead legacy assets are medium risk because they affect maintainability more than visitor safety.
 
 ### Corrective Action Plan
 | Priority | Action | Owner / Role | Target Evidence | Related Function |
 |---|---|---|---|---|
-| Medium | Record and verify the exact GoDaddy domain from multiple browser/network contexts. | Site Maintainer | Passing public-domain smoke check. | F5 |
-| Medium | Audit hotels and Syracuse links, then replace or remove stale destinations. | Site Maintainer | Updated links and manual check notes. | F4 |
+| Medium | Record the exact working GoDaddy domain and target URL. | Site Maintainer | Passing public-domain smoke check. | F5 |
+| Medium | Audit hotels and Syracuse links, then replace, remove, or convert stale destinations. | Site Maintainer | Updated links and manual check notes. | F4 |
+| Medium | Plan first static gallery image set and sizing. | Site Maintainer / Couple | Gallery page loads selected photos without backend calls. | F7 |
 | Medium | Remove or archive unused countdown/validation assets after source search. | Site Maintainer | Static scan and reference search still pass. | F6 |
 | Low | Keep static scan in release checklist. | Site Maintainer | 0 missing local refs and 0 server runtime refs. | F1 |
 
 ### Assumptions
-- Public informational accuracy matters more than preserving every old outbound link.
+- Archive polish matters more than preserving every old outbound link as clickable.
 - The current traffic profile does not require monitoring or automated uptime checks.
 
 ### Gaps and Questions
-- Exact domain and failure mode for GoDaddy forwarding.
-- Owner preference for stale link replacement targets.
+- Exact domain and target URL for working GoDaddy forwarding.
+- Owner preference for stale link replacement/removal/plain-text targets.
+- Initial gallery photo set and desired placement.
 - Whether dead assets should be deleted now or left until a cleanup sprint.
 
 ### Test Implications
 - Static scan before publishing.
 - Browser smoke for all five pages and mobile nav.
-- Public-domain smoke from more than one network/device.
+- Public-domain smoke after future publication changes.
 - Manual external-link audit.
+- Future gallery image-path and visual smoke test.
 
 ## Historical Archive
 

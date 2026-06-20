@@ -162,7 +162,7 @@ The user approved implementing the small UX improvements on `development` and pu
 ## Grilling Decisions
 | Decision | Selected Answer | Rationale |
 |---|---|---|
-| Home hero framing | Archival/public wedding information site | The site no longer collects addresses, RSVPs, or messages, so the home CTA should send visitors to useful static information instead of invitation collection. |
+| Home hero framing | Archival wedding memory site | The site no longer collects addresses, RSVPs, or messages, so the home CTA should guide visitors into the static archive instead of invitation collection. |
 | Contact navigation label | Use `Info` while preserving `contact.html` URL | The page is now informational, but preserving the existing URL avoids routing churn. |
 | Travel navigation label | Use `Travel` | Shorter label works better in the fixed Bootstrap navbar and still covers hotels/local entertainment. |
 | Hotel cost values | Replace `TBD` with `See hotel site` | Current pricing changes over time and should not be implied as known static data. |

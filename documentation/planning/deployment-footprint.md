@@ -10,10 +10,10 @@
 - Static scan result: 5 HTML pages, 65 resolved local references, 0 missing references, 0 server-side runtime references, 0 PHP files, 13 external references.
 
 ### Footprint Type
-Current-state hosted static website footprint with fallback planning.
+Current-state hosted static wedding archive footprint with fallback planning.
 
 ### Architecture Goal
-Serve the wedding website publicly over HTTPS at the lowest practical cost, with no application server, database, visitor data collection, form backend, or build pipeline.
+Serve the wedding archive publicly over HTTPS at the lowest practical cost, with no application server, database, visitor data collection, form backend, upload flow, or build pipeline.
 
 ### Cloud Necessity Decision
 Hosted static website. Cloud compute is not needed. GitHub Pages is the current production fit; AWS Amplify/S3-style static hosting remains a fallback only if GitHub Pages or domain requirements become unsuitable.
@@ -34,18 +34,19 @@ Fallback: AWS static hosting only if GitHub Pages is blocked or the user chooses
 | Hosting | GitHub Pages is the current production-oriented host. | Existing deployment docs |
 | Data storage | None beyond repository and static host. | Repo/content inspection |
 | Backend | None; no PHP files or server runtime references in scan. | Static scan |
-| Domain | GoDaddy forwarding is desired/partially verified in prior docs. | Existing docs |
+| Domain | GoDaddy forwarding/redirect is working. | User update |
 | External resources | Bootstrap, jQuery, Google Fonts, venue/hotel/activity links. | HTML scan |
 | Verification | Static scan exists and passes; browser/domain/link checks remain manual. | Prototype scripts |
 
 ### Target vs Current Gap Summary
 | Current / As-Is Capability | Target Capability | Gap | Migration Implication |
 |---|---|---|---|
-| GitHub Pages hosted URL | Public visitors can reliably reach the site | Hosted URL path is acceptable; final public domain still needs exact recorded verification | Verify and document final URL/domain |
-| GoDaddy forwarding | Forwarded domain works from common contexts | Prior docs note phone pass and home-browser issue | Test from phone, home browser, private window, and alternate network |
-| Internal static content | Accurate enough public visitor guidance | Some external links may be stale | Audit and patch links before wider promotion |
+| GitHub Pages hosted URL | Public visitors can reliably reach the site | Hosted URL path is acceptable; record final public domain and target | Document final URL/domain |
+| GoDaddy forwarding | Forwarded domain reaches the hosted site | Working; exact domain should be recorded | Re-check after future publication changes |
+| Internal static content | Polished wedding archive context | Some external links may be stale or misleading as live recommendations | Audit and patch/remove/convert links before wider sharing |
 | Static scan | Repeatable release guard | Script remains in working/prototype area | Promote or document as release check if recurring |
 | Source hygiene | Repo reflects current static/no-collection behavior | Countdown and validation assets remain unused | Cleanup sprint can remove/archive them |
+| Static gallery | Share wedding photos without backend scope | Not yet implemented | Add static gallery page/assets when selected photos are ready |
 
 ### Mermaid Architecture Diagram
 ```mermaid
@@ -68,7 +69,7 @@ flowchart LR
   Pages -->|Serve HTML/CSS/JS/images| URL
   Domain -.->|Forward when configured| URL
   Visitor -->|Open hosted URL| URL
-  Visitor -.->|Open public domain| Domain
+  Visitor -->|Open public domain| Domain
   Visitor -->|Load libraries/fonts| CDN
   Visitor -->|Open outbound links| ThirdParty
 ```
@@ -76,12 +77,13 @@ flowchart LR
 ### Runtime Components
 | Component | Responsibility | Technology Choice | Requirement Driver | Evidence |
 |---|---|---|---|---|
-| Static site | Public wedding, story, info, hotel, and Syracuse pages. | HTML/CSS/JS/images | REQ-001 through REQ-013 | Observed |
+| Static site | Public wedding archive, story, info, hotel, and Syracuse context pages. | HTML/CSS/JS/images | REQ-001 through REQ-013 | Observed |
 | Static host | Public HTTPS hosting. | GitHub Pages | REQ-014, REQ-015 | Existing docs |
 | Source control | Store site source and docs. | Git/GitHub | REQ-014, REQ-018 | Observed |
-| Domain forwarding | Route public domain to hosted URL. | GoDaddy forwarding | REQ-017 | Partial/pending |
+| Domain forwarding | Route public domain to hosted URL. | GoDaddy forwarding | REQ-017 | Working per user update |
 | Verification | Static and smoke checks. | Prototype static scan plus manual browser checks | REQ-016 | Scan passes |
-| External links | Provide offsite context. | Third-party URLs | REQ-009 | Needs freshness audit |
+| External links | Provide offsite or historical context. | Third-party URLs/plain text | REQ-009 | Needs archive-polish audit |
+| Future gallery | Share selected wedding photos. | Static HTML/images | Future scope | Proposed |
 
 ### Deployment Footprint
 | Layer | Resource / Service / Capability | Purpose | Current or Proposed | Notes |
@@ -89,9 +91,10 @@ flowchart LR
 | Source | GitHub repository | Store deployable static source. | Current | `development` for work, `main` for production source per docs. |
 | Build | None | Deploy files as-is. | Current | Avoid build complexity. |
 | Hosting | GitHub Pages | Serve HTTPS static site. | Current | Lowest cost/current fit. |
-| Domain | GoDaddy forwarding | User-facing public URL. | Current / partial | Needs exact domain and multi-context verification. |
+| Domain | GoDaddy forwarding | User-facing public URL. | Current / working | Needs exact domain and target recorded. |
 | Backend | None | Keep no-collection static scope. | Current | Do not add PHP/serverless without new decision. |
 | Storage | Repository/static host only | Store static assets. | Current | No visitor data. |
+| Photo assets | Repository/static host only | Store future selected gallery photos. | Proposed | Keep first gallery static; optimize if needed. |
 | Observability | Static scan/manual checks | Release confidence. | Current / partial | External link audit remains. |
 | Fallback host | AWS static hosting | Alternative if needed. | Deferred | No provisioning now. |
 
@@ -99,13 +102,13 @@ flowchart LR
 - Public ingress is HTTPS to GitHub Pages or a GoDaddy-forwarded URL.
 - Visitor browsers load external CDN assets and may navigate to third-party sites.
 - The current site has no secrets, auth, admin surface, database, form receiver, or server-side code.
-- Privacy posture: no visitor messages, RSVPs, email, or address collection.
+- Privacy posture: no visitor messages, RSVPs, email, address collection, uploads, comments, or private album accounts.
 - External links should continue to use `rel="noopener"` where `target="_blank"` is used.
 
 ### Data Architecture
 - Static content only: HTML, CSS, JavaScript, and images.
 - No database, object upload flow, queue, cache, or visitor storage.
-- Future gallery work can start as static assets; larger image volume can trigger a later asset strategy.
+- Future gallery work should start as static assets and pages; larger image volume can trigger image optimization or a later asset strategy.
 - Future form work would require a new PRD/requirements/deployment refresh because it changes privacy and runtime scope.
 
 ### Observability
@@ -114,8 +117,9 @@ flowchart LR
 | Static scan | Detect missing assets and backend/runtime refs. | Passing. | REQ-004, REQ-012, REQ-016 |
 | Five-page browser smoke | Confirm visible page behavior. | Manual check still useful. | REQ-001 through REQ-011 |
 | Mobile navigation smoke | Confirm collapsed nav/dropdown. | Needed after JS cleanup. | REQ-005, REQ-016 |
-| GoDaddy forwarding smoke | Confirm public domain reaches the hosted site. | Partial/pending. | REQ-017 |
-| External link audit | Confirm destination usefulness. | Pending. | REQ-009 |
+| GoDaddy forwarding smoke | Confirm public domain reaches the hosted site. | Working per user update; re-check after future changes. | REQ-017 |
+| External link audit | Confirm destinations are not misleading for an archive. | Pending. | REQ-009 |
+| Static gallery smoke | Confirm future gallery loads selected images without backend calls. | Future scope. | Future gallery requirement |
 
 ### CI/CD and Environments
 - No CI/CD service is required for the current no-build site.
@@ -125,16 +129,17 @@ flowchart LR
   3. Browser-smoke changed pages.
   4. Promote/merge to `main`.
   5. Verify GitHub Pages hosted URL.
-  6. Verify GoDaddy forwarding when domain is active.
+  6. Re-check GoDaddy forwarding after publication.
 - Rollback: revert or correct the production branch and allow GitHub Pages to republish.
 
 ### Deployment Maturity Path
 | Stage | Architecture Shape | What To Build Now | Deferred Until | Exit Criteria |
 |---|---|---|---|---|
 | Current Static Host | GitHub Pages from repository | Keep scan passing and docs current. | Backend/build system. | Hosted URL serves all pages. |
-| Public Domain Confidence | GoDaddy forwarding to hosted URL | Verify exact domain across contexts. | Full DNS/custom domain. | Forwarded domain reaches expected page. |
-| Content Reliability | Same static host | Refresh stale links. | Redesign/gallery. | No known stale recommendations remain. |
+| Public Domain Confidence | GoDaddy forwarding to hosted URL | Record exact working domain and target. | Full DNS/custom domain. | Forwarded domain reaches expected page. |
+| Archive Polish | Same static host | Refresh stale links as historical context. | Redesign/dynamic features. | No known misleading recommendations remain. |
 | Source Cleanup | Same static host | Remove/archive dead interaction assets. | New interaction features. | Reference search and scan pass. |
+| Static Gallery | Same static host | Add selected photos as static assets/pages. | Uploads, tagging, private sharing. | Gallery loads selected photos without backend calls. |
 | Optional AWS Fallback | AWS static hosting | Nothing now. | GitHub Pages blocked or user preference changes. | Equivalent HTTPS static site exists. |
 
 ### Provider Mapping
@@ -149,31 +154,35 @@ flowchart LR
 | Requirement / Use Case / Risk | Architecture Decision |
 |---|---|
 | REQ-014, REQ-015 | Use GitHub Pages for current static HTTPS hosting. |
-| REQ-017 | Verify GoDaddy forwarding to the hosted URL. |
+| REQ-017 | Record and preserve working GoDaddy forwarding to the hosted URL. |
 | REQ-012 | Keep no server runtime or PHP dependency. |
-| REQ-009 | Treat external link freshness as a release/content task. |
+| REQ-009 | Treat external link polish as an archive-content task. |
 | REQ-020 | Remove/archive unused legacy interaction assets as cleanup work. |
+| Future static gallery | Keep first photo gallery static unless later scope changes. |
 
 ### Sprint Planning Translation
 | Architecture Decision | Implementation Workstream | Candidate Stories / Tasks | Dependencies | Risk / Priority |
 |---|---|---|---|---|
-| Verify forwarded domain | Domain verification | Record exact domain, target URL, device/network results. | GoDaddy access and propagation. | High |
+| Record forwarded domain | Domain documentation | Record exact working domain and target URL; re-check after changes. | GoDaddy access if target changes. | High |
 | Keep site static | Static release checks | Preserve scan and five-page smoke check. | Prototype script or equivalent. | Medium |
-| Refresh external links | Content reliability | Audit and patch hotel/activity/venue links. | Owner preference/current web info. | High |
+| Refresh external links | Archive polish | Audit and patch/remove/convert hotel/activity/venue links. | Owner preference/current web info. | High |
+| Plan static gallery | Archive enhancement | Select photos, choose gallery page location, define image sizing. | Photo selection. | Medium |
 | Clean dead assets | Source hygiene | Remove/archive countdown and validation assets after search. | Confirmation that no countdown/form behavior is wanted. | Medium |
 | Keep AWS as fallback | Deployment fallback | No action unless GitHub Pages blocked. | Future decision. | Low |
 
 ### Risks and Tradeoffs
-- GoDaddy forwarding is simple and cheap but can be affected by redirect/cache/DNS behavior.
+- GoDaddy forwarding is simple, cheap, and currently working, but should be re-checked after future domain/hosting changes.
 - GitHub Pages has minimal operations burden but should not be stretched into backend behavior.
-- External links are the largest current visitor-facing trust risk.
+- External links are the largest current visitor-facing archive-polish risk.
 - Removing legacy assets reduces confusion but makes future countdown/form revival a deliberate rebuild.
+- A static gallery keeps costs and privacy simple; dynamic photo features would require a new deployment/privacy decision.
 
 ### Open Questions
-- What exact GoDaddy domain should be recorded?
-- Which stale external links should be replaced, removed, or left as historical?
+- What exact GoDaddy domain and target URL should be recorded?
+- Which stale external links should be replaced, removed, or converted to historical plain text?
 - Should dead countdown/validation assets be removed now?
 - Should the Info page filename eventually move from `contact.html` to a clearer path?
+- Which photos should seed the first static gallery?
 
 ## Historical Archive
 
