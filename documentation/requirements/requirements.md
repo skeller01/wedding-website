@@ -7,8 +7,9 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 ### Source Inputs
 - `documentation/requirements/current-state-design.md` ordered systems refresh.
 - `documentation/requirements/use-case-requirements.md` ordered behavioral refresh.
-- Current repository files and static scan result after gallery absorption: 6 HTML pages, 78 resolved local references, 0 missing references, 0 server-side runtime references, 0 PHP files.
+- Current repository files and static scan result after gallery/lightbox/visual refresh implementation: 6 HTML pages, 76 resolved local references, 0 missing references, 0 server-side runtime references, 0 PHP files.
 - `documentation/planning/deployment-footprint.md` and `documentation/planning/prd.md`.
+- Sprint research: `documentation/planning/sprints/2026-06-20-local-photo-curation-pipeline.md`, `2026-06-20-generated-gallery-lightbox.md`, and `2026-06-20-archive-visual-refresh.md`.
 
 ### Requirement Table
 | Req ID | Abstract Name | Requirement | Type | Priority | Source | Verification Method | Evidence |
@@ -34,6 +35,17 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | REQ-019 | Update Docs On Behavior Change | The maintenance process shall update durable planning or requirements docs when behavior, deployment, or scope changes. | Maintainability | Medium | UC-005-CR-004 | Inspection | Documentation workspace |
 | REQ-020 | Remove Or Archive Dead Legacy Assets | The repository shall remove or explicitly archive unused legacy interaction assets when the related public behavior has been intentionally removed. | Maintainability | Medium | UC-005-CR-005 | Inspection | Public pages no longer load countdown scripts; unused validation/countdown files remain |
 | REQ-021 | Support Static Photo Gallery | The system shall be able to present a static wedding photo gallery without backend calls, uploads, or visitor accounts. | Functional | Medium | UC-006-CR-001, UC-006-CR-002, UC-006-CR-003, UC-006-CR-004 | Test/Demonstration | `gallery.html`; static scan passes |
+| REQ-022 | Provide Local Photo Review | The system shall be able to provide a local browser workflow for reviewing ignored wedding source photos. | Functional/Maintainability | High | UC-008-CR-001, UC-008-CR-002, UC-008-CR-005 | Demonstration | `tools/photo-pipeline.ps1 serve`; localhost review smoke |
+| REQ-023 | Maintain Private Curation State | The system shall be able to record per-photo review states, album display names, album cover choices, and focal points in private curation state. | Functional/Data | High | UC-008-CR-003, UC-008-CR-004 | Test | `.photo-curation/curation.json` ignored; pipeline test |
+| REQ-024 | Exclude Private Photo Inputs | The system shall exclude original source photos and private raw curation state from public committed site artifacts. | Privacy/Storage | High | UC-008-CR-007 | Inspection/Test | `.gitignore`; `git status --ignored` |
+| REQ-025 | Allow Captionless Inclusion | The system shall not require per-photo captions before a photo can be included in generated public gallery output. | Functional/Content | Medium | UC-008-CR-006 | Inspection | Placeholder generation publishes captionless photos |
+| REQ-026 | Generate Optimized Photo Assets | The system shall be able to generate optimized JPEG derivatives for thumbnail, large, and hero image uses. | Functional/Performance | High | UC-009-CR-001, UC-009-CR-002 | Test | Generated 480/1800/2400 width-constrained outputs |
+| REQ-027 | Generate Public Gallery Metadata | The system shall be able to generate public-safe gallery metadata for album, count, focal point, hero, caption, and lightbox rendering. | Functional/Data | High | UC-009-CR-003 | Inspection/Test | `data/gallery-data.json`; `js/gallery-data.js` |
+| REQ-028 | Report Gallery Generation Results | The system shall be able to report generation counts and warnings after static gallery asset generation. | Verification/Maintainability | Medium | UC-009-CR-004 | Inspection | `images/gallery/generated/generation-report.json` |
+| REQ-029 | Provide Stable Photo IDs | The system shall create stable path-derived photo IDs with collision handling for generated gallery metadata. | Functional/Data | Medium | UC-009-CR-005, UC-010-CR-004 | Test/Demonstration | Pipeline test; generated hash deep-link IDs |
+| REQ-030 | Avoid Stale Generated Outputs | The system shall avoid leaving stale generated gallery outputs after regeneration. | Maintainability | Medium | UC-009-CR-006 | Test/Inspection | Generator replaces `images/gallery/generated/` each run |
+| REQ-031 | Support Generated Album Lightbox | The system shall be able to present generated album sections, non-excluded thumbnails, album counts, and static lightbox navigation without backend photo-management behavior. | Functional | High | UC-010-CR-001, UC-010-CR-002, UC-010-CR-003, UC-010-CR-005, UC-010-CR-006 | Demonstration/Inspection | `gallery.html`; `js/gallery.js`; no-backend inspection |
+| REQ-032 | Support Session-Stable Archive Hero | The system shall be able to present a photo-first archive landing with an explicit session-stable hero, fallback hero behavior, independent hero text, focal-point-aware presentation, and chapter links. | Functional/UX | Medium | UC-011-CR-001, UC-011-CR-002, UC-011-CR-003, UC-011-CR-004, UC-011-CR-005, UC-011-CR-006 | Demonstration/Inspection | `index.html`; `js/archive-home.js`; static scan |
 
 ### Candidate Requirement Mapping
 | Candidate ID | Source Use Case / Step | Final Req ID | Mapping Status | Notes |
@@ -73,6 +85,31 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | UC-006-CR-002 | Static gallery images | REQ-021 | Mapped | No backend/uploads/accounts. |
 | UC-006-CR-003 | Gallery navigation | REQ-003, REQ-021 | Merged | Shared navigation. |
 | UC-006-CR-004 | Gallery asset sizing/paths | REQ-004, REQ-021 | Merged | Static image verification. |
+| UC-008-CR-001 | Local browser review | REQ-022 | Mapped | Planned private review workflow. |
+| UC-008-CR-002 | Folder-preserving review | REQ-022 | Merged | Review grouping supports album preservation. |
+| UC-008-CR-003 | Review states | REQ-023 | Mapped | Planned states: unreviewed/include/highlight/hero/exclude. |
+| UC-008-CR-004 | Album and focal metadata | REQ-023 | Merged | Private curation state. |
+| UC-008-CR-005 | Filters/folder actions | REQ-022 | Merged | Review workflow usability. |
+| UC-008-CR-006 | Captionless photos | REQ-025 | Mapped | Captions are optional. |
+| UC-008-CR-007 | Originals/private state not public | REQ-024 | Mapped | Public/private boundary. |
+| UC-009-CR-001 | Generate public outputs | REQ-026, REQ-027 | Merged | Output generation includes assets and metadata. |
+| UC-009-CR-002 | Optimized JPEG derivatives | REQ-026 | Mapped | Thumbnail/large/hero derivative generation. |
+| UC-009-CR-003 | Public metadata | REQ-027 | Mapped | Public-safe gallery data. |
+| UC-009-CR-004 | Generation report | REQ-028 | Mapped | Counts and warnings. |
+| UC-009-CR-005 | Stable collision-safe IDs | REQ-029 | Mapped | Deep-link support depends on stable IDs. |
+| UC-009-CR-006 | No stale outputs | REQ-030 | Mapped | Regeneration cleanup rule. |
+| UC-010-CR-001 | Generated album sections | REQ-031 | Mapped | Album rendering. |
+| UC-010-CR-002 | Non-excluded thumbnails/counts | REQ-031 | Merged | Album/gallery rendering. |
+| UC-010-CR-003 | Lightbox navigation | REQ-031 | Mapped | Visitor gallery behavior. |
+| UC-010-CR-004 | Photo hash links | REQ-029 | Mapped | Stable photo IDs enable deep links. |
+| UC-010-CR-005 | Browseable without lightbox JS | REQ-031 | Merged | Graceful degradation. |
+| UC-010-CR-006 | No public originals/uploads/accounts | REQ-021, REQ-024, REQ-031 | Merged | Keeps no-backend/no-private-original boundary. |
+| UC-011-CR-001 | Photo-first landing | REQ-032 | Mapped | Visual refresh. |
+| UC-011-CR-002 | Session-stable hero | REQ-032 | Merged | Hero behavior. |
+| UC-011-CR-003 | Hero text independent of captions | REQ-032 | Merged | Caption independence. |
+| UC-011-CR-004 | Chapter links | REQ-003, REQ-032 | Merged | Archive navigation. |
+| UC-011-CR-005 | Fallback hero | REQ-032 | Merged | Missing metadata fallback. |
+| UC-011-CR-006 | Focal point/readability | REQ-032 | Merged | Readable photo presentation. |
 
 ### Requirement Status
 | Req ID | Lifecycle Status | Status Rationale | Superseded By | Notes |
@@ -97,7 +134,18 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | REQ-018 | Active | Static maintenance model. |  |  |
 | REQ-019 | Active | Needed because docs previously drifted. |  |  |
 | REQ-020 | Active / Partial | Public pages no longer load obsolete countdown scripts and countdown CSS/commented markup was removed; unused legacy files still need deletion or explicit archive. |  | Remaining files: `js/app.js`, `js/jquery.countdown.js`, `js/jqBootstrapValidation.js`, `css/jquery.countdown.js`, ReactiveRaven vendor files |
-| REQ-021 | Implemented | `gallery.html` presents selected static photos, is linked from navigation, and passes static scan with no backend/upload/account behavior. |  | Captions/photos can be curated later. |
+| REQ-021 | Implemented | `gallery.html` presents selected static photos, is linked from navigation, and passes static scan with no backend/upload/account behavior. |  | Planned generated-gallery work is covered by REQ-022 through REQ-032. |
+| REQ-022 | Implemented | Local review app serves over localhost and exposes a photo grid/API for source folders. |  | Implemented in PowerShell/.NET because Python/Pillow is unavailable in this environment. |
+| REQ-023 | Implemented | Private curation JSON stores review state, titles/captions, and focal points. |  | Album cover/display metadata supported by schema/generator. |
+| REQ-024 | Implemented | Original source folder and private curation state are ignored. |  | `.photo-curation/` exists locally and is ignored. |
+| REQ-025 | Implemented | Placeholder generation publishes captionless photos. |  | Captions can be added later during review. |
+| REQ-026 | Implemented | Generator creates thumb, large, and hero JPEG derivatives. |  | Width checks passed. |
+| REQ-027 | Implemented | Generated JSON and JS metadata drive public gallery and hero behavior. |  | Placeholder metadata from existing images until real source photos arrive. |
+| REQ-028 | Implemented | Generation report is produced with counts and warnings. |  | 24 placeholder photos generated. |
+| REQ-029 | Implemented | Path-derived IDs and collision handling are implemented. |  | Duplicate `champ` names were disambiguated. |
+| REQ-030 | Implemented | Generated output directory is replaced each generation. |  | Prevents stale generated files. |
+| REQ-031 | Implemented | Gallery renders generated album sections and static lightbox behavior. |  | Browser automation unavailable; static and source checks passed. |
+| REQ-032 | Implemented | Home page uses generated hero metadata with session-stable selection and fallback. |  | Browser automation unavailable; static/source checks passed. |
 
 ### Requirement Constants
 | Constant | Meaning | Current Value | Source / How To Determine |
@@ -111,6 +159,12 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | CONTACT_COLLECTION_ENABLED | Whether site collects visitor messages, RSVPs, or addresses. | `false` | Current Info page/product decision |
 | PRODUCT_FRAMING | Current product identity. | Shareable wedding archive / memory site | User update |
 | STATIC_GALLERY_ENABLED | Whether a static photo gallery exists. | `true`; initial `gallery.html` implemented | User update plus prototype absorption |
+| SOURCE_PHOTO_PUBLICATION_ALLOWED | Whether original source photos may be committed as public site artifacts. | `false` | User decision to `.gitignore` originals |
+| PHOTO_REVIEW_STATES | Supported local review states. | `unreviewed`, `include`, `highlight`, `hero`, `exclude` | Grilling decisions |
+| GENERATED_THUMB_WIDTH | Target max width for generated thumbnails. | `480px` | Sprint research |
+| GENERATED_LARGE_WIDTH | Target max width for generated large images. | `1800px` | Sprint research |
+| GENERATED_HERO_WIDTH | Target max width for generated hero images. | `2400px` | Sprint research |
+| HERO_SELECTION_MODE | Planned archive hero behavior. | Session-stable random selection from explicit hero photos with fallback | Grilling decisions |
 | STATIC_SCAN_TARGET | Minimum scan result before release. | 0 missing local refs, 0 server-runtime refs, 0 PHP files | Prototype/static scan |
 
 ### Quality Check
@@ -121,6 +175,7 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | REQ-010-REQ-013 | Yes | Yes | Yes | Yes | Yes | Yes | Current no-collection scope is consistent. |
 | REQ-014-REQ-017 | Yes | Yes | Yes | Yes | Yes | Yes | Exact GoDaddy domain/target should be recorded. |
 | REQ-018-REQ-021 | Yes | Yes | Yes | Yes | Yes | Yes | REQ-020 remains partial cleanup; REQ-021 is implemented as an initial static gallery. |
+| REQ-022-REQ-032 | Yes | Yes | Yes | Yes | Yes | Yes | Implemented and traceable to sprint research; visual behavior still deserves real-browser review after a browser runner is available. |
 
 ### Traceability
 | Req ID | Source Use Case / Step | Related Candidate ID(s) | Related Interface | Related State | Related Test |
@@ -146,20 +201,33 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | REQ-019 | UC-005 Step 4 | UC-005-CR-004 | docs | Maintenance Ready | Inspection |
 | REQ-020 | UC-005 E1 | UC-005-CR-005 | source files | Maintenance Ready | TEST-008 |
 | REQ-021 | UC-006 | UC-006-CR-001, CR-002, CR-003, CR-004 | IF-007 | Gallery Viewed | TEST-009 |
+| REQ-022 | UC-008 Steps 1-2/5 | UC-008-CR-001, CR-002, CR-005 | IF-008 | Photo Review State Saved | TEST-010 |
+| REQ-023 | UC-008 Steps 3-4 | UC-008-CR-003, CR-004 | IF-008 | Photo Review State Saved | TEST-010 |
+| REQ-024 | UC-008 E1 / UC-010 E2 | UC-008-CR-007, UC-010-CR-006 | IF-008/IF-009 | Photo Review State Saved | TEST-010 |
+| REQ-025 | UC-008 A1 | UC-008-CR-006 | IF-009 | Gallery Assets Generated | TEST-011 |
+| REQ-026 | UC-009 Steps 1-2 | UC-009-CR-001, CR-002 | IF-009 | Gallery Assets Generated | TEST-011 |
+| REQ-027 | UC-009 Step 3 | UC-009-CR-003 | IF-009/IF-010 | Gallery Assets Generated | TEST-011 |
+| REQ-028 | UC-009 Step 4 | UC-009-CR-004 | IF-009 | Gallery Assets Generated | TEST-011 |
+| REQ-029 | UC-009 E1 / UC-010 Step 4 | UC-009-CR-005, UC-010-CR-004 | IF-010 | Lightbox Open | TEST-012 |
+| REQ-030 | UC-009 E2 | UC-009-CR-006 | IF-009 | Gallery Assets Generated | TEST-011 |
+| REQ-031 | UC-010 | UC-010-CR-001, CR-002, CR-003, CR-005, CR-006 | IF-010 | Lightbox Open | TEST-012 |
+| REQ-032 | UC-011 | UC-011-CR-001, CR-002, CR-003, CR-004, CR-005, CR-006 | IF-010 | Hero Selected | TEST-013 |
 
 ### Assumptions
 - GitHub Pages remains the production host unless the user deliberately chooses AWS later.
 - GoDaddy forwarding is working and targets the hosted site.
 - Visitor-submitted data collection remains disabled.
 - Stale external links should be fixed, removed, or converted to historical plain text before broad archive sharing.
-- Gallery remains static unless explicitly rebaselined.
+- Gallery remains static; planned photo scaling uses local/private generation plus committed public web assets, not a backend.
+- Planned hero rotation uses only explicitly hero-marked photos and should remain stable within a browser session.
 
 ### Gaps and Questions
 - Exact GoDaddy domain and target URL.
 - Which external links should be replaced, removed, or converted to historical plain text.
 - Whether to delete or archive remaining unused countdown/validation assets now.
 - Whether `contact.html` should be renamed in a future cleanup.
-- Which additional photos or final captions should refine the first static gallery.
+- The real wedding photo repository has not been added yet.
+- Final hero-photo, album-cover, caption, and exclude decisions remain curation tasks.
 
 ## Historical Archive
 

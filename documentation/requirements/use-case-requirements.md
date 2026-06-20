@@ -10,6 +10,7 @@ This refresh follows the updated context and use case model in `documentation/re
 - Static assets and scripts: `css/style.css`, Bootstrap/jQuery CDN behavior for navigation/tooltips, unused legacy validation/countdown files, `images/*`.
 - Static scan after gallery absorption: 6 HTML pages, 78 resolved local references, 0 missing references, 0 server-side runtime references, 0 PHP files.
 - Planning docs: `documentation/planning/deployment-footprint.md`, `documentation/planning/prd.md`, sprint and working notes.
+- Planned sprint research: `documentation/planning/sprints/2026-06-20-local-photo-curation-pipeline.md`, `2026-06-20-generated-gallery-lightbox.md`, and `2026-06-20-archive-visual-refresh.md`.
 
 ### Use Case Index
 | Use Case ID | Use Case Name | Priority | Status | Source |
@@ -20,6 +21,10 @@ This refresh follows the updated context and use case model in `documentation/re
 | UC-004 | Publish Static Website | High | Refreshed | GitHub Pages/static publication workflow |
 | UC-005 | Maintain Archive Content | Medium | Refreshed | Refactor/deployment/requirements follow-up |
 | UC-006 | View Static Photo Gallery | Medium | Implemented | Initial simple static gallery |
+| UC-008 | Curate Source Photos Locally | High | Implemented | Local photo curation tool; real source photos pending |
+| UC-009 | Generate Static Gallery Assets | High | Implemented | Generated placeholder public assets/data from existing images |
+| UC-010 | Browse Generated Album Gallery | High | Implemented | Generated gallery/lightbox sprint |
+| UC-011 | View Session-Stable Archive Hero | Medium | Implemented | Archive visual refresh sprint |
 
 ### UC-001: View Wedding Archive
 
@@ -261,6 +266,168 @@ This refresh follows the updated context and use case model in `documentation/re
 | UC-006-CR-003 | The system shall preserve internal navigation from the static gallery. | Step 3 | Demonstration |
 | UC-006-CR-004 | The system shall use deploy-safe gallery image references and image sizes suitable for static hosting. | Exception E1 | Test |
 
+### UC-008: Curate Source Photos Locally
+
+#### Use Case Summary
+| Field | Value |
+|---|---|
+| Use Case ID | UC-008 |
+| Use Case Name | Curate Source Photos Locally |
+| Primary Actor | Photo Curator |
+| Trigger | Original wedding photos are available in an ignored local source folder. |
+| Goal | Curator can review hundreds of local source photos and record inclusion, exclusion, hero, album, and focal-point decisions without publishing originals. |
+| Priority | High |
+| Preconditions | Source photos exist locally; originals are excluded from committed public site artifacts. |
+| Postconditions | Private curation state is ready for static gallery asset generation. |
+| Evidence | Implemented in `tools/photo-pipeline.ps1`; real source photos pending |
+
+#### Main Success Scenario
+| Step | Actor / Operator | System | External Entity | Behavior | Interface / Message | Candidate Requirement ID | Candidate Requirement | Evidence |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Photo Curator | Local review app | Local filesystem | Curator opens a local browser review app pointed at ignored source photos. | Local app session | UC-008-CR-001 | The system shall be able to provide a local browser review workflow for ignored source photos. | Proposed |
+| 2 | Photo Curator | Review grid | Local filesystem | System presents photos in folder-preserving grid/contact-sheet views. | Photo metadata/read requests | UC-008-CR-002 | The system shall be able to present source photos grouped by their folder structure during local review. | Proposed |
+| 3 | Photo Curator | Curation state | Local JSON | Curator marks photos as `unreviewed`, `include`, `highlight`, `hero`, or `exclude`. | State update | UC-008-CR-003 | The system shall be able to record per-photo review states of unreviewed, include, highlight, hero, and exclude. | Proposed |
+| 4 | Photo Curator | Curation state | Local JSON | Curator records album display names, album cover choices, and focal points when desired. | State update | UC-008-CR-004 | The system shall be able to record album display names, album cover choices, and photo focal points during local review. | Proposed |
+| 5 | Photo Curator | Review app | Local JSON | Curator filters included/excluded photos and applies folder-level actions when useful. | Review command | UC-008-CR-005 | The system shall be able to filter review states and apply folder-level review actions in the local photo review workflow. | Proposed |
+
+#### Alternate Flows
+| Flow ID | Condition | Steps | System Response | Candidate Requirement ID | Candidate Requirement | Evidence |
+|---|---|---|---|---|---|---|
+| UC-008-A1 | Curator does not provide captions | Continue review without captions. | Public gallery generation can fall back to filenames, album names, or no caption. | UC-008-CR-006 | The system shall not require per-photo captions before a photo can be included in generated public gallery output. | Proposed |
+
+#### Exception Flows
+| Flow ID | Failure / Exception | System Response | Recovery / Mitigation | Candidate Requirement ID | Candidate Requirement | Evidence |
+|---|---|---|---|---|---|---|
+| UC-008-E1 | Source originals or raw curation state are accidentally staged for public commit | Release/review process flags the issue. | Keep originals and raw review data ignored or private. | UC-008-CR-007 | The system shall exclude original source photos and private raw curation state from public committed site artifacts. | Proposed |
+
+#### Derived Requirements
+| Candidate Requirement ID | Candidate Requirement | Source Step | Verification Method |
+|---|---|---|---|
+| UC-008-CR-001 | The system shall be able to provide a local browser review workflow for ignored source photos. | Step 1 | Demonstration |
+| UC-008-CR-002 | The system shall be able to present source photos grouped by their folder structure during local review. | Step 2 | Demonstration |
+| UC-008-CR-003 | The system shall be able to record per-photo review states of unreviewed, include, highlight, hero, and exclude. | Step 3 | Test |
+| UC-008-CR-004 | The system shall be able to record album display names, album cover choices, and photo focal points during local review. | Step 4 | Test |
+| UC-008-CR-005 | The system shall be able to filter review states and apply folder-level review actions in the local photo review workflow. | Step 5 | Demonstration |
+| UC-008-CR-006 | The system shall not require per-photo captions before a photo can be included in generated public gallery output. | Alternate A1 | Inspection |
+| UC-008-CR-007 | The system shall exclude original source photos and private raw curation state from public committed site artifacts. | Exception E1 | Inspection/Test |
+
+### UC-009: Generate Static Gallery Assets
+
+#### Use Case Summary
+| Field | Value |
+|---|---|
+| Use Case ID | UC-009 |
+| Use Case Name | Generate Static Gallery Assets |
+| Primary Actor | Site Maintainer |
+| Trigger | Curation state exists and public gallery assets need to be refreshed. |
+| Goal | Maintainer can generate optimized public JPEG assets, public-safe metadata, and a report from local source photos. |
+| Priority | High |
+| Preconditions | Source photos and curation state exist locally. |
+| Postconditions | Generated public assets and metadata are ready for static scan, review, and commit. |
+| Evidence | Implemented by `tools/photo-pipeline.ps1 generate`; placeholder outputs generated from existing images |
+
+#### Main Success Scenario
+| Step | Actor / Operator | System | External Entity | Behavior | Interface / Message | Candidate Requirement ID | Candidate Requirement | Evidence |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Site Maintainer | Generator | Local filesystem | Maintainer runs the local generator against source photos and curation state. | Command invocation | UC-009-CR-001 | The system shall be able to generate public gallery outputs from local source photos and private curation state. | Proposed |
+| 2 | Site Maintainer | Generator | Local filesystem | System creates optimized JPEG derivatives for thumbnail, large, and hero use. | Generated files | UC-009-CR-002 | The system shall be able to generate optimized JPEG derivatives for thumbnail, large, and hero image uses. | Proposed |
+| 3 | Site Maintainer | Generator | Public metadata | System writes public gallery metadata containing albums, image paths, IDs, counts, focal points, hero eligibility, and captions when available. | `gallery-data.json` | UC-009-CR-003 | The system shall be able to generate public-safe gallery metadata for album and lightbox rendering. | Proposed |
+| 4 | Site Maintainer | Generator | Report | System reports source, included, excluded, hero, warning, and output counts. | Generation report | UC-009-CR-004 | The system shall be able to report generation counts and warnings after static gallery asset generation. | Proposed |
+
+#### Exception Flows
+| Flow ID | Failure / Exception | System Response | Recovery / Mitigation | Candidate Requirement ID | Candidate Requirement | Evidence |
+|---|---|---|---|---|---|---|
+| UC-009-E1 | Duplicate or unsafe generated photo IDs would collide | Generator reports or resolves deterministic collision-safe IDs. | Fix input or accept deterministic disambiguation. | UC-009-CR-005 | The system shall create stable path-derived photo IDs with collision handling for generated gallery metadata. | Proposed |
+| UC-009-E2 | Regeneration leaves stale public outputs | Generator replaces the generated output set or reports cleanup needs. | Re-run generator or remove stale outputs. | UC-009-CR-006 | The system shall avoid leaving stale generated gallery outputs after regeneration. | Proposed |
+
+#### Derived Requirements
+| Candidate Requirement ID | Candidate Requirement | Source Step | Verification Method |
+|---|---|---|---|
+| UC-009-CR-001 | The system shall be able to generate public gallery outputs from local source photos and private curation state. | Step 1 | Demonstration |
+| UC-009-CR-002 | The system shall be able to generate optimized JPEG derivatives for thumbnail, large, and hero image uses. | Step 2 | Test |
+| UC-009-CR-003 | The system shall be able to generate public-safe gallery metadata for album and lightbox rendering. | Step 3 | Inspection/Test |
+| UC-009-CR-004 | The system shall be able to report generation counts and warnings after static gallery asset generation. | Step 4 | Inspection |
+| UC-009-CR-005 | The system shall create stable path-derived photo IDs with collision handling for generated gallery metadata. | Exception E1 | Test |
+| UC-009-CR-006 | The system shall avoid leaving stale generated gallery outputs after regeneration. | Exception E2 | Test/Inspection |
+
+### UC-010: Browse Generated Album Gallery
+
+#### Use Case Summary
+| Field | Value |
+|---|---|
+| Use Case ID | UC-010 |
+| Use Case Name | Browse Generated Album Gallery |
+| Primary Actor | Visitor / Guest |
+| Trigger | Visitor opens the generated gallery page. |
+| Goal | Visitor can browse all non-excluded wedding photos by album and open optimized large photos in a static lightbox. |
+| Priority | High |
+| Preconditions | Generated public gallery metadata and optimized assets exist. |
+| Postconditions | Visitor has browsed albums/photos without accounts, uploads, backend calls, or full-resolution downloads. |
+| Evidence | Implemented in `gallery.html`, `js/gallery.js`, `data/gallery-data.json`, and generated assets |
+
+#### Main Success Scenario
+| Step | Actor / Operator | System | External Entity | Behavior | Interface / Message | Candidate Requirement ID | Candidate Requirement | Evidence |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Visitor | Generated gallery page | Browser | Visitor opens `gallery.html`. | Page request | UC-010-CR-001 | The system shall be able to present generated album sections from public gallery metadata. | Proposed |
+| 2 | Visitor | Gallery grid | Browser | System shows album names, photo counts, and optimized thumbnails for all non-excluded photos. | HTML/image requests | UC-010-CR-002 | The system shall be able to display all non-excluded generated gallery photos with album names, counts, and thumbnails. | Proposed |
+| 3 | Visitor | Lightbox | Browser | Visitor opens a thumbnail, navigates next/previous, and closes the lightbox. | Click/keyboard events | UC-010-CR-003 | The system shall be able to provide static lightbox viewing with next, previous, close, and keyboard navigation. | Proposed |
+| 4 | Visitor | Browser | Gallery page | Visitor opens or shares a photo hash link. | `#photo=<id>` | UC-010-CR-004 | The system shall be able to open stable photo deep links from generated gallery metadata. | Proposed |
+
+#### Exception Flows
+| Flow ID | Failure / Exception | System Response | Recovery / Mitigation | Candidate Requirement ID | Candidate Requirement | Evidence |
+|---|---|---|---|---|---|---|
+| UC-010-E1 | JavaScript lightbox behavior fails | Album thumbnails and static page content remain browseable. | Visitor can still inspect gallery page. | UC-010-CR-005 | The system shall keep generated gallery album content browseable when optional lightbox scripting is unavailable. | Proposed |
+| UC-010-E2 | Visitor looks for original download or upload behavior | System provides no original download, upload, account, or backend path. | Visitor browses web-optimized static assets only. | UC-010-CR-006 | The system shall not expose original photo downloads, uploads, accounts, or backend photo-management behavior in the public gallery. | Proposed |
+
+#### Derived Requirements
+| Candidate Requirement ID | Candidate Requirement | Source Step | Verification Method |
+|---|---|---|---|
+| UC-010-CR-001 | The system shall be able to present generated album sections from public gallery metadata. | Step 1 | Demonstration |
+| UC-010-CR-002 | The system shall be able to display all non-excluded generated gallery photos with album names, counts, and thumbnails. | Step 2 | Demonstration |
+| UC-010-CR-003 | The system shall be able to provide static lightbox viewing with next, previous, close, and keyboard navigation. | Step 3 | Demonstration |
+| UC-010-CR-004 | The system shall be able to open stable photo deep links from generated gallery metadata. | Step 4 | Demonstration |
+| UC-010-CR-005 | The system shall keep generated gallery album content browseable when optional lightbox scripting is unavailable. | Exception E1 | Demonstration |
+| UC-010-CR-006 | The system shall not expose original photo downloads, uploads, accounts, or backend photo-management behavior in the public gallery. | Exception E2 | Inspection |
+
+### UC-011: View Session-Stable Archive Hero
+
+#### Use Case Summary
+| Field | Value |
+|---|---|
+| Use Case ID | UC-011 |
+| Use Case Name | View Session-Stable Archive Hero |
+| Primary Actor | Visitor / Guest |
+| Trigger | Visitor opens the home page after hero-capable generated metadata exists. |
+| Goal | Visitor sees a polished photo-first archive landing with a hero image that remains stable for the browser session. |
+| Priority | Medium |
+| Preconditions | At least one explicit hero photo exists or a static fallback hero is configured. |
+| Postconditions | Visitor has a stable first impression and can continue to Story, Gallery, Info, or Travel. |
+| Evidence | Implemented in `index.html`, `css/style.css`, `js/archive-home.js`, and generated hero metadata |
+
+#### Main Success Scenario
+| Step | Actor / Operator | System | External Entity | Behavior | Interface / Message | Candidate Requirement ID | Candidate Requirement | Evidence |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Visitor | Home page | Browser | Visitor opens the archive landing page. | Page request | UC-011-CR-001 | The system shall be able to present a photo-first archive landing page. | Proposed |
+| 2 | Visitor | Hero selector | Browser session | System selects one hero image from explicitly hero-marked photos and keeps it stable for the session. | Session state | UC-011-CR-002 | The system shall be able to select a hero image from explicit hero photos and keep that selection stable for a browser session. | Proposed |
+| 3 | Visitor | Home page | Browser | System renders hero text independently from per-photo captions. | HTML/CSS/image | UC-011-CR-003 | The system shall keep archive hero text independent from per-photo captions. | Proposed |
+| 4 | Visitor | Home page | Browser | Visitor uses chapter links to continue to Story, Gallery, Info, or Travel. | Internal links | UC-011-CR-004 | The system shall be able to provide archive chapter links to Story, Gallery, Info, and Travel destinations. | Proposed |
+
+#### Exception Flows
+| Flow ID | Failure / Exception | System Response | Recovery / Mitigation | Candidate Requirement ID | Candidate Requirement | Evidence |
+|---|---|---|---|---|---|---|
+| UC-011-E1 | No generated hero metadata exists | Home page uses a configured static fallback hero. | Keep landing stable and readable. | UC-011-CR-005 | The system shall provide a fallback archive hero when generated hero metadata is unavailable. | Proposed |
+| UC-011-E2 | Selected hero focal point would make text unreadable | System uses focal-point metadata and readable overlay rules. | Adjust metadata or fallback styling. | UC-011-CR-006 | The system shall support focal-point-aware hero presentation and readable overlay treatment for archive hero images. | Proposed |
+
+#### Derived Requirements
+| Candidate Requirement ID | Candidate Requirement | Source Step | Verification Method |
+|---|---|---|---|
+| UC-011-CR-001 | The system shall be able to present a photo-first archive landing page. | Step 1 | Demonstration |
+| UC-011-CR-002 | The system shall be able to select a hero image from explicit hero photos and keep that selection stable for a browser session. | Step 2 | Demonstration |
+| UC-011-CR-003 | The system shall keep archive hero text independent from per-photo captions. | Step 3 | Inspection |
+| UC-011-CR-004 | The system shall be able to provide archive chapter links to Story, Gallery, Info, and Travel destinations. | Step 4 | Demonstration |
+| UC-011-CR-005 | The system shall provide a fallback archive hero when generated hero metadata is unavailable. | Exception E1 | Demonstration |
+| UC-011-CR-006 | The system shall support focal-point-aware hero presentation and readable overlay treatment for archive hero images. | Exception E2 | Demonstration/Inspection |
+
 ### Interfaces Discovered
 | Interface ID | Source | Target | Message / Data | Trigger | Direction | Evidence |
 |---|---|---|---|---|---|---|
@@ -271,6 +438,9 @@ This refresh follows the updated context and use case model in `documentation/re
 | IF-005 | GoDaddy forwarding | GitHub Pages URL | Forwarded request | Visitor opens public domain | External | Observed |
 | IF-006 | Maintainer/Git | GitHub repository | Static source changes | Maintenance/publication | Inbound | Observed |
 | IF-007 | Browser | GitHub Pages | Gallery image requests | Gallery page load | Inbound | Observed |
+| IF-008 | Local review app | Local filesystem | Source photo reads and private curation JSON writes | Local review session | Local/private | Proposed |
+| IF-009 | Generator | Public static assets | Optimized JPEG outputs and public gallery metadata | Generation command | Local/public output | Proposed |
+| IF-010 | Browser | Generated gallery metadata/assets | Album data, thumbnail, large, and hero image requests | Gallery/home load | Inbound | Proposed |
 
 ### States Discovered
 | State | Trigger / Cause | Meaning | Related Use Case |
@@ -282,6 +452,10 @@ This refresh follows the updated context and use case model in `documentation/re
 | Forwarding Working | Domain redirects to hosted site. | GoDaddy forwarding is functioning. | UC-004 |
 | Maintenance Ready | Repo/docs available | Maintainer can update content. | UC-005 |
 | Gallery Viewed | Static gallery page/assets returned | Visitor can browse selected wedding photos. | UC-006 |
+| Photo Review State Saved | Local curation state written | Curator decisions can drive generation. | UC-008 |
+| Gallery Assets Generated | Generator completed | Public gallery assets and metadata are ready for review. | UC-009 |
+| Lightbox Open | Visitor opens generated photo | Visitor can browse large optimized photos. | UC-010 |
+| Hero Selected | Home page selects hero | Visitor sees a stable session hero or fallback. | UC-011 |
 
 ### Test Implications
 | Test ID | Behavior or Requirement | Test Idea | Method |
@@ -295,6 +469,10 @@ This refresh follows the updated context and use case model in `documentation/re
 | TEST-007 | GoDaddy forwarding | Open final public domain after publication changes. | Demonstration |
 | TEST-008 | Legacy asset cleanup | Search for unused countdown/validation references before removal. | Inspection |
 | TEST-009 | Static gallery | Open gallery page and verify selected photos load without backend requests. | Demonstration/static scan |
+| TEST-010 | Local photo review | Review fixture photos, update states, and confirm private curation JSON changes. | Local browser smoke/test |
+| TEST-011 | Gallery generation | Generate thumbnail, large, hero outputs and public metadata from fixture photos. | Automated/integration |
+| TEST-012 | Generated gallery/lightbox | Open generated gallery, verify album counts, thumbnails, keyboard lightbox, and hash deep links. | Browser smoke |
+| TEST-013 | Archive hero | Verify session-stable hero selection, fallback behavior, focal point treatment, and chapter links. | Browser smoke |
 
 ## Historical Archive
 

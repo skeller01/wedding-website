@@ -11,7 +11,7 @@ Source inputs reviewed:
 - Shared assets: `css/style.css`, Bootstrap/jQuery CDN behavior, remaining unused legacy validation/countdown files, `images/*`.
 - Current durable docs: `documentation/requirements/current-state-design.md`, `documentation/requirements/use-case-requirements.md`, `documentation/requirements/requirements.md`, `documentation/planning/deployment-footprint.md`, `documentation/planning/prd.md`.
 - Planning evidence: sprint docs, refactor plan, prototype lab, and static scan scripts under `documentation/planning/`.
-- Current static scan after gallery absorption: 6 HTML pages, 78 local references resolved, 0 missing references, 0 server-side runtime references, 0 PHP files, 13 external references.
+- Current static scan after generated gallery/lightbox and archive visual refresh implementation: 6 HTML pages, 76 local references resolved, 0 missing references, 0 server-side runtime references, 0 PHP files, 13 external references.
 
 ## Context Diagram and Matrix
 
@@ -19,9 +19,10 @@ Source inputs reviewed:
 - Current repository files and assets listed in the ordered refresh source inputs.
 - Current deployment and planning docs.
 - Static scan result from `documentation/planning/working/prototypes/static_site_scan.ps1`.
+- Planned photo/gallery/visual-refresh sprint research from `documentation/planning/sprints/`.
 
 ### System Boundary
-The Sonia and Steve Wedding Website is a static public wedding archive / memory site made of HTML, CSS, JavaScript, and image assets. It includes visitor-facing archive pages, an initial static gallery page, shared navigation, local media, client-side Bootstrap behavior, and documentation used to maintain and publish the site. It excludes GoDaddy account configuration, GitHub hosting infrastructure, third-party linked websites, CDN infrastructure, photo upload services, and any RSVP/contact-form backend.
+The Sonia and Steve Wedding Website is a static public wedding archive / memory site made of HTML, CSS, JavaScript, and image assets. It includes visitor-facing archive pages, generated static gallery/lightbox behavior, shared navigation, local media, client-side Bootstrap behavior, local-only photo review/generation tooling, and documentation used to maintain and publish the site. The system excludes GoDaddy account configuration, GitHub hosting infrastructure, third-party linked websites, CDN infrastructure, public photo upload services, and any RSVP/contact-form backend.
 
 ### Inside the System
 | Internal Element | Description | Evidence |
@@ -30,13 +31,16 @@ The Sonia and Steve Wedding Website is a static public wedding archive / memory 
 | Shared presentation | Bootstrap classes plus custom styling. | HTML includes and `css/style.css` |
 | Client behavior | Bootstrap navigation/tooltips; public pages no longer load obsolete countdown initialization. | Root script tags and source search |
 | Static assets | Local photos and decorative images. | `images/*`; scan resolves references |
+| Generated gallery assets | Public web-sized thumbnails, large images, hero images, and gallery metadata generated from private source photos or placeholder checked-in images. | `images/gallery/generated/`, `data/gallery-data.json`, `js/gallery-data.js` |
+| Local photo tooling | Local-only review/generation workflow for ignored original photos and private curation state. | `tools/photo-pipeline.ps1` |
 | Documentation workspace | Durable planning, requirements, and working analysis. | `documentation/*` |
 
 ### Outside the System
 | External Entity | Type | Description | Evidence |
 |---|---|---|---|
 | Visitor / Guest | Person | Reads wedding memories, event context, and historical travel/local pages. | Site content |
-| Couple / Family | Person | Shares the archive and may curate the simple static photo gallery. | User update/prototype absorption |
+| Couple / Family | Person | Shares the archive and may curate wedding photos. | User update/prototype absorption |
+| Photo Curator | Person | Reviews source photos locally and records publish/exclude/hero/album decisions. | Sprint research |
 | Site Maintainer | Person | Edits content, verifies static behavior, and publishes changes. | Git/docs workflow |
 | Browser | Runtime | Requests, renders, and navigates static pages/assets. | HTML/CSS/JS site |
 | GitHub Repository | External service | Stores source and production branch. | Current deployment docs |
@@ -44,6 +48,7 @@ The Sonia and Steve Wedding Website is a static public wedding archive / memory 
 | GoDaddy Forwarding | External service | Redirects a public domain to the hosted URL. | User update: redirect is working |
 | External CDNs | External services | Serve Bootstrap, jQuery, and Google Fonts. | HTML links/scripts |
 | Venue / Hotel / Activity Sites | External websites | Provide offsite or historical context details. | External links in HTML |
+| Local Source Photo Folder | Local/private data source | Stores original wedding photos outside public committed outputs. | Planned `.gitignore` convention |
 | Bot / Crawler | Unintended actor | Requests public pages or stale paths. | Public static website risk |
 
 ### Mermaid Context Diagram
@@ -51,6 +56,7 @@ The Sonia and Steve Wedding Website is a static public wedding archive / memory 
 ```mermaid
 flowchart LR
   Guest[External Entity: Visitor / Guest]
+  Curator[External Entity: Photo Curator]
   Maintainer[External Entity: Site Maintainer]
   Browser[External Entity: Browser]
   Repo[External Entity: GitHub Repository]
@@ -58,10 +64,12 @@ flowchart LR
   GoDaddy[External Entity: GoDaddy Forwarding]
   CDN[External Entity: External CDNs]
   Links[External Entity: Venue / Hotel / Activity Sites]
+  SourcePhotos[External Entity: Local Source Photo Folder]
   Bot[External Entity: Bot / Crawler]
 
   subgraph System["System Boundary: Sonia and Steve Wedding Website"]
     Site((Static HTML/CSS/JS/Image Site))
+    PhotoPipeline((Planned Local Photo Pipeline))
     Docs((Documentation Workspace))
   end
 
@@ -71,6 +79,9 @@ flowchart LR
   Site -->|Render wedding archive content| Guest
   Site -->|Load libraries/fonts| CDN
   Guest -->|Open outbound detail links| Links
+  Curator -->|Review photos and curation state| PhotoPipeline
+  SourcePhotos -->|Private original inputs| PhotoPipeline
+  PhotoPipeline -->|Generated public images/data| Site
   Maintainer -->|Edit source and docs| Site
   Maintainer -->|Commit and publish| Repo
   Repo -->|Publish main branch root| Pages
@@ -88,6 +99,8 @@ flowchart LR
 | Browser | Load local assets | In/Out | Startup/query | CSS/JS/image requests | Static assets | Per page load | Paths must be deploy-safe. | Static scan currently passes. |
 | Browser | Load CDN assets | Out/In | Startup/query | CDN requests | Libraries/fonts | Per page load | CDN use remains acceptable. | CDN outages degrade styling/interactions. |
 | Site Maintainer | Update content | In | Maintenance | File edits and docs changes | Repository changes | Infrequent | Changes occur before production publication. | Duplicated nav/footer markup creates maintenance risk. |
+| Photo Curator | Curate local photos | In/Out | Maintenance | Review decisions | Private curation state | Project setup / occasional | Original photos stay local/ignored. | Private state must not be public site output. |
+| Local Source Photo Folder | Provide original photo inputs | In | Local data | Original JPEG files | Source metadata/images for generation | Hundreds of photos expected | Folder structure should be preserved as albums. | Originals should not be committed. |
 | GitHub Pages | Publish site | Out | Runtime | Repository source | HTTPS site | Continuous | GitHub Pages is current production host. | No server runtime. |
 | GoDaddy Forwarding | Route public domain | In/Out | Network | Domain request | Redirected hosted site | Per visitor | Forwarding targets GitHub Pages URL. | Working per user update. |
 | Venue / Hotel / Activity Sites | Provide linked or historical details | Out/In | Query/response | Outbound click | Third-party page or historical note | User-driven | Links may be stale. | Must be audited manually or with web checks. |
@@ -101,6 +114,10 @@ flowchart LR
 | High | UC-004 | Publish Static Website | Site Maintainer | Maintainer wants public updates. | Publish verified static content through GitHub Pages. | Git/GitHub Pages flow | Current production path. |
 | Medium | UC-005 | Maintain Archive Content | Site Maintainer | Content, link, gallery, or asset cleanup needed. | Update static files/docs and rerun checks. | Maintenance workflow | Next likely implementation slice. |
 | Medium | UC-006 | View Static Photo Gallery | Visitor / Guest | Visitor opens `gallery.html`. | Render selected wedding photos from static assets. | Page request | Initial static slice implemented. |
+| High | UC-008 | Curate Source Photos Locally | Photo Curator | Source photo repository is available locally. | Review and record include/highlight/hero/exclude metadata. | Local review workflow | Implemented local tool; real source photos pending. |
+| High | UC-009 | Generate Static Gallery Assets | Site Maintainer | Curation state changes. | Generate optimized public JPEGs, metadata, and report. | Local generation command | Placeholder outputs generated from existing images. |
+| High | UC-010 | Browse Generated Album Gallery | Visitor / Guest | Visitor opens generated gallery. | Render albums, counts, thumbnails, lightbox, and deep links. | Gallery page request | Implemented scalable static gallery. |
+| Medium | UC-011 | View Session-Stable Archive Hero | Visitor / Guest | Visitor opens home page. | Render photo-first hero and chapter links. | Home page request | Implemented with generated hero list and fallback. |
 
 ### Secondary / Unintended Use Cases
 | Priority | Use Case | Actor | Risk or Concern | Expected System Response |
@@ -114,17 +131,18 @@ flowchart LR
 - AWS is a fallback only, not the active deployment path.
 - No backend, RSVP, message, address collection, uploads, or dynamic albums are in current scope.
 - External link polish should be corrected before broadly sharing the archive.
-- The photo gallery should remain static unless later scope explicitly chooses dynamic/private photo features.
+- The photo gallery should remain static; planned scaling uses local/private generation plus committed public web assets rather than public upload/backend behavior.
 
 ### Gaps and Questions
 - Record the exact working GoDaddy domain and final forwarding target.
 - Decide which external hotel/activity links to replace, remove, or keep as historical plain text.
-- Decide which additional photos/captions should refine the first static gallery.
+- Add the real wedding photo repository before implementing the local photo pipeline.
+- Decide hero-photo, album-cover, caption, and exclusion choices during/after local review.
 - Decide whether to remove remaining unused countdown and validation assets.
 - Decide whether `contact.html` should eventually be renamed to match the visible `Info` label.
 
 ### Follow-On Artifacts
-- Use case diagram and behavioral matrices for UC-001 through UC-006, with UC-006 now implemented as an initial static gallery.
+- Use case diagram and behavioral matrices for UC-001 through UC-006 base behavior and UC-008 through UC-011 implemented photo/gallery/visual-refresh behavior.
 - Final requirements mapping in `documentation/requirements/requirements.md`.
 - FFBD/IDEF0/sequence/class/FMEA sections below.
 - Deployment footprint and PRD refresh in `documentation/planning/`.
@@ -135,15 +153,17 @@ flowchart LR
 - Context model above.
 - Current root HTML pages and static scan.
 - Current deployment, requirements, and planning docs.
+- Sprint research from `documentation/planning/sprints/2026-06-20-local-photo-curation-pipeline.md`, `2026-06-20-generated-gallery-lightbox.md`, and `2026-06-20-archive-visual-refresh.md`.
 
 ### System Boundary
-System boundary: Sonia and Steve Wedding Website. Actors and hosting/domain services are outside the boundary; static archive content, navigation, local assets, static gallery assets, and maintenance documentation are inside.
+System boundary: Sonia and Steve Wedding Website. Actors and hosting/domain services are outside the boundary; static archive content, navigation, local assets, static gallery assets, and maintenance documentation are inside. Planned future scope also includes a local-only photo curation/generation workflow and generated public gallery assets, but those capabilities are not current production behavior yet.
 
 ### Actors
 | Actor ID | Actor | Type | Description | Source |
 |---|---|---|---|---|
 | A-001 | Visitor / Guest | Person | Reads wedding archive content and follows links. | Site content |
 | A-002 | Site Maintainer | Person | Edits, verifies, and publishes the site. | Repo/docs workflow |
+| A-009 | Photo Curator | Person | Reviews local source photos, chooses inclusion/hero metadata, and generates public-safe gallery assets. | Sprint research |
 | A-003 | Browser | Runtime | Loads and renders static resources. | Site architecture |
 | A-004 | GitHub Pages | External service | Hosts production static files. | Deployment docs |
 | A-005 | GoDaddy Forwarder | External service | Forwards public domain to hosted URL. | User update |
@@ -161,6 +181,10 @@ System boundary: Sonia and Steve Wedding Website. Actors and hosting/domain serv
 | UC-005 | Maintain Archive Content | Keep archive content, links, assets, and docs aligned with current intent. | Site Maintainer | Medium | Maintenance change |
 | UC-006 | View Static Photo Gallery | Browse selected wedding photos without backend services. | Visitor / Guest | Medium | Gallery page request |
 | UC-007 | Request Public Paths | Crawl or request public paths without privileged access. | Bot / Crawler | Low | Public GET request |
+| UC-008 | Curate Source Photos Locally | Review ignored original photos and mark publish/hero/exclude decisions. | Photo Curator | High | Local review session |
+| UC-009 | Generate Static Gallery Assets | Produce optimized public web images, gallery metadata, and generation report from local curation state. | Site Maintainer | High | Local generation command |
+| UC-010 | Browse Generated Album Gallery | Browse folder-preserving album sections, thumbnails, and lightbox views from generated static assets. | Visitor / Guest | High | Generated gallery page request |
+| UC-011 | View Session-Stable Archive Hero | See a photo-first archive landing with a session-stable hero selected from explicit hero photos. | Visitor / Guest | Medium | Home page request |
 
 ### Mermaid Use Case Diagram
 
@@ -168,6 +192,7 @@ System boundary: Sonia and Steve Wedding Website. Actors and hosting/domain serv
 flowchart LR
   Guest[Actor: Visitor / Guest]
   Maintainer[Actor: Site Maintainer]
+  Curator[Actor: Photo Curator]
   Browser[Actor: Browser]
   Pages[Actor: GitHub Pages]
   GoDaddy[Actor: GoDaddy Forwarder]
@@ -182,33 +207,49 @@ flowchart LR
     UC5((Maintain Archive Content))
     UC6((View Static Photo Gallery))
     UC7((Request Public Paths))
+    UC8((Curate Source Photos Locally))
+    UC9((Generate Static Gallery Assets))
+    UC10((Browse Generated Album Gallery))
+    UC11((View Session-Stable Archive Hero))
   end
 
   Guest --> UC1
   Guest --> UC2
   Guest --> UC3
   Guest --> UC6
+  Guest --> UC10
+  Guest --> UC11
   Browser --> UC1
   Browser --> UC2
+  Browser --> UC10
+  Browser --> UC11
   Provider --> UC2
   Maintainer --> UC4
   Maintainer --> UC5
   Maintainer --> UC6
+  Maintainer --> UC9
+  Curator --> UC8
   Pages --> UC4
   GoDaddy --> UC4
   Bot --> UC7
 
   UC4 -. "<<include>>" .-> UC5
+  UC10 -. "planned replacement/refinement" .-> UC6
+  UC11 -. "planned enhancement" .-> UC1
 ```
 
 ### Relationships
 | Source | Relationship | Target | Meaning |
 |---|---|---|---|
 | Publish Static Website | include | Maintain Archive Content | Publication depends on maintained static source and checks. |
+| Generate Static Gallery Assets | dependency | Curate Source Photos Locally | Generation uses local review decisions and source-photo folders, but curation is not performed during public browsing. |
+| Browse Generated Album Gallery | implemented refinement | View Static Photo Gallery | The generated album/lightbox gallery is the scalable evolution of the implemented simple static gallery. |
+| View Session-Stable Archive Hero | implemented enhancement | View Wedding Archive | The refreshed home hero is a presentation enhancement using generated hero metadata or fallback. |
 
 ### Scope Notes
 - The site does not include a backend, database, auth, RSVP flow, contact submission flow, photo uploads, or dynamic/private albums.
-- Gallery scope is static checked-in photos/pages unless later rebaselined.
+- Current gallery scope is a static checked-in gallery page. Planned gallery scope remains static, but adds a private local curation/generation workflow and generated public assets.
+- Original wedding source photos and raw curation state are planned as local/private inputs, not public site assets.
 - External websites are linked destinations, not owned system behavior.
 - GoDaddy and GitHub Pages are external services that support access and publication.
 
@@ -221,14 +262,16 @@ flowchart LR
 ### Assumptions
 - Static archive reading/sharing is the primary user goal.
 - Maintenance and publication are lightweight manual workflows.
+- Future photo scaling should preserve the static hosting/no-backend boundary.
 
 ### Gaps and Questions
 - Confirm final public domain and whether forwarding remains the desired domain model.
 - Decide stale external link remediation strategy.
-- Select additional gallery photos/captions as desired.
+- Add the real wedding photo repository before implementing the local photo pipeline.
+- Decide final hero-photo, album-cover, caption, and exclude choices during or after local review.
 
 ### Follow-On Behavioral Models
-- UC-001 through UC-006 are the useful behavioral matrices for requirements and tests. UC-006 is implemented as an initial static gallery.
+- UC-001 through UC-006 describe base production behavior. UC-008 through UC-011 now describe implemented local photo pipeline, generated gallery/lightbox, and archive visual refresh behavior; real source-photo curation remains pending.
 
 ## Functional Flow Block Diagram
 
@@ -332,12 +375,12 @@ The site flow is static: a visitor reaches the hosted URL or working forwarded d
 ### Assumptions
 - GitHub Pages remains the production publication path.
 - No form/backend flow is part of the active functional flow.
-- Gallery flow remains static unless later scope changes.
+- Gallery flow remains static; planned scaling uses local generation and public web-sized assets.
 
 ### Gaps and Questions
 - Record final GoDaddy domain/target.
 - Complete external-link archive-polish review.
-- Curate additional static gallery photos/captions.
+- Implement the planned local photo pipeline before expanding the gallery to hundreds of photos.
 
 ### Change Recommendations
 - Remove remaining unused countdown and validation assets after confirming no future interactive feature needs them.
@@ -566,11 +609,11 @@ classDiagram
 
 ### Assumptions
 - A static structure remains intentionally simple for the current site.
-- Gallery should remain static content.
+- Gallery should remain static public content, with local/private tooling only for source-photo review and asset generation.
 
 ### Gaps and Questions
 - Whether to remove dead local scripts now.
-- Which additional photos and captions should refine the static gallery.
+- Which hero photos, album covers, exclusions, and optional captions should be chosen after local review.
 - Whether to introduce templates only if content maintenance grows.
 
 ### Change Recommendations
@@ -601,7 +644,7 @@ Analyze functional failures that could prevent visitors from reading the archive
 |---|---|---|---|---|---|---:|---:|---:|---|
 | Publication | F5 Maintain and Publish Site | GoDaddy forwarding regresses after future changes | Visitors cannot use the intended public domain reliably | Domain/hosting target changes or cache behavior | Record current working domain/target and re-check after publication changes | 4 | 2 | 8 | Medium |
 | External Links | F4 Open External Resource or Context Link | Known stale, closed, or rebranded external links remain clickable as recommendations | Visitors lose trust or receive misleading archive context | Old wedding-era outbound URLs | Audit and replace/remove/convert stale hotel/activity links | 3 | 4 | 12 | Medium |
-| Static Gallery | F7 Present Static Photo Gallery | Gallery images are too large or missing | Visitors cannot comfortably view wedding photos | Unoptimized files or broken paths | Keep gallery in static scan/smoke test and optimize if photo volume grows | 3 | 2 | 6 | Low |
+| Static Gallery | F7 Present Static Photo Gallery | Gallery images are too large or missing | Visitors cannot comfortably view wedding photos | Unoptimized files or broken paths | Keep gallery in static scan/smoke test and use the planned generator before adding many photos | 3 | 2 | 6 | Low |
 | Repository Hygiene | F6 Maintain Current Source | Remaining dead countdown/validation assets confuse future work | Maintainer may revive obsolete behavior or carry unnecessary JS | Legacy files retained after public script loads were removed | Remove or explicitly archive unused assets after reference check | 2 | 3 | 6 | Low |
 | Navigation | F3 Support Navigation | Mobile dropdown fails | Visitors cannot reach secondary pages easily | CDN/script failure or Bootstrap dependency issue | Smoke test mobile navigation and keep HTTPS script refs | 3 | 2 | 6 | Low |
 | Static Hosting | F1 Serve Static Website | Local asset reference breaks after edit | Broken images or styling | Manual HTML edits, case mismatch | Keep static scan as release check | 3 | 2 | 6 | Low |
@@ -609,7 +652,7 @@ Analyze functional failures that could prevent visitors from reading the archive
 
 ### Highest-Risk Items
 - Stale external links are the highest current archive-polish risk.
-- Gallery asset quality is lower risk after the initial static slice, but should be revisited if many photos are added.
+- Gallery asset quality is lower risk after the initial static slice, but the planned generator should be used before many photos are added.
 - Dead legacy assets are medium risk because they affect maintainability more than visitor safety.
 
 ### Corrective Action Plan
@@ -617,7 +660,7 @@ Analyze functional failures that could prevent visitors from reading the archive
 |---|---|---|---|---|
 | Medium | Record the exact working GoDaddy domain and target URL. | Site Maintainer | Passing public-domain smoke check. | F5 |
 | Medium | Audit hotels and Syracuse links, then replace, remove, or convert stale destinations. | Site Maintainer | Updated links and manual check notes. | F4 |
-| Low | Refine static gallery image set and captions. | Site Maintainer / Couple | Gallery page loads selected photos without backend calls. | F7 |
+| Low | Implement local photo curation/generation before large gallery expansion. | Site Maintainer / Couple | Generated public assets, metadata, and report from fixture photos. | F7 |
 | Low | Remove or archive remaining unused countdown/validation assets after source search. | Site Maintainer | Static scan and reference search still pass. | F6 |
 | Low | Keep static scan in release checklist. | Site Maintainer | 0 missing local refs and 0 server runtime refs. | F1 |
 
@@ -628,7 +671,7 @@ Analyze functional failures that could prevent visitors from reading the archive
 ### Gaps and Questions
 - Exact domain and target URL for working GoDaddy forwarding.
 - Owner preference for stale link replacement/removal/plain-text targets.
-- Additional gallery photo/caption selection.
+- Real photo repository availability and curation choices for hero photos, album covers, exclusions, and optional captions.
 - Whether dead assets should be deleted now or left until a cleanup sprint.
 
 ### Test Implications
@@ -636,7 +679,7 @@ Analyze functional failures that could prevent visitors from reading the archive
 - Browser smoke for all five pages and mobile nav.
 - Public-domain smoke after future publication changes.
 - Manual external-link audit.
-- Gallery image-path and visual smoke test.
+- Gallery image-path and visual smoke test; generated gallery/lightbox smoke after the planned gallery sprint.
 
 ## Historical Archive
 

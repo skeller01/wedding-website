@@ -1,0 +1,511 @@
+﻿window.WEDDING_GALLERY_DATA = {
+    "photos":  [
+                   {
+                       "sourcePath":  "kayak.JPG",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "kayak",
+                       "albumId":  "wedding-archive",
+                       "alt":  "Kayak",
+                       "large":  "images/gallery/generated/wedding-archive/large/kayak.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/kayak.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/kayak.jpg",
+                       "caption":  "",
+                       "title":  "Kayak"
+                   },
+                   {
+                       "sourcePath":  "rose_border.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "rose-border",
+                       "albumId":  "wedding-archive",
+                       "alt":  "Rose Border",
+                       "large":  "images/gallery/generated/wedding-archive/large/rose-border.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/rose-border.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/rose-border.jpg",
+                       "caption":  "",
+                       "title":  "Rose Border"
+                   },
+                   {
+                       "sourcePath":  "sangeeth_food.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "sangeeth-food",
+                       "albumId":  "wedding-archive",
+                       "alt":  "Sangeeth Food",
+                       "large":  "images/gallery/generated/wedding-archive/large/sangeeth-food.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/sangeeth-food.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/sangeeth-food.jpg",
+                       "caption":  "",
+                       "title":  "Sangeeth Food"
+                   },
+                   {
+                       "sourcePath":  "IMG_43821.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "img-43821",
+                       "albumId":  "wedding-archive",
+                       "alt":  "IMG 43821",
+                       "large":  "images/gallery/generated/wedding-archive/large/img-43821.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/img-43821.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/img-43821.jpg",
+                       "caption":  "",
+                       "title":  "IMG 43821"
+                   },
+                   {
+                       "sourcePath":  "IMG_56321.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "img-56321",
+                       "albumId":  "wedding-archive",
+                       "alt":  "IMG 56321",
+                       "large":  "images/gallery/generated/wedding-archive/large/img-56321.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/img-56321.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/img-56321.jpg",
+                       "caption":  "",
+                       "title":  "IMG 56321"
+                   },
+                   {
+                       "sourcePath":  "jefferson.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "jefferson",
+                       "albumId":  "wedding-archive",
+                       "alt":  "Jefferson",
+                       "large":  "images/gallery/generated/wedding-archive/large/jefferson.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/jefferson.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/jefferson.jpg",
+                       "caption":  "",
+                       "title":  "Jefferson"
+                   },
+                   {
+                       "sourcePath":  "sonia_steve2.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "sonia-steve2",
+                       "albumId":  "wedding-archive",
+                       "alt":  "Sonia Steve2",
+                       "large":  "images/gallery/generated/wedding-archive/large/sonia-steve2.jpg",
+                       "state":  "hero",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/sonia-steve2.jpg",
+                       "isHero":  true,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/sonia-steve2.jpg",
+                       "caption":  "",
+                       "title":  "Sonia Steve2"
+                   },
+                   {
+                       "sourcePath":  "university.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "university",
+                       "albumId":  "wedding-archive",
+                       "alt":  "University",
+                       "large":  "images/gallery/generated/wedding-archive/large/university.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/university.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/university.jpg",
+                       "caption":  "",
+                       "title":  "University"
+                   },
+                   {
+                       "sourcePath":  "white_flowers.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "white-flowers",
+                       "albumId":  "wedding-archive",
+                       "alt":  "White Flowers",
+                       "large":  "images/gallery/generated/wedding-archive/large/white-flowers.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/white-flowers.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/white-flowers.jpg",
+                       "caption":  "",
+                       "title":  "White Flowers"
+                   },
+                   {
+                       "sourcePath":  "sonia_drawing.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "sonia-drawing",
+                       "albumId":  "wedding-archive",
+                       "alt":  "Sonia Drawing",
+                       "large":  "images/gallery/generated/wedding-archive/large/sonia-drawing.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/sonia-drawing.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/sonia-drawing.jpg",
+                       "caption":  "",
+                       "title":  "Sonia Drawing"
+                   },
+                   {
+                       "sourcePath":  "sonia_steve.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "sonia-steve",
+                       "albumId":  "wedding-archive",
+                       "alt":  "Sonia Steve",
+                       "large":  "images/gallery/generated/wedding-archive/large/sonia-steve.jpg",
+                       "state":  "hero",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/sonia-steve.jpg",
+                       "isHero":  true,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/sonia-steve.jpg",
+                       "caption":  "",
+                       "title":  "Sonia Steve"
+                   },
+                   {
+                       "sourcePath":  "sonia_steve_resized.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "sonia-steve-resized",
+                       "albumId":  "wedding-archive",
+                       "alt":  "Sonia Steve Resized",
+                       "large":  "images/gallery/generated/wedding-archive/large/sonia-steve-resized.jpg",
+                       "state":  "hero",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/sonia-steve-resized.jpg",
+                       "isHero":  true,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/sonia-steve-resized.jpg",
+                       "caption":  "",
+                       "title":  "Sonia Steve Resized"
+                   },
+                   {
+                       "sourcePath":  "champ1.png",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "champ1-4f88c505",
+                       "albumId":  "wedding-archive",
+                       "alt":  "Champ1",
+                       "large":  "images/gallery/generated/wedding-archive/large/champ1-4f88c505.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/champ1-4f88c505.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/champ1-4f88c505.jpg",
+                       "caption":  "",
+                       "title":  "Champ1"
+                   },
+                   {
+                       "sourcePath":  "clarks.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "clarks",
+                       "albumId":  "wedding-archive",
+                       "alt":  "Clarks",
+                       "large":  "images/gallery/generated/wedding-archive/large/clarks.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/clarks.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/clarks.jpg",
+                       "caption":  "",
+                       "title":  "Clarks"
+                   },
+                   {
+                       "sourcePath":  "court_yard.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "court-yard",
+                       "albumId":  "wedding-archive",
+                       "alt":  "Court Yard",
+                       "large":  "images/gallery/generated/wedding-archive/large/court-yard.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/court-yard.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/court-yard.jpg",
+                       "caption":  "",
+                       "title":  "Court Yard"
+                   },
+                   {
+                       "sourcePath":  "champ.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "champ",
+                       "albumId":  "wedding-archive",
+                       "alt":  "Champ",
+                       "large":  "images/gallery/generated/wedding-archive/large/champ.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/champ.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/champ.jpg",
+                       "caption":  "",
+                       "title":  "Champ"
+                   },
+                   {
+                       "sourcePath":  "champ.png",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "champ-061414c2",
+                       "albumId":  "wedding-archive",
+                       "alt":  "Champ",
+                       "large":  "images/gallery/generated/wedding-archive/large/champ-061414c2.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/champ-061414c2.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/champ-061414c2.jpg",
+                       "caption":  "",
+                       "title":  "Champ"
+                   },
+                   {
+                       "sourcePath":  "champ1.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "champ1",
+                       "albumId":  "wedding-archive",
+                       "alt":  "Champ1",
+                       "large":  "images/gallery/generated/wedding-archive/large/champ1.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/champ1.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/champ1.jpg",
+                       "caption":  "",
+                       "title":  "Champ1"
+                   },
+                   {
+                       "sourcePath":  "IMG_07791 (1).jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "img-07791-1",
+                       "albumId":  "wedding-archive",
+                       "alt":  "IMG 07791 (1)",
+                       "large":  "images/gallery/generated/wedding-archive/large/img-07791-1.jpg",
+                       "state":  "hero",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/img-07791-1.jpg",
+                       "isHero":  true,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/img-07791-1.jpg",
+                       "caption":  "",
+                       "title":  "IMG 07791 (1)"
+                   },
+                   {
+                       "sourcePath":  "IMG_07791.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "img-07791",
+                       "albumId":  "wedding-archive",
+                       "alt":  "IMG 07791",
+                       "large":  "images/gallery/generated/wedding-archive/large/img-07791.jpg",
+                       "state":  "hero",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/img-07791.jpg",
+                       "isHero":  true,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/img-07791.jpg",
+                       "caption":  "",
+                       "title":  "IMG 07791"
+                   },
+                   {
+                       "sourcePath":  "IMG_43151.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "img-43151",
+                       "albumId":  "wedding-archive",
+                       "alt":  "IMG 43151",
+                       "large":  "images/gallery/generated/wedding-archive/large/img-43151.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/img-43151.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/img-43151.jpg",
+                       "caption":  "",
+                       "title":  "IMG 43151"
+                   },
+                   {
+                       "sourcePath":  "golden_rose.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "golden-rose",
+                       "albumId":  "wedding-archive",
+                       "alt":  "Golden Rose",
+                       "large":  "images/gallery/generated/wedding-archive/large/golden-rose.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/golden-rose.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/golden-rose.jpg",
+                       "caption":  "",
+                       "title":  "Golden Rose"
+                   },
+                   {
+                       "sourcePath":  "hotel_syracuse.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "hotel-syracuse",
+                       "albumId":  "wedding-archive",
+                       "alt":  "Hotel Syracuse",
+                       "large":  "images/gallery/generated/wedding-archive/large/hotel-syracuse.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/hotel-syracuse.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/hotel-syracuse.jpg",
+                       "caption":  "",
+                       "title":  "Hotel Syracuse"
+                   },
+                   {
+                       "sourcePath":  "ice_rink.jpg",
+                       "focalPoint":  {
+                                          "y":  50,
+                                          "x":  50
+                                      },
+                       "id":  "ice-rink",
+                       "albumId":  "wedding-archive",
+                       "alt":  "Ice Rink",
+                       "large":  "images/gallery/generated/wedding-archive/large/ice-rink.jpg",
+                       "state":  "include",
+                       "thumb":  "images/gallery/generated/wedding-archive/thumb/ice-rink.jpg",
+                       "isHero":  false,
+                       "hero":  "images/gallery/generated/wedding-archive/hero/ice-rink.jpg",
+                       "caption":  "",
+                       "title":  "Ice Rink"
+                   }
+               ],
+    "version":  1,
+    "heroPhotos":  [
+                       {
+                           "sourcePath":  "sonia_steve_resized.jpg",
+                           "focalPoint":  {
+                                              "y":  50,
+                                              "x":  50
+                                          },
+                           "id":  "sonia-steve-resized",
+                           "albumId":  "wedding-archive",
+                           "alt":  "Sonia Steve Resized",
+                           "large":  "images/gallery/generated/wedding-archive/large/sonia-steve-resized.jpg",
+                           "state":  "hero",
+                           "thumb":  "images/gallery/generated/wedding-archive/thumb/sonia-steve-resized.jpg",
+                           "isHero":  true,
+                           "hero":  "images/gallery/generated/wedding-archive/hero/sonia-steve-resized.jpg",
+                           "caption":  "",
+                           "title":  "Sonia Steve Resized"
+                       },
+                       {
+                           "sourcePath":  "sonia_steve2.jpg",
+                           "focalPoint":  {
+                                              "y":  50,
+                                              "x":  50
+                                          },
+                           "id":  "sonia-steve2",
+                           "albumId":  "wedding-archive",
+                           "alt":  "Sonia Steve2",
+                           "large":  "images/gallery/generated/wedding-archive/large/sonia-steve2.jpg",
+                           "state":  "hero",
+                           "thumb":  "images/gallery/generated/wedding-archive/thumb/sonia-steve2.jpg",
+                           "isHero":  true,
+                           "hero":  "images/gallery/generated/wedding-archive/hero/sonia-steve2.jpg",
+                           "caption":  "",
+                           "title":  "Sonia Steve2"
+                       },
+                       {
+                           "sourcePath":  "sonia_steve.jpg",
+                           "focalPoint":  {
+                                              "y":  50,
+                                              "x":  50
+                                          },
+                           "id":  "sonia-steve",
+                           "albumId":  "wedding-archive",
+                           "alt":  "Sonia Steve",
+                           "large":  "images/gallery/generated/wedding-archive/large/sonia-steve.jpg",
+                           "state":  "hero",
+                           "thumb":  "images/gallery/generated/wedding-archive/thumb/sonia-steve.jpg",
+                           "isHero":  true,
+                           "hero":  "images/gallery/generated/wedding-archive/hero/sonia-steve.jpg",
+                           "caption":  "",
+                           "title":  "Sonia Steve"
+                       },
+                       {
+                           "sourcePath":  "IMG_07791 (1).jpg",
+                           "focalPoint":  {
+                                              "y":  50,
+                                              "x":  50
+                                          },
+                           "id":  "img-07791-1",
+                           "albumId":  "wedding-archive",
+                           "alt":  "IMG 07791 (1)",
+                           "large":  "images/gallery/generated/wedding-archive/large/img-07791-1.jpg",
+                           "state":  "hero",
+                           "thumb":  "images/gallery/generated/wedding-archive/thumb/img-07791-1.jpg",
+                           "isHero":  true,
+                           "hero":  "images/gallery/generated/wedding-archive/hero/img-07791-1.jpg",
+                           "caption":  "",
+                           "title":  "IMG 07791 (1)"
+                       },
+                       {
+                           "sourcePath":  "IMG_07791.jpg",
+                           "focalPoint":  {
+                                              "y":  50,
+                                              "x":  50
+                                          },
+                           "id":  "img-07791",
+                           "albumId":  "wedding-archive",
+                           "alt":  "IMG 07791",
+                           "large":  "images/gallery/generated/wedding-archive/large/img-07791.jpg",
+                           "state":  "hero",
+                           "thumb":  "images/gallery/generated/wedding-archive/thumb/img-07791.jpg",
+                           "isHero":  true,
+                           "hero":  "images/gallery/generated/wedding-archive/hero/img-07791.jpg",
+                           "caption":  "",
+                           "title":  "IMG 07791"
+                       }
+                   ],
+    "generatedAt":  "2026-06-20T19:15:04.7024558-04:00",
+    "albums":  [
+                   {
+                       "name":  "Wedding Archive",
+                       "id":  "wedding-archive",
+                       "count":  24,
+                       "coverId":  "sonia-steve2",
+                       "sourceFolder":  "wedding-archive"
+                   }
+               ],
+    "sourceMode":  "existing-images-placeholder"
+};

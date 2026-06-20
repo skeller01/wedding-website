@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Throwaway Archive Visual Refresh Variants</title>
+  <style>
+    :root {
+      --ink: #242220;
+      --paper: #fffdf9;
+      --soft: #f4f1ed;
+      --line: #d9d2c8;
+      --rose: #8f3f4d;
+      --sage: #64766a;
+      --blue: #2f5268;
+      --gold: #b28b42;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.55;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .prototype-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      gap: 8px;
+      padding: 12px 18px;
+      overflow-x: auto;
+      background: rgba(255, 253, 249, .94);
+      border-bottom: 1px solid var(--line);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .prototype-nav a {
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 8px 10px;
+      text-decoration: none;
+      white-space: nowrap;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .variant {
+      min-height: 100vh;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      color: var(--rose);
+      font: 700 12px/1.2 Arial, Helvetica, sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .button-row a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+      padding: 10px 14px;
+      font: 700 14px/1 Arial, Helvetica, sans-serif;
+      text-decoration: none;
+    }
+
+    .button-row a.primary {
+      color: #fff;
+      background: var(--rose);
+      border-color: var(--rose);
+    }
+
+    .variant-a .hero {
+      min-height: 82vh;
+      display: grid;
+      align-items: end;
+      padding: 96px 28px 52px;
+      color: #fff;
+      background:
+        linear-gradient(rgba(20, 20, 20, .2), rgba(20, 20, 20, .72)),
+        url("../../../../images/white_flowers.jpg") center/cover;
+    }
+
+    .variant-a .hero-inner {
+      max-width: 900px;
+    }
+
+    .variant-a h1 {
+      margin: 8px 0 12px;
+      font-size: clamp(44px, 8vw, 96px);
+      line-height: .95;
+      font-weight: 400;
+    }
+
+    .variant-a .hero p {
+      max-width: 680px;
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .memory-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .memory-strip div {
+      min-height: 124px;
+      padding: 22px;
+      border-right: 1px solid var(--line);
+    }
+
+    .memory-strip div:last-child {
+      border-right: 0;
+    }
+
+    .memory-strip strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--blue);
+      font: 700 13px/1.2 Arial, Helvetica, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .variant-b {
+      padding: 86px 24px 60px;
+      background: var(--soft);
+    }
+
+    .museum-layout {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: 28px;
+      align-items: start;
+    }
+
+    .museum-intro {
+      position: sticky;
+      top: 74px;
+      padding-right: 18px;
+    }
+
+    .museum-intro h2,
+    .journal-text h2 {
+      margin: 10px 0 12px;
+      font-size: 38px;
+      line-height: 1.05;
+      font-weight: 400;
+    }
+
+    .museum-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .museum-card {
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .museum-card img {
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+    }
+
+    .museum-card div {
+      padding: 15px;
+    }
+
+    .museum-card h3 {
+      margin: 0 0 6px;
+      font-size: 20px;
+      font-weight: 400;
+    }
+
+    .museum-card p {
+      margin: 0;
+      color: #5e5a54;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+    }
+
+    .variant-c {
+      background: #fff;
+    }
+
+    .journal-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr);
+      min-height: 76vh;
+    }
+
+    .journal-photo img {
+      height: 100%;
+      min-height: 520px;
+      object-fit: cover;
+    }
+
+    .journal-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 64px 42px;
+      background: #fff;
+    }
+
+    .journal-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+    }
+
+    .journal-list a {
+      min-height: 150px;
+      padding: 24px;
+      border-right: 1px solid var(--line);
+      text-decoration: none;
+    }
+
+    .journal-list a:last-child {
+      border-right: 0;
+    }
+
+    .journal-list strong {
+      display: block;
+      color: var(--sage);
+      font: 700 13px/1.2 Arial, Helvetica, sans-serif;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .journal-list span {
+      display: block;
+      margin-top: 10px;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    .prototype-read {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 52px 24px 72px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .prototype-read h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 34px;
+      font-weight: 400;
+    }
+
+    .prototype-read li {
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 820px) {
+      .memory-strip,
+      .museum-layout,
+      .museum-grid,
+      .journal-hero,
+      .journal-list {
+        grid-template-columns: 1fr;
+      }
+
+      .museum-intro {
+        position: static;
+      }
+
+      .journal-photo img {
+        min-height: 0;
+      }
+
+      .journal-list a {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="prototype-nav" aria-label="Prototype variants">
+    <a href="#variant-a">Variant A: Archive Hero</a>
+    <a href="#variant-b">Variant B: Museum Wall</a>
+    <a href="#variant-c">Variant C: Journal Landing</a>
+    <a href="#prototype-read">Readout</a>
+  </nav>
+
+  <section id="variant-a" class="variant variant-a">
+    <div class="hero">
+      <div class="hero-inner">
+        <span class="eyebrow">Archive direction A</span>
+        <h1>Sonia and Steve</h1>
+        <p>A wedding archive that opens with one confident image, quieter typography, and simple routes into the story, gallery, and weekend context.</p>
+        <div class="button-row">
+          <a class="primary" href="#variant-a">View Gallery</a>
+          <a href="#variant-a">Read Our Story</a>
+        </div>
+      </div>
+    </div>
+    <div class="memory-strip">
+      <div><strong>Weekend</strong>May 25-26, 2017 in Syracuse, New York.</div>
+      <div><strong>Sangeet</strong>Hotel Syracuse anchors the first night.</div>
+      <div><strong>Ceremony</strong>Landmark Theater holds the ceremony memory.</div>
+      <div><strong>Archive</strong>Photos and notes stay static, shareable, and low-maintenance.</div>
+    </div>
+  </section>
+
+  <section id="variant-b" class="variant variant-b">
+    <div class="museum-layout">
+      <aside class="museum-intro">
+        <span class="eyebrow">Archive direction B</span>
+        <h2>Museum Wall</h2>
+        <p>Make the site feel curated: a left rail explains the archive, while repeated image records organize the best memories.</p>
+        <div class="button-row">
+          <a class="primary" href="#variant-b">Open Gallery</a>
+          <a href="#variant-b">Travel Context</a>
+        </div>
+      </aside>
+      <div class="museum-grid">
+        <article class="museum-card">
+          <img src="../../../../images/sonia_steve_resized.jpg" alt="Sonia and Steve together">
+          <div><h3>Together</h3><p>A warm first image for the archive.</p></div>
+        </article>
+        <article class="museum-card">
+          <img src="../../../../images/hotel_syracuse.jpg" alt="Hotel Syracuse">
+          <div><h3>Sangeet</h3><p>Place-based memory for the wedding weekend.</p></div>
+        </article>
+        <article class="museum-card">
+          <img src="../../../../images/IMG_43821.jpg" alt="Wedding celebration">
+          <div><h3>Celebration</h3><p>Works as a caption-first gallery pattern.</p></div>
+        </article>
+        <article class="museum-card">
+          <img src="../../../../images/golden_rose.jpg" alt="Golden rose detail">
+          <div><h3>Details</h3><p>Small objects add texture without extra features.</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="variant-c" class="variant variant-c">
+    <div class="journal-hero">
+      <div class="journal-photo">
+        <img src="../../../../images/sonia_steve.jpg" alt="Sonia and Steve portrait">
+      </div>
+      <div class="journal-text">
+        <span class="eyebrow">Archive direction C</span>
+        <h2>A Photo-First Wedding Journal</h2>
+        <p>This option makes the site feel like a small personal publication: one large image, restrained copy, and clear chapter links.</p>
+        <div class="button-row">
+          <a class="primary" href="#variant-c">Browse Photos</a>
+          <a href="#variant-c">Weekend Notes</a>
+        </div>
+      </div>
+    </div>
+    <div class="journal-list">
+      <a href="#variant-c"><strong>01</strong><span>Wedding Story</span></a>
+      <a href="#variant-c"><strong>02</strong><span>Photo Gallery</span></a>
+      <a href="#variant-c"><strong>03</strong><span>Syracuse Context</span></a>
+    </div>
+  </section>
+
+  <section id="prototype-read" class="prototype-read">
+    <h2>Prototype Readout</h2>
+    <p>Recommended direction: combine Variant A's stronger first impression with Variant C's chapter-style navigation. Variant B is useful for the gallery page, but it feels too editorially heavy for the home page.</p>
+    <ul>
+      <li>Biggest easy win: make the home page feel like an archive landing page, not an old event logistics page.</li>
+      <li>Second win: reduce button-heavy Bootstrap styling in the navbar and page actions.</li>
+      <li>Third win: use consistent caption treatments across gallery, story, and venue memories.</li>
+    </ul>
+  </section>
+</body>
+</html>

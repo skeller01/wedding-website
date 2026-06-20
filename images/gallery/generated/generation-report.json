@@ -1,0 +1,15 @@
+﻿{
+    "heroCount":  5,
+    "publicDataScriptPath":  "js/gallery-data.js",
+    "albumCount":  1,
+    "warnings":  [
+                     "Photo ID collision resolved for champ.png.",
+                     "Photo ID collision resolved for champ1.png."
+                 ],
+    "excludedCount":  0,
+    "publishedCount":  24,
+    "generatedAt":  "2026-06-20T19:15:04.7024558-04:00",
+    "sourceCount":  24,
+    "publicDataPath":  "data/gallery-data.json",
+    "outputDir":  "images/gallery/generated"
+}
