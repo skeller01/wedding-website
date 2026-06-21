@@ -9,7 +9,7 @@
 - Ordered requirements refresh: `documentation/requirements/requirements.md`.
 - Ordered deployment refresh: `documentation/planning/deployment-footprint.md`.
 - Repository files and static scan evidence.
-- Sprint plans: `documentation/planning/sprints/2026-06-20-local-photo-curation-pipeline.md`, `2026-06-20-generated-gallery-lightbox.md`, and `2026-06-20-archive-visual-refresh.md`.
+- Sprint plans: `documentation/planning/sprints/2026-06-20-local-photo-curation-pipeline.md`, `2026-06-20-generated-gallery-lightbox.md`, `2026-06-20-archive-visual-refresh.md`, `2026-06-20-variant-c-publishable-site-hardening.md`, and `2026-06-20-remove-contact-page-links.md`.
 - Prototype and grilling decisions captured under `documentation/planning/working/prototype-lab/`.
 
 ### Document Mode
@@ -25,6 +25,7 @@ No new material conflict blocks the PRD. Older documentation still contains AWS/
 - Current photo direction: originals stay local/ignored; a local review/generation pipeline now creates committed public web assets and metadata for a generated static gallery.
 - Current visual direction: the public site now has a wedding archive/photo album landing feel, with a session-stable hero photo selected from generated hero metadata or fallback.
 - Current page-set decision: the temporary Info/contact page has been removed for now; the site keeps the no-collection posture by omitting visitor-submission paths rather than showing a standalone policy page.
+- Current implementation decision: the photo pipeline is implemented in PowerShell/.NET in `tools/photo-pipeline.ps1`; Python/Pillow is only a possible future portability option, not the current baseline.
 - No grilling question was needed because the available source evidence supports these defaults.
 
 ### Problem Statement
@@ -70,9 +71,10 @@ Keep the site as plain static HTML/CSS/JS/images on GitHub Pages, preserve the e
 ### Recommended MVP / Release Slice
 The MVP is implemented as a static GitHub Pages wedding archive with no backend, generated placeholder gallery assets, and a refreshed archive landing. The just-completed sprint sequence was:
 
-1. Local Photo Curation Pipeline: create ignored original-photo conventions, a local browser review app, private curation JSON, optimized JPEG generation, public metadata, and a generation report.
-2. Generated Gallery and Lightbox: replace/refine the hand-built gallery with generated album sections, counts, thumbnails, large images, keyboard lightbox behavior, and stable photo hash links.
-3. Archive Visual Refresh: update the public front end toward a photo-first wedding archive/photo album with session-stable hero behavior and chapter navigation.
+1. Local Photo Curation Pipeline: created ignored original-photo conventions, a local browser review app, private curation JSON, optimized JPEG generation, public metadata, and a generation report.
+2. Generated Gallery and Lightbox: replaced/refined the hand-built gallery with generated album sections, counts, thumbnails, large images, keyboard lightbox behavior, and stable photo hash links.
+3. Archive Visual Refresh and Variant C Hardening: updated the public front end toward a photo-first wedding archive/photo album with session-stable hero behavior, chapter navigation, and a publishable five-page shell.
+4. Remove Contact Page Links: removed the temporary Info/contact page and production links, preserving the no-collection posture through absence of visitor-submission paths.
 
 The next practical cleanup items remain valid supporting work: record the GoDaddy domain/target, audit stale outbound links, remove or explicitly archive dead legacy interaction assets, and replace placeholder-generated photos with the real wedding source folder when available.
 
@@ -118,7 +120,7 @@ Use GitHub Pages for current production static hosting, working GoDaddy forwardi
 
 ### Candidate Requirements
 - Serve the home page as the default entry point.
-- Present public wedding, story, lodging, local, and info content.
+- Present public wedding, story, lodging, local, and gallery content.
 - Preserve travel/local pages as historical archive context.
 - Provide internal navigation on desktop and mobile.
 - Keep local asset references deploy-safe and case-correct.
@@ -142,9 +144,9 @@ Use GitHub Pages for current production static hosting, working GoDaddy forwardi
 - Do not reintroduce form/backend behavior.
 - Treat `js/app.js`, `js/jquery.countdown.js`, `js/jqBootstrapValidation.js`, `css/jquery.countdown.js`, and extracted validation vendor files as cleanup candidates after reference checks.
 - Treat external link updates as archive-polish/content reliability work, not architecture work.
-- Treat the current gallery as static HTML/image content until the generated-gallery sprint replaces/refines it.
+- Treat the current gallery as generated static HTML/data/image content with no public upload, account, or backend behavior.
 - Keep original wedding photos under an ignored local source folder and commit only generated public web assets.
-- Prefer a local Python/Pillow review/generation tool for the photo pipeline, with public `gallery-data.json` and ignored private curation state.
+- Use the implemented local PowerShell/.NET review/generation tool for the photo pipeline, with public `gallery-data.json`/`gallery-data.js` and ignored private curation state. A Python/Pillow port is optional future work only if portability becomes more valuable than the current working tool.
 - Preserve source folders as public album sections by default, with display-name overrides.
 - Use vanilla JavaScript for the public lightbox and hero session behavior.
 

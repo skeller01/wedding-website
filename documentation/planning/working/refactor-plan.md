@@ -1,381 +1,488 @@
 # Refactor Plan
 
 ## Source Inputs
-- User direction from this session:
-  - Variant C from `documentation/planning/working/prototypes/archive_visual_refresh_variants.html` is the preferred visual direction.
-  - The desired site feel is a wedding archive photo album / historical wedding website.
-  - The look should carry across the pages if possible.
-  - Public site remains static; no backend or build-system migration unless deliberately selected later.
-- Prototype source:
-  - `documentation/planning/working/prototypes/archive_visual_refresh_variants.html`
-  - Variant C CSS: `.variant-c`, `.journal-hero`, `.journal-photo img`, `.journal-text`, `.journal-list`
-  - Variant C markup: one large photo, editorial text, two actions, and three chapter links.
-- Product / requirements docs:
+- User request:
+  - Full repository-level `refactor-planner` audit.
+  - Review implementation approach and check `documentation/` for coherence and consistency.
+- Durable product / architecture docs:
   - `documentation/planning/prd.md`
+  - `documentation/planning/deployment-footprint.md`
   - `documentation/requirements/requirements.md`
+  - `documentation/requirements/use-case-requirements.md`
   - `documentation/requirements/current-state-design.md`
-  - `documentation/planning/sprints/2026-06-20-archive-visual-refresh.md`
-  - `documentation/planning/working/prototype-lab/2026-06-20-archive-visual-refresh.md`
-- Public code reviewed:
-  - `index.html`, `about.html`, `gallery.html`, `contact.html`, `hotels.html`, `syracuse.html`
+  - `documentation/README.md`
+- Sprint and working evidence:
+  - `documentation/planning/sprints/README.md`
+  - all files under `documentation/planning/sprints/`
+  - `documentation/planning/working/prototype-lab/README.md`
+  - `documentation/planning/working/prototype-lab/*.md`
+  - `documentation/planning/working/prototypes/*.html`
+  - previous `documentation/planning/working/refactor-plan.md`
+- Public site code:
+  - `index.html`, `about.html`, `gallery.html`, `hotels.html`, `syracuse.html`
   - `css/style.css`
   - `js/archive-home.js`, `js/gallery.js`, `js/gallery-data.js`
   - `data/gallery-data.json`
-- Local tooling reviewed:
+- Local tooling:
   - `tools/photo-pipeline.ps1`
-  - `documentation/planning/working/prototypes/static_site_scan.ps1`
-- Verification performed:
-  - Static scan: 6 HTML pages, 76 local references resolved, 0 missing references, 0 server-side runtime references, 0 PHP files, 13 external references.
-  - Browser automation attempted but unavailable in this environment due the Node/browser tool returning `codex/sandbox-state-meta: missing field sandboxPolicy`.
+  - `tools/photo-pipeline.tests.ps1`
+  - `tools/README.md`
+  - `.gitignore`
+- Legacy / cleanup candidates:
+  - `js/app.js`
+  - `js/jquery.countdown.js`
+  - `js/jqBootstrapValidation.js`
+  - `js/ReactiveRaven-jqBootstrapValidation-1.3.6-0-gd66d033*`
+  - `css/jquery.countdown.js`
+  - legacy CSS selectors in `css/style.css`
+- Checks run for this audit:
+  - `powershell -NoProfile -ExecutionPolicy Bypass -File documentation/planning/working/prototypes/static_site_scan.ps1`
+    - Result: 5 HTML pages, 52 local references resolved, 0 missing references, 0 server-side runtime references, 0 PHP files, 11 external references.
+  - `powershell -NoProfile -ExecutionPolicy Bypass -File tools/photo-pipeline.tests.ps1`
+    - Result: generated 2 public photos across 2 albums; metadata/report produced; tests passed.
 
 ## Review Mode
 Repository Audit.
 
-This is a working static site with recently added gallery, photo-pipeline, and visual-refresh code. The review focuses on architecture and implementation seams that would let the accepted Variant C direction become coherent across the whole site without turning the project into a new framework rewrite.
+This is a working static site with code, tests, durable requirements, sprint plans, prototype evidence, and a local photo pipeline. The audit treats durable docs as current truth, sprint/prototype docs as historical or working evidence unless explicitly promoted, and code/tests as the strongest observed source.
+
+## Coherence Cleanup Status
+Updated 2026-06-20 after the documentation coherence pass:
+
+- `documentation/planning/sprints/README.md` now rolls implemented sprints up as implemented, superseded, historical, or fallback instead of leaving all recent work as `Planned`.
+- `documentation/planning/prd.md` now treats the PowerShell/.NET photo pipeline as the implemented baseline; Python/Pillow is only a possible future portability option.
+- Durable requirements and current-state docs now describe the generated gallery, local photo pipeline, and session-stable hero as implemented current behavior, with real source-photo curation still pending.
+- Historical sprint/prototype bodies still preserve old `contact.html` and six-page assumptions as evidence, but the current index and durable docs identify the active five-page site and deferred Info/contact route.
 
 ## Architecture Vocabulary
-- **Variant C visual contract**: the accepted prototype pattern: photo-first journal layout, restrained editorial copy, three chapter links, off-white/white paper feel, serif-led typography, and quiet outlined/primary actions.
-- **Page shell**: the repeated public-page structure: head assets, nav, page header/hero, main content, shared event/context footer, and scripts.
-- **Archive content**: static historical wedding/story/travel/gallery material intended for sharing.
-- **Legacy logistics content**: original event-planning blocks, active-travel links, invitation/contact/form-era wording, and repeated Sangeet/Ceremony tables.
-- **Visual system seam**: CSS/markup conventions that let each page adopt the same journal look without each page inventing its own layout.
-- **Generated media seam**: the boundary between local photo tooling, generated public metadata/assets, and the public HTML/JS that consumes them.
+- **Public site shell**: the repeated HTML/CSS structure used by Home, Story, Gallery, Hotels, and Syracuse.
+- **Variant C contract**: the accepted journal-style visual direction: photo-first home, restrained copy, interior archive pages, and no active event logistics.
+- **Release contract**: the checks and invariants that must pass before publishing: static refs, no backend/form/PHP, current route set, gallery data/assets, and manual browser smoke.
+- **Durable docs**: current PRD, deployment footprint, requirements, use-case requirements, and current-state design.
+- **Working evidence**: prototypes, sprint records, and analysis notes that explain how decisions were reached but may describe older states.
+- **Generated media seam**: the boundary between ignored original photos, private curation state, generated public images/data, and the public gallery/lightbox.
+- **Deep module**: a module that hides meaningful behavior behind a small interface. Current best examples are `tools/photo-pipeline.ps1 generate` and the static scan script.
+- **Shallow module**: a file or section whose caller must understand too much implementation detail. Current examples include repeated nav markup and the mixed legacy/current CSS file.
 
 ## System / Change Context
-The current code has moved toward Variant C on the home page, but the site still reads as two systems at once:
+The repository is now much healthier than earlier in the project:
 
-- The top of `index.html` now resembles Variant C.
-- Immediately after the journal section, the older event logistics `.location` block appears.
-- Other pages have a new `page-journal-header`, but their body content remains mostly Bootstrap-era cards, circles, buttons, tables, and repeated logistics footers.
-- The navigation is still button-heavy and repeated manually across all six pages.
-- The gallery is functionally static and generated, but visually it does not yet feel like the same wedding journal as Variant C.
+- The public site is static and deployable.
+- The public page set is now 5 root pages: `index.html`, `about.html`, `gallery.html`, `hotels.html`, `syracuse.html`.
+- The temporary `contact.html` / Info page has been removed from production and from durable active docs.
+- The gallery and local photo pipeline are real, testable functionality, not just plans.
+- Static scan and photo-pipeline tests pass.
 
-The core refactor opportunity is to make Variant C a reusable page-level contract instead of a one-off home patch.
+The main problem is no longer "make it work." The highest-risk documentation drift found by this audit has now been addressed in the current docs and indexes. Remaining risks are cleanup and release-hardening items:
+
+- Sprint records and prototype docs intentionally preserve older states, but the sprint index now labels implemented/superseded/historical status.
+- Earlier working notes may still reference `contact.html`, six pages, old logistics blocks, and pre-implementation layout issues as historical evidence.
+- Durable docs now agree that the implemented photo pipeline is PowerShell/.NET, with Python/Pillow only a possible future portability option.
+- `css/style.css` still carries old carousel/countdown/page-journal selectors that are no longer used by production pages.
+- Legacy countdown/form-validation assets remain in the repository even though the product has retired that behavior.
+- `tools/photo-pipeline.ps1` is valuable but large; placeholder data, generation, review-server behavior, and HTTP handling live in one file.
+
+## Source Claim Classification
+| Claim | Classification | Evidence | Notes |
+|---|---|---|---|
+| Public site is static GitHub Pages-oriented HTML/CSS/JS. | Observed / Accepted | Static scan; deployment footprint; PRD | Strong and coherent. |
+| Active root page count is 5. | Observed / Accepted | Static scan; production files | Durable docs now agree. |
+| `contact.html` is removed for now. | Observed / Accepted | File absent; requirements updated | Sprint/prototype history still references it, correctly as history. |
+| No public RSVP/address/message/upload/account/contact flow exists. | Observed / Accepted | Source scans; requirements | Strong. |
+| Local photo review/generation tool exists. | Observed | `tools/photo-pipeline.ps1`; test passes | Implemented in PowerShell/.NET. |
+| Photo pipeline current implementation is PowerShell/.NET. | Observed / Accepted | `tools/photo-pipeline.ps1`; requirements; PRD | Python/Pillow is now documented only as a possible future portability option. |
+| Variant C is the visual direction. | Accepted | Prototype records, sprint docs, production classes | Public pages mostly follow it now. |
+| Sprint plans 1-5 are implemented or superseded. | Accepted | `documentation/planning/sprints/README.md`; sprint implementation evidence | Index now rolls status up correctly. |
+| Old countdown/form-validation assets are current behavior. | Stale | Source search: not referenced by public pages | Good cleanup candidate. |
+| Browser automation is available. | Conflicting / Environment-dependent | Prior attempts failed with sandbox metadata error | Manual browser smoke remains required. |
+
+## Documentation Coherency Verdict
+Overall after cleanup: **coherent at the durable-doc and index level; historical working/sprint bodies still intentionally preserve older states.**
+
+| Area | Coherency | Evidence | Risk |
+|---|---|---|---|
+| Durable requirements | Good | Requirements reflect 5 pages, deferred Info/contact route, no backend, implemented photo pipeline. | Low |
+| Use cases | Good | UC-003 is deferred; gallery/photo pipeline flows active. | Low |
+| Current-state design | Good | Current page set, implemented photo tooling, generated gallery, and scan result are current. | Low/Medium: diagrams are broad and may need pruning after code cleanup. |
+| PRD | Good | Product scope and implementation baseline now agree. | Low |
+| Deployment footprint | Good | Static/no-backend/GitHub Pages direction is clear. | Low |
+| Sprint index | Good | Implemented sprints are labeled as implemented/superseded/historical/fallback. | Low |
+| Sprint records | Mixed by design | Older sprint evidence still names `contact.html` and 6-page scan results. | Low: acceptable because the index and durable docs now identify current truth. |
+| Prototype records | Historical/working | Variant C prototype still includes Info/contact. | Low: should not be edited unless promoted again. |
+| Previous refactor plan | Stale | Replaced by this audit. | Resolved by this update. |
 
 ## Refactor Candidates
 | Candidate | Architecture Value | Requirement / Mission Driver | Delivery Risk | Resource Constraints | Suggested PR Size | Test Surface | Recommendation |
 |---|---|---|---|---|---|---|---|
-| Variant C page shell and visual contract | High: turns an accepted prototype into a repeatable site pattern and removes the home/other-page split. | REQ-002, REQ-003, REQ-005, REQ-006, REQ-021, REQ-032; user wants Variant C across pages. | Medium: visible UI changes on every page require careful smoke/visual review. | Must stay static; no build system by default; browser automation currently unavailable. | Medium PR: `index.html`, five subpages, `css/style.css`, maybe small JS copy/behavior changes. | Static scan, source scan, manual desktop/mobile browser check, gallery smoke. | **Top recommendation** |
-| Replace prototype copy with archive-ready production copy | Medium: removes throwaway wording that leaked from the prototype. | Archive should feel shareable and personal, not like an option in a design doc. | Low | Copy can be changed in HTML only. | Tiny PR or included in top candidate. | Source inspection and manual read-through. | Bundle with top candidate |
-| Clarify home hero behavior versus exact Variant C image | Medium: resolves tension between session-stable random hero requirement and the user's desire for Variant C's exact look. | REQ-032; accepted Variant C uses `images/sonia_steve.jpg`; docs also say session-stable random hero. | Low/Medium: behavior decision affects `js/archive-home.js` and curation expectations. | Current placeholder hero set may crop differently from Variant C's source image. | Small PR. | Manual reload/session check; source inspection. | Grill before implementing |
-| Separate placeholder adapter from photo generator | High: keeps temporary placeholder choices from becoming permanent pipeline logic. | REQ-022 through REQ-030; real wedding photos are not available yet. | Low/Medium: tooling-only refactor but must preserve generated output. | PowerShell/.NET pipeline; no Python/Pillow available in current environment. | Small/medium PR in `tools/` plus tests. | `tools/photo-pipeline.tests.ps1`, generated data parity checks. | Do after visual shell |
-| Gallery visual alignment and renderer hardening | Medium/High: gallery is a primary archive page but still feels utilitarian and has small JS edge risks. | REQ-021, REQ-031; user said gallery looks terrible. | Medium: UI behavior and lightbox should not regress. | Static vanilla JS; no backend; no framework. | Medium PR: `gallery.html`, `css/style.css`, `js/gallery.js`. | Static scan, gallery data contract checks, manual lightbox smoke. | Follow top candidate or combine if scoped tightly |
-| Repeated nav/footer/content block ownership | High long-term: reduces drift across all public pages. | Static maintenance and consistency across pages. | Medium/High if introducing generation; Low if adding only audit/checks. | Docs prefer no broad build-system migration. | First slice small: static consistency check; later slice larger: generator/includes. | Static scan, generated diff if generator chosen. | Defer build system; add consistency checks later |
-| External link and legacy logistics cleanup | Medium: reduces stale historical/travel confusion. | Archive sharing should not point users at misleading current tasks. | Medium: link truth changes over time and needs web verification. | Requires browsing/current link checks. | Small content PR. | Link check, static scan, manual click smoke. | Separate archive-polish sprint |
+| Documentation status and release-contract cleanup | High: makes future work trust the right docs and checks. | REQ-016, REQ-019; user explicitly asked for documentation coherence. | Low | No runtime change; mostly Markdown plus maybe moving scan script. | Small PR | Static scan, source scan, doc scan for stale active claims. | **Completed for docs; optional follow-up: promote static scan** |
+| Promote static scan into maintained release tooling | High: deepens a useful module currently buried under prototypes. | REQ-004, REQ-012, REQ-016 | Low/Medium | Script already exists; avoid overbuilding CI. | Small PR | Run promoted command; compare output with current scan. | Pair with top recommendation or immediate follow-up |
+| Legacy asset and CSS dead-code cleanup | Medium/High: reduces confusion and source noise. | REQ-020, REQ-018 | Medium | Need careful reference scan; browser smoke still manual. | Small/medium PR | Static scan, `rg` references, manual page smoke. | Do after release-contract cleanup |
+| Photo pipeline module split and placeholder manifest | High: improves locality before real photo import. | REQ-022 through REQ-030; upcoming real photo work. | Medium | PowerShell only; keep command interface stable. | Medium PR | `tools/photo-pipeline.tests.ps1`, fixture generation, data parity. | Best next code refactor before adding real photos |
+| Gallery/lightbox hardening | Medium: improves public UX and robustness. | REQ-021, REQ-031 | Medium | Browser automation unavailable; manual smoke required. | Small/medium PR | Static scan, gallery data check, manual lightbox smoke. | Useful, but not first unless visual bugs are visible |
+| Repeated public nav/page-shell ownership | Medium: reduces manual drift across pages. | REQ-003, REQ-018 | Medium/High if generator introduced | No build step currently desired. | First slice small: consistency check. Later slice larger: generator/includes. | Static consistency check; static scan. | Defer generator; add checks first |
+| External link archive-polish audit | Medium: improves visitor trust. | REQ-009 | Medium | Requires current web verification. | Small content PR | Link audit; manual review; static scan. | Separate content sprint |
 
 ## Top Recommendation
-The best next engineering move is **Variant C page shell and visual contract**.
+The original top recommendation was **Documentation status and release-contract cleanup**. That documentation cleanup has now been completed for the durable docs and status indexes. The best remaining tiny follow-up is promoting the static scan into maintained tooling if the user wants a code-adjacent release check improvement.
 
-Why:
-- It directly answers the user's latest direction: make the Variant C look carry across the pages.
-- It fixes the largest visible inconsistency: a polished journal-like home followed by old event-site sections.
-- It improves locality: once the shell and CSS contract are clear, gallery, travel, story, and info pages can all use the same visual vocabulary.
-- It preserves the current plain static architecture. No Jekyll, React, backend, or public photo service is required.
+Why this first:
 
-Do not start by introducing a generator. The first PR should standardize the visible shell and CSS manually, then decide later whether repeated edits justify shared includes or a static generator.
+- The current code passes its checks, so there is no emergency code refactor.
+- The next few user-visible changes will likely involve real photos; those changes will rely heavily on docs and checks.
+- The sprint index now reflects implemented/superseded/historical state.
+- The PRD now identifies the actual PowerShell/.NET tool as the current baseline.
+- The static scan is important release infrastructure but still lives under `documentation/planning/working/prototypes/`, which makes it look disposable.
+
+This is not the most glamorous refactor, but it is the one that lowers the most future mistake risk per line changed.
 
 ## Candidate Details
 
-### 1. Variant C Page Shell And Visual Contract
+### 1. Documentation Status And Release-Contract Cleanup
 - Current friction:
-  - `index.html` uses Variant C structure at lines 65-85, but the old `.location` logistics block starts at line 87.
-  - `about.html`, `contact.html`, `hotels.html`, and `syracuse.html` have `page-journal-header` blocks, but the rest of each page remains Bootstrap-era layout and repeated event footer content.
-  - `gallery.html` has generated gallery behavior but lacks the same journal header/chapter structure.
-  - Navigation remains button-heavy through repeated `.navbar-btn` markup on every page.
+  - Resolved for active docs and status indexes.
+  - Working/prototype docs intentionally contain old states as historical evidence.
 - Evidence:
-  - Variant C prototype uses three chapter links and a full-page `variant-c` section.
-  - Current public pages repeat `.location` in five pages plus home.
-  - Static scan passes, so this is a visual/coherence refactor rather than a broken-reference bug.
+  - Sprint files contain implementation evidence tables for local photo pipeline, generated gallery, visual refresh, hardening, and remove-contact work.
+  - `documentation/README.md` correctly says durable docs win over working/sprint conflicts.
+  - Static scan passes with 5 pages.
 - Proposed direction:
-  - Define a small set of journal page classes in `css/style.css`: archive shell, journal page intro, journal content grid, journal card/list, archive context band, and gallery journal grid.
-  - Apply Variant C-derived page framing to `about.html`, `gallery.html`, `contact.html`, `hotels.html`, and `syracuse.html`.
-  - Reframe the old `.location` block as an archive context section or remove it from pages where it duplicates chapter navigation.
-  - Keep routes and filenames unchanged.
+  - Keep sprint index statuses aligned after future implementation.
+  - Keep implementation deviations reflected in the PRD or durable design docs.
+  - Optionally add a fuller "Release Contract" section to `documentation/README.md` or deployment footprint that names the current commands and expected outputs.
+  - Leave prototype files untouched as working evidence.
 - Benefits:
-  - The site feels like one archive instead of several eras of implementation.
-  - Future copy/gallery edits become easier because page sections have clearer roles.
-  - No hosting/deployment change.
+  - Future sprint planning starts from true state.
+  - Reduces accidental resurrection of `contact.html`, form behavior, or Python/Pillow assumptions.
+  - Keeps docs useful without another full systems rewrite.
 - Risks:
-  - Without browser screenshots, layout polish needs user/manual visual review.
-  - Touching all pages in one PR can create a larger visual diff.
-- Suggested diagrams:
-  - The page-shell flowchart in this plan.
+  - Low; mostly documentation.
 
-### 2. Replace Prototype Copy With Archive-Ready Production Copy
+### 2. Promote Static Scan Into Maintained Release Tooling
 - Current friction:
-  - `index.html` says: "This option makes the site feel like a small personal publication..." That belongs in a prototype readout, not a wedding archive.
+  - The static scan is a real release guard but lives under `documentation/planning/working/prototypes/static_site_scan.ps1`.
+  - That path implies throwaway prototype, while sprint plans depend on it as a gate.
 - Evidence:
-  - Same wording appears in Variant C prototype, where it described the option being evaluated.
+  - The scan catches local reference, runtime, and PHP issues.
+  - Recent implementation evidence repeatedly cites it.
 - Proposed direction:
-  - Preserve the Variant C layout but change copy to archive language, for example: "A quiet wedding archive for the story, photographs, and Syracuse weekend memories."
+  - Move or copy the script to `tools/static-site-scan.ps1`.
+  - Keep a thin compatibility note or update docs to reference the new command.
+  - Optionally add a single release-check wrapper later.
 - Benefits:
-  - The home page becomes shareable immediately.
+  - Turns a prototype into a maintained deep module with a small interface: one command, clear output.
+  - Makes future release verification less dependent on remembering a working-doc path.
 - Risks:
-  - Copy preference is personal; likely worth a small grilling pass.
-- Suggested diagrams:
-  - None.
+  - Need to update sprint/docs references only where current commands are listed.
 
-### 3. Clarify Home Hero Behavior Versus Exact Variant C Image
+### 3. Legacy Asset And CSS Dead-Code Cleanup
 - Current friction:
-  - Variant C prototype uses `images/sonia_steve.jpg`.
-  - Requirements currently say the hero should be session-stable random from explicit hero photos.
-  - `js/archive-home.js` may replace the prototype image with generated hero derivatives from `js/gallery-data.js`.
-  - The user's "stretching" concern is probably the `object-fit: cover` crop/fill behavior in a tall 76vh frame, not literal image distortion.
+  - Legacy files remain: `js/app.js`, `js/jquery.countdown.js`, `js/jqBootstrapValidation.js`, ReactiveRaven zip/extracted files, and `css/jquery.countdown.js`.
+  - `css/style.css` still contains unused old selectors: `#weddingStyle`, `.saveDate`, `.carousel-*`, `.location`, `.page-journal-header`, `.thumbnail`, `.img-circle`.
 - Evidence:
-  - `index.html` fallback now points at `images/sonia_steve.jpg`.
-  - `archive-home.js` chooses from `data.heroPhotos` when available.
-  - Generated placeholder hero photos include five images, not only the Variant C source image.
+  - Source search found these selectors only in CSS/docs, not active production HTML.
+  - Requirements already mark REQ-020 as Active / Partial and list these cleanup candidates.
 - Proposed direction:
-  - Decide whether the home page should use:
-    1. exact Variant C image until real curation,
-    2. session-stable random hero only after real photos are available,
-    3. session-stable random hero now but with stricter hero eligibility/focal point review.
+  - First characterization: run `rg` reference checks for every candidate file/selector.
+  - Delete unused legacy JS/vendor/countdown files.
+  - Prune unused CSS blocks in a small, reviewable pass.
+  - Keep `reset.css`/`normalize.css` only if intentionally retained as archive/vendor assets; otherwise mark them for deletion too.
 - Benefits:
-  - Makes REQ-032 and the accepted visual prototype agree.
+  - Reduces confusion for future maintainers.
+  - Makes the current site easier to understand.
 - Risks:
-  - Changing hero behavior could reduce the "random photo each visit" idea unless explicitly staged.
-- Suggested diagrams:
-  - Small sequence diagram if selected.
+  - Visual regressions if a selector is still used indirectly by Bootstrap markup or future pages; requires manual browser smoke.
 
-### 4. Separate Placeholder Adapter From Photo Generator
+### 4. Photo Pipeline Module Split And Placeholder Manifest
 - Current friction:
-  - `tools/photo-pipeline.ps1` hardcodes placeholder publish names, hero names, titles, and captions inside the production generation function.
-  - `UseExistingAsPlaceholders` scans all checked-in images and then filters by hardcoded filename.
+  - `tools/photo-pipeline.ps1` is about 29 KB and owns several responsibilities:
+    - command routing,
+    - JSON read/write,
+    - inventory,
+    - curation schema defaults,
+    - image resizing,
+    - placeholder manifest,
+    - generation report,
+    - local review HTML,
+    - raw TCP HTTP server.
+  - Placeholder photo titles/captions/hero selection are hardcoded inside `Invoke-Generate`.
 - Evidence:
-  - Placeholder lists and captions live around `tools/photo-pipeline.ps1` lines 278-321.
-  - Real photo source is not available yet, so this temporary adapter is doing real work.
+  - `tools/photo-pipeline.tests.ps1` passes and gives a good regression seam.
+  - Real photos are not added yet, so now is a good time to improve seams before source scale increases.
 - Proposed direction:
-  - Move placeholder selection/captions into a small manifest, such as `tools/placeholders/gallery-placeholders.json`.
-  - Keep the generator responsible for inventory, curation, resizing, metadata, and reports.
+  - Preserve the command interface:
+    - `.\tools\photo-pipeline.ps1 init`
+    - `.\tools\photo-pipeline.ps1 serve`
+    - `.\tools\photo-pipeline.ps1 generate`
+  - Extract placeholder choices into a JSON manifest, such as `tools/photo-placeholders.json`.
+  - Split functions by responsibility in the same file first, or only later split into dot-sourced `.ps1` modules if PowerShell ergonomics justify it.
+  - Add tests for placeholder generation parity and source-folder album preservation.
 - Benefits:
-  - The real pipeline stays cleaner when real photos arrive.
-  - Placeholder choices become easy to inspect/change without editing generator code.
+  - Keeps the public metadata contract stable.
+  - Makes real-photo import less scary.
+  - Makes placeholder behavior obviously temporary.
 - Risks:
-  - Need tests to prove generated public data remains equivalent.
-- Suggested diagrams:
-  - Generated media seam flowchart.
+  - PowerShell module splitting can create path/load complexity; first slice should avoid changing runtime command behavior.
 
-### 5. Gallery Visual Alignment And Renderer Hardening
+### 5. Gallery / Lightbox Hardening
 - Current friction:
-  - `gallery.html` intro is implementation-focused: "generated static gallery... no visitor file submission..."
-  - Gallery cards and lightbox are functional but not yet a Variant C journal/gallery page.
-  - `js/gallery.js` summary counts all albums in `data.albums`, even if some albums render no visible photos.
-  - Lightbox controls are text buttons and no focus trap exists.
+  - Gallery rendering is compact and functional, but browser behavior has not been manually verified in this environment.
+  - Summary count uses all albums in metadata, not only rendered albums if an album has zero visible photos.
+  - Lightbox has keyboard support but no focus management.
+  - `noscript` copy is outside the main content band, so it may be visually awkward when JS is disabled.
 - Evidence:
-  - `gallery.html` lines 45-58 contain the page intro and render root.
-  - `js/gallery.js` lines 33-39 calculate summary and filter album photos separately.
+  - `js/gallery.js` is only 5.4 KB and has a clear public seam.
+  - Static gallery data checks pass.
 - Proposed direction:
-  - Give gallery a journal intro aligned with Variant C.
-  - Use a quieter album layout and caption treatment.
-  - Harden renderer count logic and lightbox affordances only where low risk.
+  - Characterize current behavior with a manual browser smoke.
+  - Fix visible album count logic.
+  - Improve lightbox focus/close affordance only if it stays small.
+  - Keep no backend and no original downloads.
 - Benefits:
-  - Fixes the user's "gallery looks terrible" concern in the same visual system.
+  - Improves the page most likely to grow when real photos arrive.
 - Risks:
-  - Lightbox behavior is externally visible and should be smoke-tested manually.
-- Suggested diagrams:
-  - None unless JS refactor is selected.
+  - Browser/manual QA required.
 
-### 6. Repeated Nav/Footer/Content Block Ownership
+### 6. Repeated Public Nav / Page-Shell Ownership
 - Current friction:
-  - Nav markup repeats across all six HTML pages.
-  - Event footer/context markup repeats across most pages.
-  - CSS now contains old selectors (`#weddingStyle`, `.saveDate`, `.carousel-*`) alongside new journal selectors.
+  - Nav markup repeats across all five HTML pages.
+  - Page heads repeat CDN and font links.
+  - Manual edits already caused route drift in earlier steps.
 - Evidence:
-  - Source search finds `.navbar-btn` in all six pages and `.location` across all non-gallery pages plus home.
+  - Source search finds the nav block repeated in all five production pages.
+  - No build system is desired right now.
 - Proposed direction:
-  - For the next implementation, manually standardize rather than introduce a build step.
-  - Later, consider either:
-    - a static consistency check that verifies nav/chapter links and required page-shell classes, or
-    - a tiny local generation step if repeated edits keep hurting.
+  - Do not introduce a static generator yet.
+  - Add a small consistency check that asserts:
+    - five public pages exist,
+    - no `contact.html` production links exist,
+    - nav target set is consistent,
+    - required Variant C shell classes exist,
+    - `gallery.html` includes `js/gallery-data.js` before `js/gallery.js`.
+  - Revisit includes/generation only if manual drift continues.
 - Benefits:
-  - Keeps this project simple now while acknowledging the maintainability risk.
+  - Gains most of the safety of a shared shell without changing deployment shape.
 - Risks:
-  - Manual edits can still drift until a later check/generator exists.
-- Suggested diagrams:
-  - Page-shell flowchart.
+  - Check scripts can become brittle if over-specified.
+
+### 7. External Link Archive-Polish Audit
+- Current friction:
+  - External links are old wedding-era hotel/activity URLs.
+  - Durable docs correctly mark external link freshness as pending.
+- Evidence:
+  - Static scan lists 11 external references.
+- Proposed direction:
+  - Web-assisted link/currentness review in a dedicated sprint.
+  - Replace, remove, or convert stale links to plain historical notes.
+- Benefits:
+  - Improves visitor trust before broad sharing.
+- Risks:
+  - Requires browsing/current information; can sprawl if not bounded.
 
 ## Selected Candidate
-Pending user selection.
+No candidate has been selected for grilling yet.
 
-Recommended candidate to grill next: **Variant C page shell and visual contract**.
+Recommended candidate to grill next: **Documentation status and release-contract cleanup**.
 
 ## Grilling Decisions
-No grilling decisions have been locked for this refactor yet.
+No grilling decisions have been locked in this audit.
 
-Initial decision candidates:
-- Should the home hero stay exactly on `images/sonia_steve.jpg` until real photos are curated, or should session-stable random hero remain active now?
-- Should the old event logistics `.location` block become a single archive context section, move to `contact.html`, or be removed from most pages?
-- Should the chapter set remain the exact Variant C three chapters, or should Info/Hotels remain first-class chapter links elsewhere?
-- Should gallery visual work be included in the same PR as page shell alignment, or split into a second PR?
+Suggested first grilling question:
+
+> Should sprint records be treated as immutable history after implementation, with only the sprint index updated for current status?
+
+Recommended answer: **Yes.** Keep sprint files as implementation history, update the index/status layer and durable docs for current truth. This keeps auditability without making every old sprint rewrite itself when the site evolves.
 
 ## Proposed Refactor Design
-Pending selected-candidate grilling.
+Pending selected-candidate grilling. If the top recommendation is selected, the proposed design is:
 
-Likely shape if the top recommendation is selected:
 - Proposed module / seam:
-  - A CSS/HTML page-shell contract for static archive pages, centered on Variant C.
+  - A **release contract** documented in one place and backed by maintained commands.
 - Interface expectations:
-  - Root URLs remain unchanged.
-  - Pages remain plain HTML/CSS/vanilla JS.
-  - Navigation and chapter links remain usable without backend services.
-  - Gallery data remains generated static metadata.
+  - One current release-check command or short command list.
+  - One sprint index that clearly distinguishes current, implemented, superseded, historical, and fallback records.
+  - Durable docs remain the source of product truth.
+  - Prototype/sprint files remain evidence, not active requirements.
 - Implementation responsibilities:
-  - HTML pages own content.
-  - `css/style.css` owns the journal visual system.
-  - `js/archive-home.js` owns only hero selection/application.
-  - `js/gallery.js` owns only gallery rendering/lightbox behavior.
+  - `documentation/README.md`: how to decide what is current.
+  - `documentation/planning/sprints/README.md`: sprint status ledger.
+  - `documentation/planning/deployment-footprint.md`: release verification expectations.
+  - `tools/static-site-scan.ps1`: maintained release guard, if promoted.
 - Dependency and adapter strategy:
-  - No new runtime dependency.
-  - No new build step in the first slice.
+  - Keep current static site tooling.
+  - No CI/build system required.
 - Behavior preserved:
-  - Static site hosting.
-  - Existing pages/routes.
-  - Generated gallery metadata/lightbox.
+  - Public site files and routes.
+  - Photo pipeline commands.
+  - Static hosting model.
 - Behavior intentionally changed:
-  - Production copy should stop sounding like a prototype.
-  - Pages should visually read as one archive.
-  - Legacy logistics blocks should be reframed or reduced.
+  - Documentation no longer implies unimplemented/planned status for implemented work.
+  - PRD no longer states Python/Pillow as the preferred current implementation.
 
 ## Diagrams
-Current shape:
+Current documentation flow:
 
 ```mermaid
 flowchart TD
-  Home[index.html Variant C-like home]
-  Story[about.html journal header + legacy body]
-  Gallery[gallery.html generated gallery]
-  Info[contact.html journal header + info body]
-  Hotels[hotels.html journal header + legacy cards/tables]
-  Syracuse[syracuse.html journal header + legacy thumbnails]
-  Footer[Repeated .location logistics block]
-  Nav[Repeated Bootstrap button nav]
+  UserDecision[User Decisions]
+  Durable[Durable Docs]
+  Sprints[Sprint Records]
+  Working[Working / Prototype Evidence]
+  Code[Repo Code + Tests]
+  Future[Future Planning]
 
-  Nav --> Home
-  Nav --> Story
-  Nav --> Gallery
-  Nav --> Info
-  Nav --> Hotels
-  Nav --> Syracuse
-  Home --> Footer
-  Story --> Footer
-  Info --> Footer
-  Hotels --> Footer
-  Syracuse --> Footer
+  UserDecision --> Durable
+  Sprints --> Durable
+  Working --> Durable
+  Code --> Durable
+  Durable --> Future
+  Sprints -. historical evidence .-> Future
+  Working -. working evidence .-> Future
 ```
 
-Target first slice:
+Recommended release-contract shape:
 
 ```mermaid
 flowchart TD
-  Shell[Variant C archive page shell]
-  Nav[Quiet static nav]
-  Home[Photo-first journal home]
-  Story[Story journal page]
-  Gallery[Gallery journal page + generated albums]
-  Info[Archive info page]
-  Travel[Syracuse / hotels context pages]
-  Context[Optional archive context band]
+  PublicPages[5 Public HTML Pages]
+  GalleryData[Generated Gallery Data + Assets]
+  PhotoTool[Local Photo Pipeline]
+  Scan[Maintained Static Site Scan]
+  Docs[Durable Docs]
+  Release[Publish / Commit Decision]
 
-  Shell --> Nav
-  Shell --> Home
-  Shell --> Story
-  Shell --> Gallery
-  Shell --> Info
-  Shell --> Travel
-  Shell --> Context
+  PublicPages --> Scan
+  GalleryData --> Scan
+  PhotoTool --> GalleryData
+  Docs --> Scan
+  Scan --> Release
+```
+
+Photo pipeline current responsibility bundle:
+
+```mermaid
+flowchart LR
+  Source[Ignored Source Photos]
+  Curation[Private Curation JSON]
+  Script[photo-pipeline.ps1]
+  Public[Generated Public Images/Data]
+  Site[Static Gallery]
+
+  Source --> Script
+  Curation --> Script
+  Script --> Curation
+  Script --> Public
+  Public --> Site
+```
+
+Future photo pipeline seam:
+
+```mermaid
+flowchart LR
+  Inventory[Inventory]
+  Curation[Curate State]
+  Placeholder[Placeholder Manifest]
+  Generator[Generate Public Assets]
+  Review[Local Review Server]
+  Public[Public Gallery Contract]
+
+  Inventory --> Generator
+  Curation --> Generator
+  Placeholder --> Generator
+  Review --> Curation
+  Generator --> Public
 ```
 
 ## First Safe Slice
-Pending final selection, but the recommended first safe slice is:
+Status: documentation portion completed in the 2026-06-20 coherence pass. Optional tooling promotion remains available as a follow-up.
 
 ### Goal
-Make Variant C the visible site-wide journal pattern while preserving static HTML/CSS/JS architecture.
+Make repository planning state and release verification unambiguous without changing public site behavior.
 
 ### In Scope
-- Replace prototype-sounding home copy with archive-ready copy.
-- Decide and implement the first-pass hero rule:
-  - exact Variant C image for now, or
-  - session-stable generated hero with stricter curation/fallback.
-- Convert `about.html`, `gallery.html`, `contact.html`, `hotels.html`, and `syracuse.html` to use consistent journal page sections.
-- Reframe or reduce repeated `.location` logistics blocks so pages do not immediately fall back into old event-site mode.
-- Quiet the Bootstrap button-heavy nav through CSS/markup that matches Variant C.
-- Keep all routes and static hosting unchanged.
+- Completed: update `documentation/planning/sprints/README.md` statuses to reflect actual state:
+  - implemented,
+  - implemented with manual browser smoke pending,
+  - superseded by later sprint,
+  - historical/fallback.
+- Completed: update the PRD line that still preferred Python/Pillow so it matches the implemented PowerShell/.NET pipeline.
+- Completed: add concise truth-reconciliation guidance to `documentation/README.md`.
+- Optionally promote `documentation/planning/working/prototypes/static_site_scan.ps1` to `tools/static-site-scan.ps1` and update current docs to reference it.
 
 ### Out of Scope
-- New build system, Jekyll layouts, React, or backend.
-- Real photo curation, because the real photo repository is not available yet.
-- Broad external link modernization.
-- Deep photo-pipeline refactor.
-- Full lightbox rewrite.
+- Editing historical archive docs.
+- Rewriting prototype files.
+- Changing public HTML/CSS/JS behavior.
+- Splitting the photo pipeline.
+- Deleting legacy assets.
+- Adding CI/build tooling.
 
 ### Required Characterization Tests
-- Run static scan before edits.
-- Source-scan current page roles:
-  - `.variant-c`, `.page-journal-header`, `.location`, `.navbar-btn`, `.gallery-lightbox`.
-- Capture manual screenshots or user browser review for home and gallery before accepting the PR.
-- Verify `js/gallery-data.js` still loads before `js/archive-home.js` and `js/gallery.js`.
+- Current static scan result:
+  - 5 HTML pages,
+  - 52 local refs resolved,
+  - 0 missing refs,
+  - 0 runtime refs,
+  - 0 PHP files.
+- Current photo pipeline test:
+  - `tools/photo-pipeline.tests.ps1` passes.
+- Source scan for active durable-doc conflicts:
+  - `contact.html`,
+  - old six-page scan claims,
+  - `Python/Pillow`,
+  - sprint status terms.
+  Current result: remaining current-doc `contact.html` hits describe the deferred/removed route; `Python/Pillow` appears only as a future option or implementation note, not as the preferred baseline.
 
 ### Required Refactor Tests
-- Static scan reports:
-  - 0 missing/case-mismatched local references.
-  - 0 server-side runtime references.
-  - 0 PHP files.
-- Source search confirms no prototype phrases remain in production HTML, especially "This option makes the site feel..."
-- Manual desktop and mobile checks for:
-  - home journal hero,
-  - story page,
-  - gallery page,
-  - info page,
-  - travel pages,
-  - nav/dropdown behavior,
-  - gallery lightbox open/next/previous/close.
-- If browser automation remains unavailable, record manual/user visual review as required acceptance evidence.
+- Run static scan from its maintained location if promoted.
+- Run `tools/photo-pipeline.tests.ps1`.
+- Source-scan durable docs to confirm no active Python/Pillow preference remains.
+- Review sprint index manually to confirm status labels are clear.
 
 ### Follow-Up Slices
-- Gallery-focused visual refinement and lightbox hardening.
-- Placeholder adapter extraction from `tools/photo-pipeline.ps1`.
-- Static consistency check for repeated nav/page-shell conventions.
-- External link and legacy logistics audit.
-- Optional shared-layout/static-generator evaluation only if manual duplication keeps causing drift.
+1. Legacy asset and CSS dead-code cleanup.
+2. Photo pipeline placeholder manifest and function-locality refactor.
+3. Static page-shell consistency check.
+4. Gallery/lightbox hardening after manual browser smoke.
+5. External link archive-polish sprint.
 
 ## Prototype Recommendations
 | Risk | Prototype Question | Suggested Method | Expected Decision Impact |
 |---|---|---|---|
-| Exact Variant C may not map cleanly to every page type. | What does Variant C look like on Story, Gallery, Info, and Travel pages without making all pages identical? | One throwaway HTML/CSS prototype with the five page templates stacked or tabbed. | Determines whether to implement one universal shell or two patterns: landing plus interior journal pages. |
-| Hero randomization may weaken the accepted Variant C look. | Should random hero stay active before real photo curation? | Small local toggle/prototype comparing fixed `sonia_steve.jpg` against generated hero rotation. | Determines `archive-home.js` behavior in the next PR. |
-| Gallery may need more than CSS polish. | Can the generated gallery feel like Variant C without rewriting lightbox behavior? | Prototype only the gallery card/album CSS against current generated data. | Determines whether gallery joins the page-shell PR or gets its own sprint. |
+| Static generator/includes may be overkill. | Would a consistency check catch the drift that a generator would prevent? | Prototype a small PowerShell source scanner before introducing templates. | If it catches route/nav/page-shell drift, avoid a build system. |
+| Photo pipeline split could make PowerShell harder to run. | Is dot-sourced module splitting worth it? | Prototype extracting only placeholder manifest first, without splitting files. | Determines whether to split modules or keep one command file. |
+| Browser smoke remains manual. | Can lightweight local browser verification be added without a large dependency? | Prototype only if a browser runner becomes reliably available. | Determines whether release checks can be automated beyond source scans. |
 
 ## Requirement Impacts
 | Existing Requirement | Refactor Impact | New / Changed Requirement Candidate | Notes |
 |---|---|---|---|
-| REQ-002 Present Wedding Archive Summary | Strengthen | Public page copy shall be archive-ready and shall not include prototype-evaluation wording. | Current home copy still sounds like a prototype. |
-| REQ-003 Provide Internal Navigation | Preserve / Strengthen | Chapter/navigation links shall use the accepted journal visual pattern while preserving existing routes. | Variant C three-chapter model may need a decision about Info/Hotels. |
-| REQ-005 Support Mobile Navigation | Strengthen | Journal page shell shall be checked at mobile width before acceptance. | Browser automation unavailable; manual/user visual check required. |
-| REQ-006 Preserve Readable Core Content | Strengthen | Hero/gallery images shall avoid awkward cropping through accepted image choice and focal-point behavior. | User observed stretched/awkward image presentation. |
-| REQ-021 Support Static Photo Gallery | Strengthen | Gallery page shall visually align with the archive journal system while remaining static. | Functional behavior exists; visual polish remains. |
-| REQ-031 Support Generated Album Lightbox | Preserve / Strengthen | Album counts and lightbox controls should remain correct after visual refactor. | Summary count and lightbox UX are follow-up hardening candidates. |
-| REQ-032 Support Session-Stable Archive Hero | Clarify | Decide whether session-stable random hero applies now or after real photo curation. | Possible conflict with exact Variant C preference. |
+| REQ-016 Verify Public Release | Strengthen | Release checks should live in maintained tooling/docs, not only prototype folders. | Static scan is already relied on as a gate. |
+| REQ-018 Support Static Maintenance | Strengthen | Sprint index and docs should make current state easy to identify. | Reduces maintenance confusion. |
+| REQ-019 Update Docs On Behavior Change | Strengthen | Sprint status index should be updated when implementation closes. | Current index lags actual implementation. |
+| REQ-020 Remove Or Archive Dead Legacy Assets | Prepare | Cleanup should delete unused countdown/form validation assets after reference checks. | Good second slice. |
+| REQ-022 through REQ-030 Photo Pipeline | Strengthen | Placeholder behavior should be separate from permanent generator behavior before real photos arrive. | Good code refactor before real source import. |
+| REQ-031 Generated Album Lightbox | Preserve / Strengthen | Gallery hardening should keep static/no-backend behavior. | Browser smoke required. |
 
 ## Sprint Planning Handoff
 | Candidate | Suggested Sprint Slice | Branch / PR Scope | Required Tests | Prototype Needed |
 |---|---|---|---|---|
-| Variant C page shell and visual contract | `variant-c-sitewide-journal-shell` | Public HTML pages plus `css/style.css`; minimal JS if hero rule changes. | Static scan, source scan, manual desktop/mobile visual review, nav/gallery smoke. | Optional, only if page-type mapping is unclear. |
-| Replace prototype copy | `archive-ready-copy-polish` | `index.html` and any page intro copy. | Source scan for prototype phrases; manual read-through. | No |
-| Clarify hero behavior | `archive-hero-rule` | `index.html`, `js/archive-home.js`, generated data expectations if needed. | Session reload check, fallback check, source inspection. | Maybe |
-| Placeholder adapter extraction | `photo-placeholder-manifest` | `tools/photo-pipeline.ps1`, placeholder manifest, tests. | Pipeline tests, generated JSON/JS parity, static scan after generation. | No |
-| Gallery visual alignment | `variant-c-gallery-polish` | `gallery.html`, `css/style.css`, maybe `js/gallery.js`. | Static scan, generated data check, manual lightbox smoke. | Maybe |
-| Repeated page shell ownership | `static-page-shell-check` | Add a scan/check script before any generator. | Check required nav/page-shell selectors across root pages. | No |
-| External link and legacy logistics cleanup | `archive-link-logistics-polish` | Content and external links across pages. | Link check, static scan, manual review. | No, but browsing required |
+| Documentation status and release-contract cleanup | `documentation-release-contract-cleanup` | Sprint index, PRD implementation note, documentation guide/deployment release checks; optional scan promotion. | Static scan, photo-pipeline tests, doc source scans. | No |
+| Promote static scan into maintained tooling | `promote-static-site-scan` | Move/copy scan to `tools/`, update docs and sprint templates. | Old/new scan output parity, static scan. | No |
+| Legacy asset and CSS dead-code cleanup | `legacy-asset-css-cleanup` | Delete unused countdown/form validation assets; prune unused CSS selectors. | `rg` reference checks, static scan, manual browser smoke. | No |
+| Photo pipeline module split and placeholder manifest | `photo-pipeline-placeholder-manifest` | Add placeholder manifest; keep command interface stable; refactor generator locality. | `tools/photo-pipeline.tests.ps1`, generated metadata/assets checks, static scan after generation. | Maybe, only if module split is considered |
+| Gallery/lightbox hardening | `gallery-lightbox-hardening` | `js/gallery.js`, `gallery.html`, `css/style.css` small UX/focus/count fixes. | Static scan, gallery data check, manual lightbox smoke. | No |
+| Public page-shell consistency check | `static-page-shell-check` | Add scan/check script for nav/page-shell/gallery script ordering. | New check plus static scan. | Yes, small check prototype if desired |
+| External link archive-polish audit | `external-link-archive-polish` | Hotels/Syracuse link text and destinations. | Web-assisted link verification, static scan, manual review. | No |
 
 ## Assumptions
-- Variant C is the accepted visual source of truth for the public-facing direction.
-- The site should remain a plain static GitHub Pages site for now.
-- The real wedding photo repository is not available yet, so placeholder/photo-pipeline work should not be allowed to dominate the visual refactor.
-- The user's "stretching" concern is an accepted visual defect even if the CSS uses `object-fit: cover`; the implementation should optimize for perceived fit and crop quality.
-- The current browser automation failure is environmental, not proof the page is visually correct.
+- The public site should remain plain static HTML/CSS/JS for now.
+- Durable docs are intended to be current truth; sprint/prototype docs can remain historical evidence.
+- The user may add real wedding photos soon, so photo pipeline stability matters.
+- Browser automation may remain unavailable in this environment; manual browser smoke should stay in release criteria.
+- It is acceptable for historical/prototype docs to mention removed pages as long as current indexes/docs label them as historical or superseded.
 
 ## Gaps and Questions
-- Do we want the home hero fixed to Variant C's `images/sonia_steve.jpg` until real photos are curated, or keep session-stable random hero now?
-- Should the repeated Sangeet/Ceremony `.location` block remain on every page, move only to Info, or become a quieter archive context band?
-- Should Gallery be included in the first site-wide Variant C PR, or should it get a dedicated follow-up because it needs lightbox/card-specific work?
-- Should Hotels and Local Entertainment remain separate pages, or should they be treated together as the third Variant C "Syracuse Context" chapter?
+- Should sprint files be left immutable after implementation, with only the sprint index and durable docs updated for current truth?
+- Should the static scan be promoted to `tools/static-site-scan.ps1`, or is the current prototype path acceptable for now?
+- Should legacy countdown/form-validation files be deleted next, or archived under `documentation/planning/archive/` for provenance?
+- Before real photos arrive, should the photo pipeline first get a placeholder manifest refactor?
+- Do you want a small page-shell consistency checker before more manual HTML edits?

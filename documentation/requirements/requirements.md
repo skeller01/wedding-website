@@ -9,7 +9,7 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 - `documentation/requirements/use-case-requirements.md` ordered behavioral refresh.
 - Current repository files and static scan result after removing the temporary Info/contact page: 5 HTML pages, 52 resolved local references, 0 missing references, 0 server-side runtime references, 0 PHP files.
 - `documentation/planning/deployment-footprint.md` and `documentation/planning/prd.md`.
-- Sprint research: `documentation/planning/sprints/2026-06-20-local-photo-curation-pipeline.md`, `2026-06-20-generated-gallery-lightbox.md`, and `2026-06-20-archive-visual-refresh.md`.
+- Sprint implementation evidence: `documentation/planning/sprints/2026-06-20-local-photo-curation-pipeline.md`, `2026-06-20-generated-gallery-lightbox.md`, `2026-06-20-archive-visual-refresh.md`, `2026-06-20-variant-c-publishable-site-hardening.md`, and `2026-06-20-remove-contact-page-links.md`.
 
 ### Requirement Table
 | Req ID | Abstract Name | Requirement | Type | Priority | Source | Verification Method | Evidence |
@@ -85,9 +85,9 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | UC-006-CR-002 | Static gallery images | REQ-021 | Mapped | No backend/uploads/accounts. |
 | UC-006-CR-003 | Gallery navigation | REQ-003, REQ-021 | Merged | Shared navigation. |
 | UC-006-CR-004 | Gallery asset sizing/paths | REQ-004, REQ-021 | Merged | Static image verification. |
-| UC-008-CR-001 | Local browser review | REQ-022 | Mapped | Planned private review workflow. |
+| UC-008-CR-001 | Local browser review | REQ-022 | Mapped | Implemented private review workflow. |
 | UC-008-CR-002 | Folder-preserving review | REQ-022 | Merged | Review grouping supports album preservation. |
-| UC-008-CR-003 | Review states | REQ-023 | Mapped | Planned states: unreviewed/include/highlight/hero/exclude. |
+| UC-008-CR-003 | Review states | REQ-023 | Mapped | Implemented states: unreviewed/include/highlight/hero/exclude. |
 | UC-008-CR-004 | Album and focal metadata | REQ-023 | Merged | Private curation state. |
 | UC-008-CR-005 | Filters/folder actions | REQ-022 | Merged | Review workflow usability. |
 | UC-008-CR-006 | Captionless photos | REQ-025 | Mapped | Captions are optional. |
@@ -164,7 +164,7 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | GENERATED_THUMB_WIDTH | Target max width for generated thumbnails. | `480px` | Sprint research |
 | GENERATED_LARGE_WIDTH | Target max width for generated large images. | `1800px` | Sprint research |
 | GENERATED_HERO_WIDTH | Target max width for generated hero images. | `2400px` | Sprint research |
-| HERO_SELECTION_MODE | Planned archive hero behavior. | Session-stable random selection from explicit hero photos with fallback | Grilling decisions |
+| HERO_SELECTION_MODE | Current archive hero behavior. | Session-stable random selection from explicit hero photos with fallback | Grilling decisions and implementation evidence |
 | STATIC_SCAN_TARGET | Minimum scan result before release. | 0 missing local refs, 0 server-runtime refs, 0 PHP files | Prototype/static scan |
 
 ### Quality Check
@@ -218,8 +218,8 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 - GoDaddy forwarding is working and targets the hosted site.
 - Visitor-submitted data collection remains disabled.
 - Stale external links should be fixed, removed, or converted to historical plain text before broad archive sharing.
-- Gallery remains static; planned photo scaling uses local/private generation plus committed public web assets, not a backend.
-- Planned hero rotation uses only explicitly hero-marked photos and should remain stable within a browser session.
+- Gallery remains static; photo scaling uses local/private generation plus committed public web assets, not a backend.
+- Hero rotation uses only explicitly hero-marked photos and should remain stable within a browser session.
 
 ### Gaps and Questions
 - Exact GoDaddy domain and target URL.

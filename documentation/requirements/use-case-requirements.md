@@ -10,7 +10,7 @@ This refresh follows the updated context and use case model in `documentation/re
 - Static assets and scripts: `css/style.css`, Bootstrap/jQuery CDN behavior for navigation/tooltips, unused legacy validation/countdown files, `images/*`.
 - Static scan after removing the temporary Info/contact page: 5 HTML pages, 52 resolved local references, 0 missing references, 0 server-side runtime references, 0 PHP files.
 - Planning docs: `documentation/planning/deployment-footprint.md`, `documentation/planning/prd.md`, sprint and working notes.
-- Planned sprint research: `documentation/planning/sprints/2026-06-20-local-photo-curation-pipeline.md`, `2026-06-20-generated-gallery-lightbox.md`, and `2026-06-20-archive-visual-refresh.md`.
+- Sprint implementation evidence: `documentation/planning/sprints/2026-06-20-local-photo-curation-pipeline.md`, `2026-06-20-generated-gallery-lightbox.md`, `2026-06-20-archive-visual-refresh.md`, `2026-06-20-variant-c-publishable-site-hardening.md`, and `2026-06-20-remove-contact-page-links.md`.
 
 ### Use Case Index
 | Use Case ID | Use Case Name | Priority | Status | Source |

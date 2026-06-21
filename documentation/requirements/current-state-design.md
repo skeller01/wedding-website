@@ -19,7 +19,7 @@ Source inputs reviewed:
 - Current repository files and assets listed in the ordered refresh source inputs.
 - Current deployment and planning docs.
 - Static scan result from `documentation/planning/working/prototypes/static_site_scan.ps1`.
-- Planned photo/gallery/visual-refresh sprint research from `documentation/planning/sprints/`.
+- Photo/gallery/visual-refresh sprint implementation evidence from `documentation/planning/sprints/`.
 
 ### System Boundary
 The Sonia and Steve Wedding Website is a static public wedding archive / memory site made of HTML, CSS, JavaScript, and image assets. It includes visitor-facing archive pages, generated static gallery/lightbox behavior, shared navigation, local media, client-side Bootstrap behavior, local-only photo review/generation tooling, and documentation used to maintain and publish the site. The system excludes GoDaddy account configuration, GitHub hosting infrastructure, third-party linked websites, CDN infrastructure, public photo upload services, and any RSVP/contact-form backend.
@@ -48,7 +48,7 @@ The Sonia and Steve Wedding Website is a static public wedding archive / memory 
 | GoDaddy Forwarding | External service | Redirects a public domain to the hosted URL. | User update: redirect is working |
 | External CDNs | External services | Serve Bootstrap, jQuery, and Google Fonts. | HTML links/scripts |
 | Venue / Hotel / Activity Sites | External websites | Provide offsite or historical context details. | External links in HTML |
-| Local Source Photo Folder | Local/private data source | Stores original wedding photos outside public committed outputs. | Planned `.gitignore` convention |
+| Local Source Photo Folder | Local/private data source | Stores original wedding photos outside public committed outputs. | Implemented `.gitignore` convention |
 | Bot / Crawler | Unintended actor | Requests public pages or stale paths. | Public static website risk |
 
 ### Mermaid Context Diagram
@@ -69,7 +69,7 @@ flowchart LR
 
   subgraph System["System Boundary: Sonia and Steve Wedding Website"]
     Site((Static HTML/CSS/JS/Image Site))
-    PhotoPipeline((Planned Local Photo Pipeline))
+    PhotoPipeline((Local Photo Pipeline))
     Docs((Documentation Workspace))
   end
 
@@ -131,12 +131,12 @@ flowchart LR
 - AWS is a fallback only, not the active deployment path.
 - No backend, RSVP, message, address collection, uploads, or dynamic albums are in current scope.
 - External link polish should be corrected before broadly sharing the archive.
-- The photo gallery should remain static; planned scaling uses local/private generation plus committed public web assets rather than public upload/backend behavior.
+- The photo gallery remains static; scaling uses local/private generation plus committed public web assets rather than public upload/backend behavior.
 
 ### Gaps and Questions
 - Record the exact working GoDaddy domain and final forwarding target.
 - Decide which external hotel/activity links to replace, remove, or keep as historical plain text.
-- Add the real wedding photo repository before implementing the local photo pipeline.
+- Add the real wedding photo repository before replacing placeholder-generated photo outputs.
 - Decide hero-photo, album-cover, caption, and exclusion choices during/after local review.
 - Decide whether to remove remaining unused countdown and validation assets.
 - Decide whether a future warm Weekend/Details page should be added.
@@ -153,10 +153,10 @@ flowchart LR
 - Context model above.
 - Current root HTML pages and static scan.
 - Current deployment, requirements, and planning docs.
-- Sprint research from `documentation/planning/sprints/2026-06-20-local-photo-curation-pipeline.md`, `2026-06-20-generated-gallery-lightbox.md`, and `2026-06-20-archive-visual-refresh.md`.
+- Sprint implementation evidence from `documentation/planning/sprints/2026-06-20-local-photo-curation-pipeline.md`, `2026-06-20-generated-gallery-lightbox.md`, `2026-06-20-archive-visual-refresh.md`, `2026-06-20-variant-c-publishable-site-hardening.md`, and `2026-06-20-remove-contact-page-links.md`.
 
 ### System Boundary
-System boundary: Sonia and Steve Wedding Website. Actors and hosting/domain services are outside the boundary; static archive content, navigation, local assets, static gallery assets, and maintenance documentation are inside. Planned future scope also includes a local-only photo curation/generation workflow and generated public gallery assets, but those capabilities are not current production behavior yet.
+System boundary: Sonia and Steve Wedding Website. Actors and hosting/domain services are outside the boundary; static archive content, navigation, local assets, generated static gallery assets, local-only photo curation/generation tooling, and maintenance documentation are inside. Public visitor uploads, accounts, dynamic/private albums, and backend services remain outside the boundary.
 
 ### Actors
 | Actor ID | Actor | Type | Description | Source |
@@ -248,8 +248,8 @@ flowchart LR
 
 ### Scope Notes
 - The site does not include a backend, database, auth, RSVP flow, contact submission flow, photo uploads, or dynamic/private albums.
-- Current gallery scope is a static checked-in gallery page. Planned gallery scope remains static, but adds a private local curation/generation workflow and generated public assets.
-- Original wedding source photos and raw curation state are planned as local/private inputs, not public site assets.
+- Current gallery scope is a generated static checked-in gallery page with a private local curation/generation workflow and generated public assets.
+- Original wedding source photos and raw curation state are local/private inputs, not public site assets.
 - External websites are linked destinations, not owned system behavior.
 - GoDaddy and GitHub Pages are external services that support access and publication.
 
@@ -375,12 +375,12 @@ The site flow is static: a visitor reaches the hosted URL or working forwarded d
 ### Assumptions
 - GitHub Pages remains the production publication path.
 - No form/backend flow is part of the active functional flow.
-- Gallery flow remains static; planned scaling uses local generation and public web-sized assets.
+- Gallery flow remains static; scaling uses local generation and public web-sized assets.
 
 ### Gaps and Questions
 - Record final GoDaddy domain/target.
 - Complete external-link archive-polish review.
-- Implement the planned local photo pipeline before expanding the gallery to hundreds of photos.
+- Use the implemented local photo pipeline before expanding the gallery to hundreds of photos.
 
 ### Change Recommendations
 - Remove remaining unused countdown and validation assets after confirming no future interactive feature needs them.
