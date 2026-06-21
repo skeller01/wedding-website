@@ -38,8 +38,8 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | REQ-022 | Provide Local Photo Review | The system shall be able to provide a local browser workflow for reviewing ignored wedding source photos. | Functional/Maintainability | High | UC-008-CR-001, UC-008-CR-002, UC-008-CR-005 | Demonstration | `tools/photo-pipeline.ps1 serve`; localhost review smoke |
 | REQ-023 | Maintain Private Curation State | The system shall be able to record per-photo review states, album display names, album cover choices, and focal points in private curation state. | Functional/Data | High | UC-008-CR-003, UC-008-CR-004 | Test | `.photo-curation/curation.json` ignored; pipeline test |
 | REQ-024 | Exclude Private Photo Inputs | The system shall exclude original source photos and private raw curation state from public committed site artifacts. | Privacy/Storage | High | UC-008-CR-007 | Inspection/Test | `.gitignore`; `git status --ignored` |
-| REQ-025 | Allow Captionless Inclusion | The system shall not require per-photo captions before a photo can be included in generated public gallery output. | Functional/Content | Medium | UC-008-CR-006 | Inspection | Placeholder generation publishes captionless photos |
-| REQ-026 | Generate Optimized Photo Assets | The system shall be able to generate optimized JPEG derivatives for thumbnail, large, and hero image uses. | Functional/Performance | High | UC-009-CR-001, UC-009-CR-002 | Test | Generated 480/1800/2400 width-constrained outputs |
+| REQ-025 | Allow Captionless Inclusion | The system shall not require per-photo captions before a photo can be included in generated public gallery output. | Functional/Content | Medium | UC-008-CR-006 | Inspection | Real curated generation publishes captionless photos |
+| REQ-026 | Generate Optimized Photo Assets | The system shall be able to generate optimized JPEG derivatives for thumbnail and large image uses for published photos, and hero image derivatives for explicitly hero-marked photos. | Functional/Performance | High | UC-009-CR-001, UC-009-CR-002 | Test | Generated 480/1800 width-constrained outputs for published photos; 2400px hero outputs only for hero photos |
 | REQ-027 | Generate Public Gallery Metadata | The system shall be able to generate public-safe gallery metadata for album, count, focal point, hero, caption, and lightbox rendering. | Functional/Data | High | UC-009-CR-003 | Inspection/Test | `data/gallery-data.json`; `js/gallery-data.js` |
 | REQ-028 | Report Gallery Generation Results | The system shall be able to report generation counts and warnings after static gallery asset generation. | Verification/Maintainability | Medium | UC-009-CR-004 | Inspection | `images/gallery/generated/generation-report.json` |
 | REQ-029 | Provide Stable Photo IDs | The system shall create stable path-derived photo IDs with collision handling for generated gallery metadata. | Functional/Data | Medium | UC-009-CR-005, UC-010-CR-004 | Test/Demonstration | Pipeline test; generated hash deep-link IDs |
@@ -93,7 +93,7 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | UC-008-CR-006 | Captionless photos | REQ-025 | Mapped | Captions are optional. |
 | UC-008-CR-007 | Originals/private state not public | REQ-024 | Mapped | Public/private boundary. |
 | UC-009-CR-001 | Generate public outputs | REQ-026, REQ-027 | Merged | Output generation includes assets and metadata. |
-| UC-009-CR-002 | Optimized JPEG derivatives | REQ-026 | Mapped | Thumbnail/large/hero derivative generation. |
+| UC-009-CR-002 | Optimized JPEG derivatives | REQ-026 | Mapped | Thumbnail/large derivative generation for published photos; hero derivative generation for explicit hero photos. |
 | UC-009-CR-003 | Public metadata | REQ-027 | Mapped | Public-safe gallery data. |
 | UC-009-CR-004 | Generation report | REQ-028 | Mapped | Counts and warnings. |
 | UC-009-CR-005 | Stable collision-safe IDs | REQ-029 | Mapped | Deep-link support depends on stable IDs. |
@@ -138,10 +138,10 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | REQ-022 | Implemented | Local review app serves over localhost and exposes a photo grid/API for source folders. |  | Implemented in PowerShell/.NET because Python/Pillow is unavailable in this environment. |
 | REQ-023 | Implemented | Private curation JSON stores review state, titles/captions, and focal points. |  | Album cover/display metadata supported by schema/generator. |
 | REQ-024 | Implemented | Original source folder and private curation state are ignored. |  | `.photo-curation/` exists locally and is ignored. |
-| REQ-025 | Implemented | Placeholder generation publishes captionless photos. |  | Captions can be added later during review. |
-| REQ-026 | Implemented | Generator creates thumb, large, and hero JPEG derivatives. |  | Width checks passed. |
-| REQ-027 | Implemented | Generated JSON and JS metadata drive public gallery and hero behavior. |  | Placeholder metadata from existing images until real source photos arrive. |
-| REQ-028 | Implemented | Generation report is produced with counts and warnings. |  | 24 placeholder photos generated. |
+| REQ-025 | Implemented | Real curated generation publishes captionless photos. |  | Captions can be added later during review. |
+| REQ-026 | Implemented | Generator creates thumb and large JPEG derivatives for published photos, and 2400px hero derivatives only for hero-marked photos. |  | Pipeline tests passed; generated real gallery is about 107 MB. |
+| REQ-027 | Implemented | Generated JSON and JS metadata drive public gallery and hero behavior. |  | Real curated metadata generated from the local source photo set. |
+| REQ-028 | Implemented | Generation report is produced with counts and warnings. |  | Real generation report: 185 published, 601 excluded, 12 hero photos. |
 | REQ-029 | Implemented | Path-derived IDs and collision handling are implemented. |  | Duplicate `champ` names were disambiguated. |
 | REQ-030 | Implemented | Generated output directory is replaced each generation. |  | Prevents stale generated files. |
 | REQ-031 | Implemented | Gallery renders generated album sections and static lightbox behavior. |  | Browser automation unavailable; static and source checks passed. |
@@ -163,7 +163,7 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | PHOTO_REVIEW_STATES | Supported local review states. | `unreviewed`, `include`, `highlight`, `hero`, `exclude` | Grilling decisions |
 | GENERATED_THUMB_WIDTH | Target max width for generated thumbnails. | `480px` | Sprint research |
 | GENERATED_LARGE_WIDTH | Target max width for generated large images. | `1800px` | Sprint research |
-| GENERATED_HERO_WIDTH | Target max width for generated hero images. | `2400px` | Sprint research |
+| GENERATED_HERO_WIDTH | Target max width for generated hero images. | `2400px`, generated only for photos marked `hero` | Sprint research and 2026-06-21 curation optimization |
 | HERO_SELECTION_MODE | Current archive hero behavior. | Session-stable random selection from explicit hero photos with fallback | Grilling decisions and implementation evidence |
 | STATIC_SCAN_TARGET | Minimum scan result before release. | 0 missing local refs, 0 server-runtime refs, 0 PHP files | Prototype/static scan |
 
@@ -226,8 +226,7 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 - Which external links should be replaced, removed, or converted to historical plain text.
 - Whether to delete or archive remaining unused countdown/validation assets now.
 - Whether a future warm Weekend/Details page should be added as a new scoped sprint.
-- The real wedding photo repository has not been added yet.
-- Final hero-photo, album-cover, caption, and exclude decisions remain curation tasks.
+- Owner review of the auto-curated 185-photo selection, optional captions, and optional album-section refinements remain curation tasks.
 
 ## Historical Archive
 

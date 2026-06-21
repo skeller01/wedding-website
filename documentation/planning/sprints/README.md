@@ -6,7 +6,7 @@ Status values in this index describe the current roll-up state of each sprint fi
 
 | Order | Sprint Plan | Purpose | Status |
 |---:|---|---|---|
-| 1 | [Local Photo Curation Pipeline](2026-06-20-local-photo-curation-pipeline.md) | Build a private local review/generation tool for ignored originals and generated web assets. | Implemented; real source photos pending |
+| 1 | [Local Photo Curation Pipeline](2026-06-20-local-photo-curation-pipeline.md) | Build a private local review/generation tool for ignored originals and generated web assets. | Implemented; first-pass real source curation generated 185 public photos |
 | 2 | [Generated Gallery and Lightbox](2026-06-20-generated-gallery-lightbox.md) | Replace/refine the hand-built gallery with generated album sections, thumbnails, large images, and lightbox behavior. | Implemented; browser smoke still recommended |
 | 3 | [Archive Visual Refresh](2026-06-20-archive-visual-refresh.md) | Refresh the public front end using the archive visual prototype direction. | Implemented; partially superseded by Variant C hardening |
 | 4 | [Variant C Publishable Site Hardening](2026-06-20-variant-c-publishable-site-hardening.md) | Make the existing static site publishable with Variant C as the site-wide design contract and release-blocking checks. | Implemented; later contact-removal sprint supersedes six-page assumptions |

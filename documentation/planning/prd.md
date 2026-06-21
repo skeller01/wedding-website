@@ -23,6 +23,7 @@ No new material conflict blocks the PRD. Older documentation still contains AWS/
 - Current data/privacy decision: no RSVP, address, message, email form, PHP endpoint, or database is in scope.
 - Current maintenance decision: stale external links and remaining dead legacy assets remain cleanup opportunities.
 - Current photo direction: originals stay local/ignored; a local review/generation pipeline now creates committed public web assets and metadata for a generated static gallery.
+- Current real-photo curation decision: the first real source pass publishes 185 selected photos from 786 originals, with 12 explicit hero photos and optimized hero derivatives only for those hero photos.
 - Current visual direction: the public site now has a wedding archive/photo album landing feel, with a session-stable hero photo selected from generated hero metadata or fallback.
 - Current page-set decision: the temporary Info/contact page has been removed for now; the site keeps the no-collection posture by omitting visitor-submission paths rather than showing a standalone policy page.
 - Current implementation decision: the photo pipeline is implemented in PowerShell/.NET in `tools/photo-pipeline.ps1`; Python/Pillow is only a possible future portability option, not the current baseline.
@@ -69,14 +70,14 @@ Keep the site as plain static HTML/CSS/JS/images on GitHub Pages, preserve the e
 - Full static site generator migration.
 
 ### Recommended MVP / Release Slice
-The MVP is implemented as a static GitHub Pages wedding archive with no backend, generated placeholder gallery assets, and a refreshed archive landing. The just-completed sprint sequence was:
+The MVP is implemented as a static GitHub Pages wedding archive with no backend, a generated real-photo gallery, and a refreshed archive landing. The just-completed sprint sequence was:
 
 1. Local Photo Curation Pipeline: created ignored original-photo conventions, a local browser review app, private curation JSON, optimized JPEG generation, public metadata, and a generation report.
 2. Generated Gallery and Lightbox: replaced/refined the hand-built gallery with generated album sections, counts, thumbnails, large images, keyboard lightbox behavior, and stable photo hash links.
 3. Archive Visual Refresh and Variant C Hardening: updated the public front end toward a photo-first wedding archive/photo album with session-stable hero behavior, chapter navigation, and a publishable five-page shell.
 4. Remove Contact Page Links: removed the temporary Info/contact page and production links, preserving the no-collection posture through absence of visitor-submission paths.
 
-The next practical cleanup items remain valid supporting work: record the GoDaddy domain/target, audit stale outbound links, remove or explicitly archive dead legacy interaction assets, and replace placeholder-generated photos with the real wedding source folder when available.
+The next practical cleanup items remain valid supporting work: record the GoDaddy domain/target, audit stale outbound links, remove or explicitly archive dead legacy interaction assets, owner-review the 185-photo gallery selection, and add optional captions or album groupings.
 
 ### User Stories
 1. As a visitor, I want to open the wedding archive so that I can revisit the wedding story and memories.
@@ -132,7 +133,7 @@ Use GitHub Pages for current production static hosting, working GoDaddy forwardi
 - Support a simple static photo gallery without requiring uploads or backend services.
 - Provide a local browser workflow for reviewing ignored source photos.
 - Record private photo curation state for review status, hero eligibility, album naming, covers, and focal points.
-- Generate optimized thumbnail, large, and hero JPEG derivatives.
+- Generate optimized thumbnail and large JPEG derivatives for public photos, plus hero JPEG derivatives for photos explicitly marked as heroes.
 - Generate public-safe gallery metadata and a generation report.
 - Present generated album sections, all non-excluded photos, album/photo counts, and static lightbox navigation.
 - Support stable photo deep links.
@@ -191,7 +192,7 @@ Rollback: revert or correct the production branch and let GitHub Pages republish
 | Dead legacy assets remain | Maintainers may misunderstand current behavior. | Remove/archive after reference checks. |
 | GitHub Pages dependency | Static hosting depends on GitHub account/repo settings. | Keep AWS static hosting as fallback. |
 | No backend/forms | Cannot collect RSVPs/messages through the site. | This matches current scope; require new PRD if needed later. |
-| Photo repository scale | Hundreds of originals could bloat the repo or slow the public site. | Ignore originals; generate optimized public assets. |
+| Photo repository scale | Hundreds of originals could bloat the repo or slow the public site. | Ignore originals; publish a curated set; generate optimized public assets and hero derivatives only for explicit heroes. |
 | Gallery scope creep | Photo uploads, accounts, original downloads, or private sharing could introduce backend/privacy complexity. | Keep public gallery static and generated from local tooling. |
 | Hero image variability | Random hero photos could make the landing feel jumpy or unreadable. | Select only explicit hero photos, keep the choice stable for a session, and support focal points/fallback. |
 
@@ -222,8 +223,8 @@ Rollback: revert or correct the production branch and let GitHub Pages republish
 - Which stale external links should be replaced, removed, or converted to historical plain text?
 - Should remaining unused countdown and validation assets be removed in the next implementation pass?
 - Should a warmer Weekend/Details page be added in a future sprint?
-- The real wedding photo repository has not been added yet.
-- Which album display names, covers, hero photos, and exclusions should be chosen after local review?
+- Owner spot-check of the auto-curated real-photo gallery is still needed before broad sharing.
+- Which optional album display names, covers, and captions should be added after owner review?
 - Which captions, if any, should be added after the first gallery generation?
 
 ### Follow-On Artifacts

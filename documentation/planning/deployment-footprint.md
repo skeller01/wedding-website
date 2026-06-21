@@ -46,7 +46,7 @@ Fallback: AWS static hosting only if GitHub Pages is blocked or the user chooses
 | Internal static content | Polished wedding archive context | Some external links may be stale or misleading as live recommendations | Audit and patch/remove/convert links before wider sharing |
 | Static scan | Repeatable release guard | Script remains in working/prototype area | Promote or document as release check if recurring |
 | Source hygiene | Repo reflects current static/no-collection behavior | Public pages no longer load countdown scripts; unused countdown/validation files remain | Cleanup sprint can remove/archive remaining files |
-| Static gallery | Share wedding photos without backend scope | Initial `gallery.html` implemented | Curate/expand selected photos and captions when ready |
+| Static gallery | Share wedding photos without backend scope | Curated 185-photo generated gallery implemented | Owner spot-check and optional captions remain |
 
 ### Mermaid Architecture Diagram
 ```mermaid
@@ -94,7 +94,7 @@ flowchart LR
 | Domain | GoDaddy forwarding | User-facing public URL. | Current / working | Needs exact domain and target recorded. |
 | Backend | None | Keep no-collection static scope. | Current | Do not add PHP/serverless without new decision. |
 | Storage | Repository/static host only | Store static assets. | Current | No visitor data. |
-| Photo assets | Repository/static host only | Store selected gallery photos. | Current | Keep gallery static; optimize further if many more photos are added. |
+| Photo assets | Repository/static host only | Store selected gallery photos. | Current | Current generated gallery is about 107 MB: 185 thumbnails, 185 large images, and 12 hero images. Originals remain ignored locally. |
 | Observability | Static scan/manual checks | Release confidence. | Current / partial | External link audit remains. |
 | Fallback host | AWS static hosting | Alternative if needed. | Deferred | No provisioning now. |
 
@@ -139,7 +139,7 @@ flowchart LR
 | Public Domain Confidence | GoDaddy forwarding to hosted URL | Record exact working domain and target. | Full DNS/custom domain. | Forwarded domain reaches expected page. |
 | Archive Polish | Same static host | Refresh stale links as historical context. | Redesign/dynamic features. | No known misleading recommendations remain. |
 | Source Cleanup | Same static host | Remove/archive dead interaction assets. | New interaction features. | Reference search and scan pass. |
-| Static Gallery | Same static host | Initial `gallery.html` with selected static photos. | Uploads, tagging, private sharing. | Gallery loads selected photos without backend calls. |
+| Static Gallery | Same static host | Generated 185-photo curated gallery with optimized public assets. | Uploads, tagging, private sharing. | Gallery loads selected photos without backend calls. |
 | Optional AWS Fallback | AWS static hosting | Nothing now. | GitHub Pages blocked or user preference changes. | Equivalent HTTPS static site exists. |
 
 ### Provider Mapping
@@ -166,7 +166,7 @@ flowchart LR
 | Record forwarded domain | Domain documentation | Record exact working domain and target URL; re-check after changes. | GoDaddy access if target changes. | High |
 | Keep site static | Static release checks | Preserve scan and five-page smoke check. | Prototype script or equivalent. | Medium |
 | Refresh external links | Archive polish | Audit and patch/remove/convert hotel/activity/venue links. | Owner preference/current web info. | High |
-| Refine static gallery | Archive enhancement | Curate final photos/captions and image sizing. | Photo/caption selection. | Medium |
+| Refine static gallery | Archive enhancement | Owner spot-check of auto-curated selection and optional captions/album grouping. | Current 185-photo generation. | Medium |
 | Clean dead assets | Source hygiene | Remove/archive remaining countdown and validation files after search. | Confirmation that no countdown/form behavior is wanted. | Medium |
 | Keep AWS as fallback | Deployment fallback | No action unless GitHub Pages blocked. | Future decision. | Low |
 
@@ -182,7 +182,7 @@ flowchart LR
 - Which stale external links should be replaced, removed, or converted to historical plain text?
 - Should remaining dead countdown/validation assets be removed now?
 - Should a warmer Weekend/Details page be added in a future sprint?
-- Which additional photos or final captions should refine the first static gallery?
+- Which optional captions, album groupings, or owner removals should refine the curated 185-photo gallery?
 
 ## Historical Archive
 

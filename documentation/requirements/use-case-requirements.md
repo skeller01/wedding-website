@@ -21,8 +21,8 @@ This refresh follows the updated context and use case model in `documentation/re
 | UC-004 | Publish Static Website | High | Refreshed | GitHub Pages/static publication workflow |
 | UC-005 | Maintain Archive Content | Medium | Refreshed | Refactor/deployment/requirements follow-up |
 | UC-006 | View Static Photo Gallery | Medium | Implemented | Initial simple static gallery |
-| UC-008 | Curate Source Photos Locally | High | Implemented | Local photo curation tool; real source photos pending |
-| UC-009 | Generate Static Gallery Assets | High | Implemented | Generated placeholder public assets/data from existing images |
+| UC-008 | Curate Source Photos Locally | High | Implemented | Local photo curation tool; first-pass real source selection complete |
+| UC-009 | Generate Static Gallery Assets | High | Implemented | Generated curated real-photo public assets/data from local source images |
 | UC-010 | Browse Generated Album Gallery | High | Implemented | Generated gallery/lightbox sprint |
 | UC-011 | View Session-Stable Archive Hero | Medium | Implemented | Archive visual refresh sprint |
 
@@ -278,7 +278,7 @@ This refresh follows the updated context and use case model in `documentation/re
 | Priority | High |
 | Preconditions | Source photos exist locally; originals are excluded from committed public site artifacts. |
 | Postconditions | Private curation state is ready for static gallery asset generation. |
-| Evidence | Implemented in `tools/photo-pipeline.ps1`; real source photos pending |
+| Evidence | Implemented in `tools/photo-pipeline.ps1`; first-pass real source curation selected 185 public photos |
 
 #### Main Success Scenario
 | Step | Actor / Operator | System | External Entity | Behavior | Interface / Message | Candidate Requirement ID | Candidate Requirement | Evidence |
@@ -323,7 +323,7 @@ This refresh follows the updated context and use case model in `documentation/re
 | Priority | High |
 | Preconditions | Source photos and curation state exist locally. |
 | Postconditions | Generated public assets and metadata are ready for static scan, review, and commit. |
-| Evidence | Implemented by `tools/photo-pipeline.ps1 generate`; placeholder outputs generated from existing images |
+| Evidence | Implemented by `tools/photo-pipeline.ps1 generate`; real curated outputs generated from local source images |
 
 #### Main Success Scenario
 | Step | Actor / Operator | System | External Entity | Behavior | Interface / Message | Candidate Requirement ID | Candidate Requirement | Evidence |

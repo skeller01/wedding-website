@@ -149,7 +149,7 @@ Implemented 2026-06-20 by `implement-change`.
 | REQ-032 Support Session-Stable Archive Hero | Implemented | `js/archive-home.js`; `js/gallery-data.js`; generated hero images | Source inspection; generated hero list contains 5 placeholder hero photos | Pending | Uses `sessionStorage` and generated/fallback hero data. |
 
 ## Cleanup / Deferred
-- Replace placeholder-generated hero/gallery assets with the real wedding photo source folder when available.
+- Real source photos have been generated into the public gallery; owner spot-check is still recommended before sharing broadly.
 - Real-browser screenshot review is still recommended before sharing broadly.
 
 ## Implementation Handoff

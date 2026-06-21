@@ -56,7 +56,7 @@ This sprint is first because the photo repository is not available yet and the p
 | Finding | Decision | Sprint Impact |
 |---|---|---|
 | Static gallery should remain no-backend/no-upload. | Absorb | Tool runs locally; public output remains static. |
-| Full original repository may contain hundreds of photos. | Absorb | Generate thumbnails/large/hero images rather than browser-scaling originals. |
+| Full original repository may contain hundreds of photos. | Absorb | Generate thumbnails and large images for selected public photos, plus hero images only for explicit hero photos. |
 | Folder structure should be preserved. | Absorb | Album data is derived from folders with display-name overrides. |
 | Hero selection should be explicit. | Absorb | Only `hero` photos enter generated hero set. |
 | Visual refresh should not be production-absorbed from prototype. | Defer | No public redesign in this sprint. |

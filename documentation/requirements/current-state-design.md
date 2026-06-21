@@ -31,7 +31,7 @@ The Sonia and Steve Wedding Website is a static public wedding archive / memory 
 | Shared presentation | Bootstrap classes plus custom styling. | HTML includes and `css/style.css` |
 | Client behavior | Bootstrap navigation/tooltips; public pages no longer load obsolete countdown initialization. | Root script tags and source search |
 | Static assets | Local photos and decorative images. | `images/*`; scan resolves references |
-| Generated gallery assets | Public web-sized thumbnails, large images, hero images, and gallery metadata generated from private source photos or placeholder checked-in images. | `images/gallery/generated/`, `data/gallery-data.json`, `js/gallery-data.js` |
+| Generated gallery assets | Public web-sized thumbnails, large images, hero images for explicit hero photos, and gallery metadata generated from private source photos or placeholder checked-in images. | `images/gallery/generated/`, `data/gallery-data.json`, `js/gallery-data.js` |
 | Local photo tooling | Local-only review/generation workflow for ignored original photos and private curation state. | `tools/photo-pipeline.ps1` |
 | Documentation workspace | Durable planning, requirements, and working analysis. | `documentation/*` |
 
@@ -114,8 +114,8 @@ flowchart LR
 | High | UC-004 | Publish Static Website | Site Maintainer | Maintainer wants public updates. | Publish verified static content through GitHub Pages. | Git/GitHub Pages flow | Current production path. |
 | Medium | UC-005 | Maintain Archive Content | Site Maintainer | Content, link, gallery, or asset cleanup needed. | Update static files/docs and rerun checks. | Maintenance workflow | Next likely implementation slice. |
 | Medium | UC-006 | View Static Photo Gallery | Visitor / Guest | Visitor opens `gallery.html`. | Render selected wedding photos from static assets. | Page request | Initial static slice implemented. |
-| High | UC-008 | Curate Source Photos Locally | Photo Curator | Source photo repository is available locally. | Review and record include/highlight/hero/exclude metadata. | Local review workflow | Implemented local tool; real source photos pending. |
-| High | UC-009 | Generate Static Gallery Assets | Site Maintainer | Curation state changes. | Generate optimized public JPEGs, metadata, and report. | Local generation command | Placeholder outputs generated from existing images. |
+| High | UC-008 | Curate Source Photos Locally | Photo Curator | Source photo repository is available locally. | Review and record include/highlight/hero/exclude metadata. | Local review workflow | Implemented local tool; first-pass real source curation complete. |
+| High | UC-009 | Generate Static Gallery Assets | Site Maintainer | Curation state changes. | Generate optimized public JPEGs, metadata, and report. | Local generation command | Real 185-photo gallery generated from source images. |
 | High | UC-010 | Browse Generated Album Gallery | Visitor / Guest | Visitor opens generated gallery. | Render albums, counts, thumbnails, lightbox, and deep links. | Gallery page request | Implemented scalable static gallery. |
 | Medium | UC-011 | View Session-Stable Archive Hero | Visitor / Guest | Visitor opens home page. | Render photo-first hero and chapter links. | Home page request | Implemented with generated hero list and fallback. |
 
@@ -136,8 +136,8 @@ flowchart LR
 ### Gaps and Questions
 - Record the exact working GoDaddy domain and final forwarding target.
 - Decide which external hotel/activity links to replace, remove, or keep as historical plain text.
-- Add the real wedding photo repository before replacing placeholder-generated photo outputs.
-- Decide hero-photo, album-cover, caption, and exclusion choices during/after local review.
+- Owner-review the 185-photo real gallery selection before broad sharing.
+- Decide optional album-cover, caption, and album-grouping refinements after local review.
 - Decide whether to remove remaining unused countdown and validation assets.
 - Decide whether a future warm Weekend/Details page should be added.
 
@@ -267,11 +267,11 @@ flowchart LR
 ### Gaps and Questions
 - Confirm final public domain and whether forwarding remains the desired domain model.
 - Decide stale external link remediation strategy.
-- Add the real wedding photo repository before implementing the local photo pipeline.
-- Decide final hero-photo, album-cover, caption, and exclude choices during or after local review.
+- Owner-review the 185-photo real gallery selection before broad sharing.
+- Decide final owner adjustments, album-cover, caption, and exclude choices during or after local review.
 
 ### Follow-On Behavioral Models
-- UC-001 through UC-006 describe base production behavior. UC-008 through UC-011 now describe implemented local photo pipeline, generated gallery/lightbox, and archive visual refresh behavior; real source-photo curation remains pending.
+- UC-001 through UC-006 describe base production behavior. UC-008 through UC-011 now describe implemented local photo pipeline, generated gallery/lightbox, and archive visual refresh behavior; first-pass real source-photo curation produced a 185-photo generated gallery.
 
 ## Functional Flow Block Diagram
 
@@ -380,7 +380,7 @@ The site flow is static: a visitor reaches the hosted URL or working forwarded d
 ### Gaps and Questions
 - Record final GoDaddy domain/target.
 - Complete external-link archive-polish review.
-- Use the implemented local photo pipeline before expanding the gallery to hundreds of photos.
+- Use the implemented local photo pipeline and 185-photo curation baseline before expanding the gallery further.
 
 ### Change Recommendations
 - Remove remaining unused countdown and validation assets after confirming no future interactive feature needs them.
@@ -511,7 +511,7 @@ sequenceDiagram
 ### Gaps and Questions
 - Exact final GoDaddy domain and target URL.
 - Which external links should be updated, removed, or converted to historical plain text.
-- Initial static gallery photo selection.
+- Owner review of the 185-photo generated gallery selection.
 
 ### Change Recommendations
 - Keep external links auditable.
@@ -611,7 +611,7 @@ classDiagram
 
 ### Gaps and Questions
 - Whether to remove dead local scripts now.
-- Which hero photos, album covers, exclusions, and optional captions should be chosen after local review.
+- Which owner adjustments, album covers, album groupings, and optional captions should be chosen after local review.
 - Whether to introduce templates only if content maintenance grows.
 
 ### Change Recommendations
@@ -669,7 +669,7 @@ Analyze functional failures that could prevent visitors from reading the archive
 ### Gaps and Questions
 - Exact domain and target URL for working GoDaddy forwarding.
 - Owner preference for stale link replacement/removal/plain-text targets.
-- Real photo repository availability and curation choices for hero photos, album covers, exclusions, and optional captions.
+- Owner review of the 185-photo curation baseline, plus optional album covers, exclusions, and captions.
 - Whether dead assets should be deleted now or left until a cleanup sprint.
 
 ### Test Implications
