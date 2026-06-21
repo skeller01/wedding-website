@@ -24,6 +24,7 @@ No new material conflict blocks the PRD. Older documentation still contains AWS/
 - Current maintenance decision: stale external links and remaining dead legacy assets remain cleanup opportunities.
 - Current photo direction: originals stay local/ignored; a local review/generation pipeline now creates committed public web assets and metadata for a generated static gallery.
 - Current visual direction: the public site now has a wedding archive/photo album landing feel, with a session-stable hero photo selected from generated hero metadata or fallback.
+- Current page-set decision: the temporary Info/contact page has been removed for now; the site keeps the no-collection posture by omitting visitor-submission paths rather than showing a standalone policy page.
 - No grilling question was needed because the available source evidence supports these defaults.
 
 ### Problem Statement
@@ -47,10 +48,10 @@ Keep the site as plain static HTML/CSS/JS/images on GitHub Pages, preserve the e
 
 ### Scope
 #### In Scope
-- Public static pages: Home, About, Info, Hotels, Local Entertainment/Syracuse.
+- Public static pages: Home, Story/About, Gallery, Hotels, Local Entertainment/Syracuse.
 - Internal navigation and mobile-readable layout.
 - Local asset integrity and static scan verification.
-- Clear no-collection information page.
+- No public visitor-submission path for RSVPs, addresses, messages, uploads, comments, accounts, or contact.
 - GitHub Pages publication and working GoDaddy forwarding/redirect.
 - External hotel/activity link freshness review.
 - Initial simple static photo gallery.
@@ -78,7 +79,7 @@ The next practical cleanup items remain valid supporting work: record the GoDadd
 ### User Stories
 1. As a visitor, I want to open the wedding archive so that I can revisit the wedding story and memories.
 2. As a visitor, I want to browse hotel and Syracuse pages as historical context so that I understand the wedding weekend setting without being sent to misleading links.
-3. As a visitor, I want the Info page to be clear so that I do not try to submit an RSVP, address, or message through a nonexistent form.
+3. As a visitor, I do not need a standalone Info page while the archive has no RSVP, address, message, upload, account, or contact-submission path.
 4. As the site maintainer, I want to publish static files from GitHub so that updates stay low-cost and simple.
 5. As the domain owner, I want the working GoDaddy-forwarded URL to reach the hosted site so that visitors can use the public domain.
 6. As a future maintainer, I want obsolete interaction assets removed or archived so that I do not mistake them for current behavior.
@@ -90,9 +91,9 @@ The next practical cleanup items remain valid supporting work: record the GoDadd
 
 ### Functional Expectations
 - The site serves `index.html` as the public entry point.
-- Visitors can navigate among Home, About, Info, Hotels, and Local Entertainment.
+- Visitors can navigate among Home, Story/About, Gallery, Hotels, and Local Entertainment.
 - Hotels and Syracuse pages display historical wedding-weekend context even if external links are unavailable.
-- Info page states that the site does not collect addresses, RSVPs, or messages.
+- Public pages do not expose address, RSVP, message, upload, account, comment, or contact-submission paths.
 - Local assets resolve with deploy-safe paths.
 - GitHub Pages hosted URL and GoDaddy-forwarded URL are available.
 - Photo tooling keeps original photos and raw curation state local/private.
@@ -107,7 +108,7 @@ Use GitHub Pages for current production static hosting, working GoDaddy forwardi
 | Area | Expectation | Evidence / Status |
 |---|---|---|
 | Cost | Free or effectively free static hosting. | Deployment footprint |
-| Privacy | No visitor-submitted data collection. | Info page and requirements |
+| Privacy | No visitor-submitted data collection. | Source scan and requirements |
 | Reliability | Core content remains readable without third-party sites. | Requirements |
 | Security | No server runtime, secrets, or backend attack surface. | Static scan and deployment footprint |
 | Maintainability | Static edits remain simple; dead assets should not obscure current behavior. | Class/FMEA/refactor notes |
@@ -122,7 +123,7 @@ Use GitHub Pages for current production static hosting, working GoDaddy forwardi
 - Provide internal navigation on desktop and mobile.
 - Keep local asset references deploy-safe and case-correct.
 - Avoid PHP/server runtime dependency.
-- Clearly state no collection of visitor messages, RSVPs, or addresses.
+- Preserve no collection of visitor messages, RSVPs, addresses, uploads, comments, accounts, or contact submissions.
 - Provide current enough outbound venue/hotel/activity links.
 - Publish through GitHub Pages and verify GoDaddy forwarding.
 - Remove or archive remaining unused legacy interaction assets.
@@ -149,7 +150,7 @@ Use GitHub Pages for current production static hosting, working GoDaddy forwardi
 
 ### Test Seams
 - Static scan: local references, PHP/runtime references, missing assets.
-- Five-page browser smoke: Home, About, Info, Hotels, Syracuse.
+- Five-page browser smoke: Home, Story/About, Gallery, Hotels, Syracuse.
 - Mobile nav smoke: collapsed navigation and Travel dropdown.
 - Public URL smoke: GitHub Pages URL.
 - Domain smoke: working GoDaddy-forwarded URL.
@@ -161,8 +162,8 @@ Use GitHub Pages for current production static hosting, working GoDaddy forwardi
 
 ### Testing Decisions
 - Run the existing static scan before and after cleanup.
-- Inspect `contact.html` to confirm no form and no-collection copy remain.
 - Search for obsolete contact/PHP/form placeholders after cleanup.
+- Verify no production page links to removed `contact.html`.
 - Verify all five pages after publishing.
 - Record external-link keep/update/remove/plain-text decisions.
 - For the photo pipeline sprint, use fixture photos first and verify generated `thumb`, `large`, and `hero` outputs before trying the real archive.
@@ -218,7 +219,7 @@ Rollback: revert or correct the production branch and let GitHub Pages republish
 - What exact GoDaddy domain and target URL should be recorded?
 - Which stale external links should be replaced, removed, or converted to historical plain text?
 - Should remaining unused countdown and validation assets be removed in the next implementation pass?
-- Should `contact.html` eventually be renamed or redirected to match the visible Info label?
+- Should a warmer Weekend/Details page be added in a future sprint?
 - The real wedding photo repository has not been added yet.
 - Which album display names, covers, hero photos, and exclusions should be chosen after local review?
 - Which captions, if any, should be added after the first gallery generation?

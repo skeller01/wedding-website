@@ -7,11 +7,11 @@ This refresh was produced in the requested systems order: documentation setup, c
 Documentation workspace status: `documentation/planning/`, `documentation/planning/working/`, and `documentation/requirements/` already exist and are the active documentation paths.
 
 Source inputs reviewed:
-- Root static pages: `index.html`, `about.html`, `gallery.html`, `contact.html`, `hotels.html`, `syracuse.html`.
+- Root static pages: `index.html`, `about.html`, `gallery.html`, `hotels.html`, `syracuse.html`.
 - Shared assets: `css/style.css`, Bootstrap/jQuery CDN behavior, remaining unused legacy validation/countdown files, `images/*`.
 - Current durable docs: `documentation/requirements/current-state-design.md`, `documentation/requirements/use-case-requirements.md`, `documentation/requirements/requirements.md`, `documentation/planning/deployment-footprint.md`, `documentation/planning/prd.md`.
 - Planning evidence: sprint docs, refactor plan, prototype lab, and static scan scripts under `documentation/planning/`.
-- Current static scan after generated gallery/lightbox and archive visual refresh implementation: 6 HTML pages, 76 local references resolved, 0 missing references, 0 server-side runtime references, 0 PHP files, 13 external references.
+- Current static scan after removing the temporary Info/contact page: 5 HTML pages, 52 local references resolved, 0 missing references, 0 server-side runtime references, 0 PHP files, 11 external references.
 
 ## Context Diagram and Matrix
 
@@ -27,7 +27,7 @@ The Sonia and Steve Wedding Website is a static public wedding archive / memory 
 ### Inside the System
 | Internal Element | Description | Evidence |
 |---|---|---|
-| Static pages | Home, story, gallery, information, hotels, and Syracuse historical context pages. | Root `*.html` files |
+| Static pages | Home, story, gallery, hotels, and Syracuse historical context pages. | Root `*.html` files |
 | Shared presentation | Bootstrap classes plus custom styling. | HTML includes and `css/style.css` |
 | Client behavior | Bootstrap navigation/tooltips; public pages no longer load obsolete countdown initialization. | Root script tags and source search |
 | Static assets | Local photos and decorative images. | `images/*`; scan resolves references |
@@ -95,7 +95,7 @@ flowchart LR
 |---|---|---|---|---|---|---|---|---|
 | Visitor / Guest | View wedding archive | In/Out | Query/response | Page request | Static wedding memory and event context | Occasional | Public wedding archive is the current product. | Must remain readable without backend services. |
 | Visitor / Guest | Browse historical travel/local context | In/Out | Query/response | Navigation/link click | Hotel and Syracuse pages | Occasional | Internal content is useful as historical context even if third-party links drift. | External destinations should not be misleading. |
-| Visitor / Guest | Read information page | In/Out | Query/response | `contact.html` request | No-collection information page | Occasional | No RSVP/address/message collection is intended. | Filename remains historical. |
+| Visitor / Guest | Encounter no public contact flow | In/Out | Query/response | Page navigation/source request | No Info/contact page or submission workflow exposed | Occasional | No RSVP/address/message collection is intended. | `contact.html` removed for now. |
 | Browser | Load local assets | In/Out | Startup/query | CSS/JS/image requests | Static assets | Per page load | Paths must be deploy-safe. | Static scan currently passes. |
 | Browser | Load CDN assets | Out/In | Startup/query | CDN requests | Libraries/fonts | Per page load | CDN use remains acceptable. | CDN outages degrade styling/interactions. |
 | Site Maintainer | Update content | In | Maintenance | File edits and docs changes | Repository changes | Infrequent | Changes occur before production publication. | Duplicated nav/footer markup creates maintenance risk. |
@@ -110,7 +110,7 @@ flowchart LR
 |---|---|---|---|---|---|---|---|
 | High | UC-001 | View Wedding Archive | Visitor / Guest | Visitor opens site URL. | Render home/story/event memory content. | Page request | Core site value. |
 | High | UC-002 | Browse Historical Travel and Local Context | Visitor / Guest | Visitor selects Travel/Hotels/Syracuse. | Render historical context pages and safe outbound/plain-text references. | Navigation/link click | Stale external links remain the main content risk. |
-| Medium | UC-003 | Read Information Page | Visitor / Guest | Visitor opens Info page. | Explain no collection of addresses, RSVPs, or messages. | `contact.html` request | Replaces historical contact form purpose. |
+| Low | UC-003 | Read Information Page | Visitor / Guest | Deferred; no public Info/contact route exists. | Preserve no-collection posture by omitting submission paths. | Removed page/source scan | Future Weekend/Details page should be planned separately. |
 | High | UC-004 | Publish Static Website | Site Maintainer | Maintainer wants public updates. | Publish verified static content through GitHub Pages. | Git/GitHub Pages flow | Current production path. |
 | Medium | UC-005 | Maintain Archive Content | Site Maintainer | Content, link, gallery, or asset cleanup needed. | Update static files/docs and rerun checks. | Maintenance workflow | Next likely implementation slice. |
 | Medium | UC-006 | View Static Photo Gallery | Visitor / Guest | Visitor opens `gallery.html`. | Render selected wedding photos from static assets. | Page request | Initial static slice implemented. |
@@ -139,7 +139,7 @@ flowchart LR
 - Add the real wedding photo repository before implementing the local photo pipeline.
 - Decide hero-photo, album-cover, caption, and exclusion choices during/after local review.
 - Decide whether to remove remaining unused countdown and validation assets.
-- Decide whether `contact.html` should eventually be renamed to match the visible `Info` label.
+- Decide whether a future warm Weekend/Details page should be added.
 
 ### Follow-On Artifacts
 - Use case diagram and behavioral matrices for UC-001 through UC-006 base behavior and UC-008 through UC-011 implemented photo/gallery/visual-refresh behavior.
@@ -176,7 +176,7 @@ System boundary: Sonia and Steve Wedding Website. Actors and hosting/domain serv
 |---|---|---|---|---|---|
 | UC-001 | View Wedding Archive | Read home, story, and event memory details. | Visitor / Guest | High | Page request |
 | UC-002 | Browse Historical Travel and Local Context | Read hotel/Syracuse historical context and optional safe external resources. | Visitor / Guest | High | Navigation/link click |
-| UC-003 | Read Information Page | Understand that no messages, RSVPs, or addresses are collected. | Visitor / Guest | Medium | Info page request |
+| UC-003 | Read Information Page | Deferred; no public Info/contact page exists for now. | Visitor / Guest | Low | Removed route/source scan |
 | UC-004 | Publish Static Website | Make verified content publicly reachable. | Site Maintainer | High | GitHub Pages publication |
 | UC-005 | Maintain Archive Content | Keep archive content, links, assets, and docs aligned with current intent. | Site Maintainer | Medium | Maintenance change |
 | UC-006 | View Static Photo Gallery | Browse selected wedding photos without backend services. | Visitor / Guest | Medium | Gallery page request |
@@ -202,7 +202,7 @@ flowchart LR
   subgraph System["System Boundary: Sonia and Steve Wedding Website"]
     UC1((View Wedding Archive))
     UC2((Browse Historical Travel and Local Context))
-    UC3((Read Information Page))
+    UC3((Read Information Page - Deferred))
     UC4((Publish Static Website))
     UC5((Maintain Archive Content))
     UC6((View Static Photo Gallery))
@@ -312,7 +312,7 @@ The site flow is static: a visitor reaches the hosted URL or working forwarded d
 +-----------------------------+      +-----------------------------+
 | Function 4                  |      | Function 5                  |
 | Present Historical Travel   |      | Open External Resource      |
-| and Info Content            |      | or Context Link             |
+| Context                     |      | or Context Link             |
 +-----------------------------+      +-----------------------------+
       |                                      |
       v                                      v
@@ -358,7 +358,7 @@ The site flow is static: a visitor reaches the hosted URL or working forwarded d
 | 1 | Serve Static Website | Return HTML/CSS/JS/images through static hosting. | URL request | Static response | GitHub Pages enabled | Host unavailable, wrong branch | Observed |
 | 2 | Present Wedding Archive | Show wedding/story/event memory content. | Static files | Readable content | Assets resolve | Broken asset, unreadable layout | Observed |
 | 3 | Support Navigation | Move among pages and dropdowns. | Link/menu action | Target page | Bootstrap/jQuery load | Mobile/dropdown failure | Observed |
-| 4 | Present Historical Travel and Info Content | Show hotel, Syracuse, and no-collection info as archive context. | Page request | Internal details | Pages exist | Stale or misleading copy | Observed |
+| 4 | Present Historical Travel Context | Show hotel and Syracuse context as archive content. | Page request | Internal details | Pages exist | Stale or misleading copy | Observed |
 | 5 | Open External Resource or Context Link | Navigate to third-party sites or present historical plain text. | Outbound click | Third-party page or historical note | Link/context exists | Stale/dead destination | Observed |
 | 6 | Maintain and Publish Site | Update, verify, and publish files. | Maintainer changes | Public site update | Repo access | missed duplicated markup, forwarding failure | Observed/Inferred |
 | 7 | Present Static Photo Gallery | Show selected wedding photos without backend services. | Gallery page request | Static photo gallery | Photos selected and deploy-safe | Oversized images, missing assets | Observed/Tested |
@@ -397,7 +397,7 @@ The site flow is static: a visitor reaches the hosted URL or working forwarded d
 A0: Provide Static Wedding Website
 |-- A1: Present Wedding Content
 |-- A2: Support Visitor Navigation
-|-- A3: Present Travel and Info Content
+|-- A3: Present Travel Context
 |-- A4: Route Visitors to External Resources
 `-- A5: Maintain and Publish Website
 ```
@@ -412,7 +412,7 @@ A0: Provide Static Wedding Website
 |---|---|---|---|---|---|
 | A0 | A1: Present Wedding Content | Page requests; home/about files | Wedding summary and story content | Browser standards; asset paths | HTML pages; CSS; images |
 | A0 | A2: Support Visitor Navigation | Link/menu selections | Page transitions and dropdown access | Bootstrap behavior; internal URLs | Navbar markup; Bootstrap; jQuery |
-| A0 | A3: Present Travel and Info Content | Hotels/Syracuse/Info requests | Historical travel context; no-collection message | Current product scope; content decisions | Static pages; images |
+| A0 | A3: Present Travel Context | Hotels/Syracuse requests | Historical travel context | Current product scope; content decisions | Static pages; images |
 | A0 | A4: Route Visitors to External Resources | Outbound clicks | Third-party site navigation or historical context | Link polish; `rel="noopener"` convention | Anchor links; browser |
 | A0 | A5: Maintain and Publish Website | Maintainer edits; static scan results | Updated repository and public hosted site | Branch workflow; no-backend requirement; release checks | Git; GitHub; GitHub Pages; docs |
 
@@ -537,14 +537,12 @@ classDiagram
     +index.html
     +about.html
     +gallery.html
-    +contact.html
     +hotels.html
     +syracuse.html
   }
   class SharedNavigation {
     +Home
     +About
-    +Info
     +TravelDropdown
   }
   class EventSummaryFooter {
@@ -592,7 +590,7 @@ classDiagram
 ```
 
 ### Key Classes
-- StaticSite: owns the six root HTML pages. Evidence: observed.
+- StaticSite: owns the five root HTML pages. Evidence: observed.
 - SharedNavigation: repeated markup that links pages and exposes the Travel dropdown. Evidence: observed.
 - EventSummaryFooter: repeated Sangeet/Ceremony summary block. Evidence: observed.
 - StyleSheet: custom site presentation and responsive behavior. Evidence: observed.
@@ -648,7 +646,7 @@ Analyze functional failures that could prevent visitors from reading the archive
 | Repository Hygiene | F6 Maintain Current Source | Remaining dead countdown/validation assets confuse future work | Maintainer may revive obsolete behavior or carry unnecessary JS | Legacy files retained after public script loads were removed | Remove or explicitly archive unused assets after reference check | 2 | 3 | 6 | Low |
 | Navigation | F3 Support Navigation | Mobile dropdown fails | Visitors cannot reach secondary pages easily | CDN/script failure or Bootstrap dependency issue | Smoke test mobile navigation and keep HTTPS script refs | 3 | 2 | 6 | Low |
 | Static Hosting | F1 Serve Static Website | Local asset reference breaks after edit | Broken images or styling | Manual HTML edits, case mismatch | Keep static scan as release check | 3 | 2 | 6 | Low |
-| Content Presentation | F2 Present Public Information | Historical wording conflicts with no-collection scope | Visitors misunderstand what action is expected | Old invitation workflow copy returns | Inspect pages for RSVP/address/form promises | 3 | 2 | 6 | Low |
+| Content Presentation | F2 Present Public Information | Historical wording or links reintroduce a contact/Info path | Visitors misunderstand what action is expected | Old invitation workflow copy returns | Inspect pages for RSVP/address/form/contact promises | 3 | 2 | 6 | Low |
 
 ### Highest-Risk Items
 - Stale external links are the highest current archive-polish risk.

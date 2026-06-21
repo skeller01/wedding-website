@@ -8,5 +8,6 @@ Use current durable docs first: `documentation/planning/prd.md`, `documentation/
 | 2 | [Generated Gallery and Lightbox](2026-06-20-generated-gallery-lightbox.md) | Replace/refine the hand-built gallery with generated album sections, thumbnails, large images, and lightbox behavior. | Planned |
 | 3 | [Archive Visual Refresh](2026-06-20-archive-visual-refresh.md) | Refresh the public front end using the archive visual prototype direction. | Planned |
 | 4 | [Variant C Publishable Site Hardening](2026-06-20-variant-c-publishable-site-hardening.md) | Make the existing static site publishable with Variant C as the site-wide design contract and release-blocking checks. | Planned |
+| 5 | [Remove Contact Page Links](2026-06-20-remove-contact-page-links.md) | Remove the temporary Info/contact page from the public archive and update links/docs accordingly. | Planned |
 | Historical | [GitHub Pages Publication](github-pages-publication.md) | Historical publication sprint; current canonical docs supersede stale claims. | Historical/current evidence mixed |
 | Historical | [AWS Static Hosting Readiness](aws-static-hosting-readiness.md) | AWS fallback planning from earlier hosting direction. | Fallback/historical |

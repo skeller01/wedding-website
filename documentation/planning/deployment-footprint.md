@@ -6,8 +6,8 @@
 - Ordered systems refresh in `documentation/requirements/current-state-design.md`.
 - Ordered behavioral refresh in `documentation/requirements/use-case-requirements.md`.
 - Ordered requirements refresh in `documentation/requirements/requirements.md`.
-- Current repository files: six root HTML pages, `css/style.css`, Bootstrap/jQuery CDN behavior, remaining unused legacy JS files, and image assets.
-- Static scan result after gallery absorption: 6 HTML pages, 78 resolved local references, 0 missing references, 0 server-side runtime references, 0 PHP files, 13 external references.
+- Current repository files: five root HTML pages, `css/style.css`, Bootstrap/jQuery CDN behavior, remaining unused legacy JS files, and image assets.
+- Static scan result after removing the temporary Info/contact page: 5 HTML pages, 52 resolved local references, 0 missing references, 0 server-side runtime references, 0 PHP files, 11 external references.
 
 ### Footprint Type
 Current-state hosted static wedding archive footprint with fallback planning.
@@ -77,7 +77,7 @@ flowchart LR
 ### Runtime Components
 | Component | Responsibility | Technology Choice | Requirement Driver | Evidence |
 |---|---|---|---|---|
-| Static site | Public wedding archive, story, info, hotel, and Syracuse context pages. | HTML/CSS/JS/images | REQ-001 through REQ-013 | Observed |
+| Static site | Public wedding archive, story, gallery, hotel, and Syracuse context pages. | HTML/CSS/JS/images | REQ-001 through REQ-013 | Observed |
 | Static host | Public HTTPS hosting. | GitHub Pages | REQ-014, REQ-015 | Existing docs |
 | Source control | Store site source and docs. | Git/GitHub | REQ-014, REQ-018 | Observed |
 | Domain forwarding | Route public domain to hosted URL. | GoDaddy forwarding | REQ-017 | Working per user update |
@@ -115,7 +115,7 @@ flowchart LR
 | Check | Purpose | Current State | Requirement |
 |---|---|---|---|
 | Static scan | Detect missing assets and backend/runtime refs. | Passing. | REQ-004, REQ-012, REQ-016 |
-| Five-page browser smoke | Confirm visible page behavior. | Manual check still useful. | REQ-001 through REQ-011 |
+| Five-page browser smoke | Confirm visible page behavior across the remaining pages. | Manual check still useful. | REQ-001 through REQ-011 |
 | Mobile navigation smoke | Confirm collapsed nav/dropdown. | Needed after JS cleanup. | REQ-005, REQ-016 |
 | GoDaddy forwarding smoke | Confirm public domain reaches the hosted site. | Working per user update; re-check after future changes. | REQ-017 |
 | External link audit | Confirm destinations are not misleading for an archive. | Pending. | REQ-009 |
@@ -181,7 +181,7 @@ flowchart LR
 - What exact GoDaddy domain and target URL should be recorded?
 - Which stale external links should be replaced, removed, or converted to historical plain text?
 - Should remaining dead countdown/validation assets be removed now?
-- Should the Info page filename eventually move from `contact.html` to a clearer path?
+- Should a warmer Weekend/Details page be added in a future sprint?
 - Which additional photos or final captions should refine the first static gallery?
 
 ## Historical Archive

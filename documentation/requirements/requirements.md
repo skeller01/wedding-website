@@ -7,7 +7,7 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 ### Source Inputs
 - `documentation/requirements/current-state-design.md` ordered systems refresh.
 - `documentation/requirements/use-case-requirements.md` ordered behavioral refresh.
-- Current repository files and static scan result after gallery/lightbox/visual refresh implementation: 6 HTML pages, 76 resolved local references, 0 missing references, 0 server-side runtime references, 0 PHP files.
+- Current repository files and static scan result after removing the temporary Info/contact page: 5 HTML pages, 52 resolved local references, 0 missing references, 0 server-side runtime references, 0 PHP files.
 - `documentation/planning/deployment-footprint.md` and `documentation/planning/prd.md`.
 - Sprint research: `documentation/planning/sprints/2026-06-20-local-photo-curation-pipeline.md`, `2026-06-20-generated-gallery-lightbox.md`, and `2026-06-20-archive-visual-refresh.md`.
 
@@ -16,20 +16,20 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 |---|---|---|---|---|---|---|---|
 | REQ-001 | Serve Home Entry | The system shall be able to serve a home page as the default public website entry point. | Functional | High | UC-001-CR-001 | Demonstration | `index.html`; GitHub Pages plan |
 | REQ-002 | Present Wedding Archive Summary | The system shall be able to present wedding archive summary and story information on public static pages. | Functional | High | UC-001-CR-002 | Inspection | `index.html`, `about.html` |
-| REQ-003 | Provide Internal Navigation | The system shall be able to provide navigation links to the public content pages. | Functional | High | UC-001-CR-003, UC-002-CR-001, UC-003-CR-003 | Demonstration | Shared nav markup |
+| REQ-003 | Provide Internal Navigation | The system shall be able to provide navigation links to the public content pages. | Functional | High | UC-001-CR-003, UC-002-CR-001 | Demonstration | Shared nav markup |
 | REQ-004 | Resolve Local Assets | The system shall be able to load required local assets using deploy-safe, case-correct paths. | Functional | High | UC-001-CR-004, UC-001-CR-007, UC-004-CR-006 | Test | Static scan passes |
 | REQ-005 | Support Mobile Navigation | The system shall be able to expose primary navigation on mobile viewport widths. | Functional | Medium | UC-001-CR-005 | Demonstration | Bootstrap responsive nav |
 | REQ-006 | Preserve Readable Core Content | The system shall keep primary textual wedding, travel, and event information readable when nonessential external resources fail to load. | Reliability | Medium | UC-001-CR-006, UC-002-CR-005 | Demonstration | Static internal copy |
 | REQ-007 | Present Historical Lodging Context | The system shall be able to present lodging information as historical wedding-weekend context. | Functional/Content | Medium | UC-002-CR-002 | Inspection | `hotels.html` |
 | REQ-008 | Present Historical Local Context | The system shall be able to present local entertainment information as historical wedding-weekend context. | Functional/Content | Medium | UC-002-CR-003 | Inspection | `syracuse.html` |
 | REQ-009 | Provide Non-Misleading External References | The system shall be able to provide outbound links or plain-text historical references to relevant venue, hotel, and local activity resources when those references are not misleading. | Functional/Interface | Medium | UC-002-CR-004, UC-002-CR-006, UC-002-CR-007 | Inspection | External links exist; archive-polish audit pending |
-| REQ-010 | Present Information Page | The system shall be able to present a static information page from primary navigation. | Functional | Medium | UC-003-CR-001 | Demonstration | `contact.html` |
-| REQ-011 | State No Collection Policy | The system shall clearly state when no visitor message, RSVP, or address collection path is available. | Functional/Privacy | High | UC-003-CR-002 | Inspection | `contact.html` copy |
+| REQ-010 | Defer Information Page | The system shall not expose a public information/contact page unless a future sprint deliberately reactivates that page. | Functional/Content | Low | UC-003 removal decision | Inspection | `contact.html` removed |
+| REQ-011 | Preserve No Collection Posture | The system shall avoid visitor message, RSVP, address, upload, comment, account, or contact-submission paths in public pages. | Functional/Privacy | High | UC-003 removal decision | Inspection | Source search |
 | REQ-012 | Avoid Static PHP Dependency | The system shall not depend on a PHP runtime when deployed as a static website. | Architecture/Deployment | High | UC-003-CR-004 | Analysis/Test | Static scan reports 0 PHP/runtime refs |
 | REQ-013 | Avoid Placeholder Contact Destinations | The system shall avoid displaying placeholder contact destinations in visitor-facing states. | Content/Functional | High | UC-003-CR-005 | Inspection | Source search |
 | REQ-014 | Deploy From GitHub Pages | The system shall be deployable to GitHub Pages from the GitHub repository. | Deployment | High | UC-004-CR-001, UC-004-CR-002 | Demonstration | Deployment footprint |
 | REQ-015 | Provide HTTPS Hosted URL | The system shall be publicly reachable through an HTTPS hosting URL after deployment. | Deployment/Interface | High | UC-004-CR-003 | Demonstration | Deployment footprint |
-| REQ-016 | Verify Public Release | The deployment process shall provide a verification path for pages, assets, navigation, information-page behavior, hosted URL behavior, and domain forwarding. | Verification | High | UC-004-CR-004, UC-004-CR-006, UC-004-CR-007, UC-005-CR-003 | Test/Demonstration | Static scan and planned smoke checks |
+| REQ-016 | Verify Public Release | The deployment process shall provide a verification path for pages, assets, navigation, hosted URL behavior, and domain forwarding. | Verification | High | UC-004-CR-004, UC-004-CR-006, UC-004-CR-007, UC-005-CR-003 | Test/Demonstration | Static scan and planned smoke checks |
 | REQ-017 | Support GoDaddy Forwarding | The system shall support access through a GoDaddy-forwarded public URL. | Deployment/Interface | High | UC-004-CR-005, UC-004-CR-007 | Demonstration | Working per user update |
 | REQ-018 | Support Static Maintenance | The system shall allow static content and asset updates without requiring a build or backend deployment. | Maintainability | Medium | UC-005-CR-002 | Demonstration | Plain HTML/CSS/JS repo |
 | REQ-019 | Update Docs On Behavior Change | The maintenance process shall update durable planning or requirements docs when behavior, deployment, or scope changes. | Maintainability | Medium | UC-005-CR-004 | Inspection | Documentation workspace |
@@ -64,9 +64,9 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | UC-002-CR-005 | External site unavailable | REQ-006 | Merged | Internal content remains useful. |
 | UC-002-CR-006 | Replace stale links | REQ-009 | Merged | Non-misleading archive references. |
 | UC-002-CR-007 | Known stale destination | REQ-009 | Mapped | Archive sharing guardrail. |
-| UC-003-CR-001 | Info page | REQ-010 | Mapped | Current `contact.html` behavior. |
-| UC-003-CR-002 | No collection copy | REQ-011 | Mapped | Privacy/product clarity. |
-| UC-003-CR-003 | Info page nav | REQ-003 | Merged | Shared navigation. |
+| UC-003-CR-001 | Info page | REQ-010 | Superseded / Deferred | `contact.html` removed for now by sprint decision. |
+| UC-003-CR-002 | No collection copy | REQ-011 | Reframed | No collection is now verified by absence of public submission paths. |
+| UC-003-CR-003 | Info page nav | REQ-003 | Superseded / Deferred | Info navigation removed for now. |
 | UC-003-CR-004 | No PHP runtime | REQ-012 | Mapped | Static architecture. |
 | UC-003-CR-005 | No placeholder contact | REQ-013 | Mapped | Visitor-facing cleanup. |
 | UC-004-CR-001 | Deployable source | REQ-014 | Merged | GitHub repository source. |
@@ -123,8 +123,8 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | REQ-007 | Active / Partial | Page exists; historical-context polish pending. |  |  |
 | REQ-008 | Active / Partial | Page exists; historical-context polish pending. |  |  |
 | REQ-009 | Active / Partial | External references exist; archive-polish audit pending. |  |  |
-| REQ-010 | Implemented | Info page exists. |  | Historical filename remains. |
-| REQ-011 | Implemented | No-collection copy exists. |  |  |
+| REQ-010 | Deferred | Public Info/contact page removed for now. | Future Weekend/Details/Info page decision | `contact.html` removed and public links removed. |
+| REQ-011 | Implemented | No visitor submission or collection path exists in active public pages. |  | Verified by source search rather than a standalone Info page. |
 | REQ-012 | Implemented | No PHP/runtime refs in scan. |  |  |
 | REQ-013 | Implemented | No known placeholder contact destination in active public files. |  |  |
 | REQ-014 | Active | GitHub Pages is current host. |  |  |
@@ -156,7 +156,7 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | PUBLIC_HOSTING_URL | Hosted public URL. | `https://skeller01.github.io/wedding-website/` | Deployment docs |
 | PUBLIC_FORWARDING_PROVIDER | Domain forwarding provider. | GoDaddy | User direction/docs |
 | PUBLIC_FORWARDING_DOMAIN | Final user-facing domain. | TBD | Must be recorded from working redirect setup |
-| CONTACT_COLLECTION_ENABLED | Whether site collects visitor messages, RSVPs, or addresses. | `false` | Current Info page/product decision |
+| CONTACT_COLLECTION_ENABLED | Whether site collects visitor messages, RSVPs, or addresses. | `false` | Current product decision and source scan |
 | PRODUCT_FRAMING | Current product identity. | Shareable wedding archive / memory site | User update |
 | STATIC_GALLERY_ENABLED | Whether a static photo gallery exists. | `true`; initial `gallery.html` implemented | User update plus prototype absorption |
 | SOURCE_PHOTO_PUBLICATION_ALLOWED | Whether original source photos may be committed as public site artifacts. | `false` | User decision to `.gitignore` originals |
@@ -172,7 +172,7 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 |---|---|---|---|---|---|---|---|
 | REQ-001-REQ-006 | Yes | Yes | Yes | Yes | Yes | Yes | Group checked; no issue. |
 | REQ-007-REQ-009 | Yes | Yes | Yes | Yes | Yes | Yes | External references still need archive-polish audit evidence. |
-| REQ-010-REQ-013 | Yes | Yes | Yes | Yes | Yes | Yes | Current no-collection scope is consistent. |
+| REQ-010-REQ-013 | Yes | Yes | Yes | Yes | Yes | Yes | Info page is deferred; no-collection scope remains consistent through absence of submission paths. |
 | REQ-014-REQ-017 | Yes | Yes | Yes | Yes | Yes | Yes | Exact GoDaddy domain/target should be recorded. |
 | REQ-018-REQ-021 | Yes | Yes | Yes | Yes | Yes | Yes | REQ-020 remains partial cleanup; REQ-021 is implemented as an initial static gallery. |
 | REQ-022-REQ-032 | Yes | Yes | Yes | Yes | Yes | Yes | Implemented and traceable to sprint research; visual behavior still deserves real-browser review after a browser runner is available. |
@@ -189,10 +189,10 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 | REQ-007 | UC-002 Step 2 | UC-002-CR-002 | IF-001 | Travel Page Loaded | TEST-002 |
 | REQ-008 | UC-002 Step 3 | UC-002-CR-003 | IF-001 | Travel Page Loaded | TEST-002 |
 | REQ-009 | UC-002 Step 4/A2/E1 | UC-002-CR-004, CR-006, CR-007 | IF-004 | External Navigation Started | TEST-005 |
-| REQ-010 | UC-003 Step 1 | UC-003-CR-001 | IF-001 | Info Page Loaded | TEST-004 |
-| REQ-011 | UC-003 Step 2 | UC-003-CR-002 | IF-001 | Info Page Loaded | TEST-004 |
-| REQ-012 | UC-003 E1 | UC-003-CR-004 | retired server interface | Info Page Loaded | TEST-001 |
-| REQ-013 | UC-003 E2 | UC-003-CR-005 | IF-001 | Info Page Loaded | TEST-004 |
+| REQ-010 | UC-003 removal decision | UC-003-CR-001 | IF-001 | Public Page Removed | TEST-004 |
+| REQ-011 | UC-003 removal decision | UC-003-CR-002 | IF-001 | No Collection Path Present | TEST-004 |
+| REQ-012 | UC-003 E1 | UC-003-CR-004 | retired server interface | No Runtime Present | TEST-001 |
+| REQ-013 | UC-003 E2 | UC-003-CR-005 | IF-001 | No Contact Destination Present | TEST-004 |
 | REQ-014 | UC-004 Steps 1-2 | UC-004-CR-001, CR-002 | IF-006 | Public Hosted | TEST-006 |
 | REQ-015 | UC-004 Step 3 | UC-004-CR-003 | IF-001 | Public Hosted | TEST-006 |
 | REQ-016 | UC-004/005 verification | UC-004-CR-004, CR-006, CR-007, UC-005-CR-003 | IF-001-IF-006 | Public Hosted/Forwarding Working | TEST-001-TEST-007 |
@@ -225,7 +225,7 @@ This requirements refresh maps the ordered systems analysis to the canonical cur
 - Exact GoDaddy domain and target URL.
 - Which external links should be replaced, removed, or converted to historical plain text.
 - Whether to delete or archive remaining unused countdown/validation assets now.
-- Whether `contact.html` should be renamed in a future cleanup.
+- Whether a future warm Weekend/Details page should be added as a new scoped sprint.
 - The real wedding photo repository has not been added yet.
 - Final hero-photo, album-cover, caption, and exclude decisions remain curation tasks.
 

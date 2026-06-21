@@ -6,9 +6,9 @@ This refresh follows the updated context and use case model in `documentation/re
 
 ### Source Inputs
 - `documentation/requirements/current-state-design.md` ordered systems refresh.
-- Root pages: `index.html`, `about.html`, `gallery.html`, `contact.html`, `hotels.html`, `syracuse.html`.
+- Root pages: `index.html`, `about.html`, `gallery.html`, `hotels.html`, `syracuse.html`.
 - Static assets and scripts: `css/style.css`, Bootstrap/jQuery CDN behavior for navigation/tooltips, unused legacy validation/countdown files, `images/*`.
-- Static scan after gallery absorption: 6 HTML pages, 78 resolved local references, 0 missing references, 0 server-side runtime references, 0 PHP files.
+- Static scan after removing the temporary Info/contact page: 5 HTML pages, 52 resolved local references, 0 missing references, 0 server-side runtime references, 0 PHP files.
 - Planning docs: `documentation/planning/deployment-footprint.md`, `documentation/planning/prd.md`, sprint and working notes.
 - Planned sprint research: `documentation/planning/sprints/2026-06-20-local-photo-curation-pipeline.md`, `2026-06-20-generated-gallery-lightbox.md`, and `2026-06-20-archive-visual-refresh.md`.
 
@@ -17,7 +17,7 @@ This refresh follows the updated context and use case model in `documentation/re
 |---|---|---|---|---|
 | UC-001 | View Wedding Archive | High | Refreshed | Static pages and context model |
 | UC-002 | Browse Historical Travel and Local Context | High | Refreshed | Hotels/Syracuse pages and external links |
-| UC-003 | Read Information Page | Medium | Refreshed | `contact.html` current no-collection content |
+| UC-003 | Read Information Page | Low | Deferred | `contact.html` removed for now; no public Info route |
 | UC-004 | Publish Static Website | High | Refreshed | GitHub Pages/static publication workflow |
 | UC-005 | Maintain Archive Content | Medium | Refreshed | Refactor/deployment/requirements follow-up |
 | UC-006 | View Static Photo Gallery | Medium | Implemented | Initial simple static gallery |
@@ -46,7 +46,7 @@ This refresh follows the updated context and use case model in `documentation/re
 |---|---|---|---|---|---|---|---|---|
 | 1 | Visitor | Static host | Browser | Visitor requests `/` or `index.html`. | HTTPS page request | UC-001-CR-001 | The system shall be able to serve a home page as the default public website entry point. | Observed |
 | 2 | Visitor | Home page | Browser | System renders names, wedding weekend framing, dates, locations, and CTA. | HTML/CSS/images | UC-001-CR-002 | The system shall be able to present wedding archive summary information on the home page. | Observed |
-| 3 | Visitor | Site navigation | Browser | Visitor selects Home, About, Info, Hotels, or Local Entertainment. | Internal link/menu click | UC-001-CR-003 | The system shall be able to provide navigation links to the public content pages. | Observed |
+| 3 | Visitor | Site navigation | Browser | Visitor selects Home, Story, Gallery, Hotels, or Local Entertainment. | Internal link/menu click | UC-001-CR-003 | The system shall be able to provide navigation links to the public content pages. | Observed |
 | 4 | Browser | Asset layer | GitHub Pages/CDNs | Browser loads CSS, JavaScript, fonts, and images. | Asset requests | UC-001-CR-004 | The system shall be able to load required local assets using deploy-safe paths. | Observed/Tested |
 
 #### Alternate Flows
@@ -124,19 +124,18 @@ This refresh follows the updated context and use case model in `documentation/re
 | Use Case ID | UC-003 |
 | Use Case Name | Read Information Page |
 | Primary Actor | Visitor / Guest |
-| Trigger | Visitor opens `contact.html` via the `Info` navigation item. |
-| Goal | Visitor understands the site is informational and does not collect addresses, RSVPs, or messages. |
-| Priority | Medium |
+| Trigger | Deferred; no public trigger exists while `contact.html` is removed. |
+| Goal | Preserve the no-collection product decision without exposing a low-value standalone Info page. |
+| Priority | Low |
 | Preconditions | Static site is reachable. |
-| Postconditions | Visitor does not encounter a misleading or broken submission path. |
-| Evidence | Observed |
+| Postconditions | Visitor does not encounter an Info/contact page or a misleading submission path. |
+| Evidence | Removed by sprint decision |
 
 #### Main Success Scenario
 | Step | Actor / Operator | System | External Entity | Behavior | Interface / Message | Candidate Requirement ID | Candidate Requirement | Evidence |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Visitor | Info page | Browser | Visitor opens the page. | Page request | UC-003-CR-001 | The system shall be able to present a static information page from primary navigation. | Observed |
-| 2 | Visitor | Info page | Browser | System states that addresses, RSVPs, and messages are not collected through the website. | Static copy | UC-003-CR-002 | The system shall clearly state when no visitor message, RSVP, or address collection path is available. | Observed |
-| 3 | Visitor | Navigation | Browser | Visitor can continue to other site pages. | Internal links/nav | UC-003-CR-003 | The system shall preserve internal navigation from the information page. | Observed |
+| 1 | Visitor | Navigation | Browser | Visitor sees no Info/contact navigation item. | Internal navigation | UC-003-CR-001 | The system shall not expose a public information/contact page unless reactivated by a future sprint. | Observed/Tested |
+| 2 | Visitor | Public pages | Browser | System provides no RSVP, address, message, upload, account, comment, or contact-submission path. | Static pages/source | UC-003-CR-002 | The system shall preserve the no-collection posture by omitting visitor submission paths. | Observed/Tested |
 
 #### Exception Flows
 | Flow ID | Failure / Exception | System Response | Recovery / Mitigation | Candidate Requirement ID | Candidate Requirement | Evidence |
@@ -147,9 +146,9 @@ This refresh follows the updated context and use case model in `documentation/re
 #### Derived Requirements
 | Candidate Requirement ID | Candidate Requirement | Source Step | Verification Method |
 |---|---|---|---|
-| UC-003-CR-001 | The system shall be able to present a static information page from primary navigation. | Step 1 | Demonstration |
-| UC-003-CR-002 | The system shall clearly state when no visitor message, RSVP, or address collection path is available. | Step 2 | Inspection |
-| UC-003-CR-003 | The system shall preserve internal navigation from the information page. | Step 3 | Demonstration |
+| UC-003-CR-001 | The system shall not expose a public information/contact page unless reactivated by a future sprint. | Step 1 | Inspection |
+| UC-003-CR-002 | The system shall preserve the no-collection posture by omitting visitor submission paths. | Step 2 | Inspection |
+| UC-003-CR-003 | The system shall preserve coherent internal navigation after removing the information page. | Step 1 | Demonstration |
 | UC-003-CR-004 | The system shall not depend on a PHP runtime when deployed as a static website. | Exception E1 | Analysis/Test |
 | UC-003-CR-005 | The system shall avoid displaying placeholder contact destinations in visitor-facing states. | Exception E2 | Inspection |
 
@@ -174,7 +173,7 @@ This refresh follows the updated context and use case model in `documentation/re
 | 1 | Maintainer | Repository | GitHub | Maintainer keeps deployable files in source control. | Git commit | UC-004-CR-001 | The system shall maintain deployable static website files in the GitHub repository. | Observed |
 | 2 | Maintainer | Repository | GitHub Pages | Maintainer publishes production branch. | GitHub Pages source | UC-004-CR-002 | The system shall be deployable to GitHub Pages from the GitHub repository. | Observed |
 | 3 | GitHub Pages | Static host | Browser | Host serves HTTPS site. | HTTPS request | UC-004-CR-003 | The system shall be publicly reachable through an HTTPS hosting URL after deployment. | Observed |
-| 4 | Maintainer | Verification | Browser/static scan | Maintainer checks pages, assets, navigation, and info behavior. | Acceptance check | UC-004-CR-004 | The deployment process shall provide a post-deployment verification path for pages, assets, navigation, and information-page behavior. | Observed |
+| 4 | Maintainer | Verification | Browser/static scan | Maintainer checks pages, assets, navigation, and removed-info behavior. | Acceptance check | UC-004-CR-004 | The deployment process shall provide a post-deployment verification path for pages, assets, navigation, and removed-route behavior. | Observed |
 | 5 | Maintainer | Domain forwarding | GoDaddy/GitHub Pages | Maintainer records working forwarded domain behavior. | Forwarded request | UC-004-CR-005 | The system shall support access through a GoDaddy-forwarded public URL. | Observed |
 
 #### Exception Flows
@@ -401,7 +400,7 @@ This refresh follows the updated context and use case model in `documentation/re
 | Goal | Visitor sees a polished photo-first archive landing with a hero image that remains stable for the browser session. |
 | Priority | Medium |
 | Preconditions | At least one explicit hero photo exists or a static fallback hero is configured. |
-| Postconditions | Visitor has a stable first impression and can continue to Story, Gallery, Info, or Travel. |
+| Postconditions | Visitor has a stable first impression and can continue to Story, Gallery, or Travel. |
 | Evidence | Implemented in `index.html`, `css/style.css`, `js/archive-home.js`, and generated hero metadata |
 
 #### Main Success Scenario
@@ -410,7 +409,7 @@ This refresh follows the updated context and use case model in `documentation/re
 | 1 | Visitor | Home page | Browser | Visitor opens the archive landing page. | Page request | UC-011-CR-001 | The system shall be able to present a photo-first archive landing page. | Proposed |
 | 2 | Visitor | Hero selector | Browser session | System selects one hero image from explicitly hero-marked photos and keeps it stable for the session. | Session state | UC-011-CR-002 | The system shall be able to select a hero image from explicit hero photos and keep that selection stable for a browser session. | Proposed |
 | 3 | Visitor | Home page | Browser | System renders hero text independently from per-photo captions. | HTML/CSS/image | UC-011-CR-003 | The system shall keep archive hero text independent from per-photo captions. | Proposed |
-| 4 | Visitor | Home page | Browser | Visitor uses chapter links to continue to Story, Gallery, Info, or Travel. | Internal links | UC-011-CR-004 | The system shall be able to provide archive chapter links to Story, Gallery, Info, and Travel destinations. | Proposed |
+| 4 | Visitor | Home page | Browser | Visitor uses chapter links to continue to Story, Gallery, or Travel. | Internal links | UC-011-CR-004 | The system shall be able to provide archive chapter links to Story, Gallery, and Travel destinations. | Proposed |
 
 #### Exception Flows
 | Flow ID | Failure / Exception | System Response | Recovery / Mitigation | Candidate Requirement ID | Candidate Requirement | Evidence |
@@ -424,7 +423,7 @@ This refresh follows the updated context and use case model in `documentation/re
 | UC-011-CR-001 | The system shall be able to present a photo-first archive landing page. | Step 1 | Demonstration |
 | UC-011-CR-002 | The system shall be able to select a hero image from explicit hero photos and keep that selection stable for a browser session. | Step 2 | Demonstration |
 | UC-011-CR-003 | The system shall keep archive hero text independent from per-photo captions. | Step 3 | Inspection |
-| UC-011-CR-004 | The system shall be able to provide archive chapter links to Story, Gallery, Info, and Travel destinations. | Step 4 | Demonstration |
+| UC-011-CR-004 | The system shall be able to provide archive chapter links to Story, Gallery, and Travel destinations. | Step 4 | Demonstration |
 | UC-011-CR-005 | The system shall provide a fallback archive hero when generated hero metadata is unavailable. | Exception E1 | Demonstration |
 | UC-011-CR-006 | The system shall support focal-point-aware hero presentation and readable overlay treatment for archive hero images. | Exception E2 | Demonstration/Inspection |
 
@@ -447,7 +446,8 @@ This refresh follows the updated context and use case model in `documentation/re
 |---|---|---|---|
 | Page Loaded | HTML/assets returned | Visitor can read content. | UC-001 |
 | Travel Page Loaded | Hotels/Syracuse page returned | Visitor can inspect historical travel/local context. | UC-002 |
-| Info Page Loaded | `contact.html` returned | Visitor sees no-collection message. | UC-003 |
+| Public Page Removed | `contact.html` removed | Visitor cannot navigate to a low-value Info/contact page from the public site. | UC-003 |
+| No Collection Path Present | Public pages omit submission paths | Visitor sees no form, RSVP, address, upload, account, or contact-submission workflow. | UC-003 |
 | Public Hosted | GitHub Pages serves expected site | Hosted URL works. | UC-004 |
 | Forwarding Working | Domain redirects to hosted site. | GoDaddy forwarding is functioning. | UC-004 |
 | Maintenance Ready | Repo/docs available | Maintainer can update content. | UC-005 |
@@ -461,9 +461,9 @@ This refresh follows the updated context and use case model in `documentation/re
 | Test ID | Behavior or Requirement | Test Idea | Method |
 |---|---|---|---|
 | TEST-001 | Static references | Run static scan and expect 0 missing local refs and 0 runtime refs. | Automated script |
-| TEST-002 | Five-page smoke | Open all root pages and verify expected headings/content. | Demonstration |
+| TEST-002 | Five-page smoke | Open all remaining root pages and verify expected headings/content. | Demonstration |
 | TEST-003 | Mobile navigation | Verify collapsed nav/dropdown on small viewport or phone. | Demonstration |
-| TEST-004 | No collection behavior | Verify Info page has no form and no-collection copy. | Inspection |
+| TEST-004 | Removed info/no collection behavior | Verify no `contact.html` public link and no form/contact/RSVP submission path. | Inspection |
 | TEST-005 | External link freshness | Audit outbound hotel/activity/venue links. | Inspection/web-assisted check |
 | TEST-006 | Public hosted URL | Open GitHub Pages URL and verify expected site. | Demonstration |
 | TEST-007 | GoDaddy forwarding | Open final public domain after publication changes. | Demonstration |
