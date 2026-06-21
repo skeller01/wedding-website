@@ -1,14 +1,14 @@
 ﻿{
-    "heroCount":  5,
+    "heroCount":  12,
     "publicDataScriptPath":  "js/gallery-data.js",
     "albumCount":  1,
     "warnings":  [
 
                  ],
-    "excludedCount":  14,
-    "publishedCount":  10,
-    "generatedAt":  "2026-06-20T19:24:26.0053228-04:00",
-    "sourceCount":  24,
+    "excludedCount":  601,
+    "publishedCount":  185,
+    "generatedAt":  "2026-06-20T23:30:28.1760545-04:00",
+    "sourceCount":  786,
     "publicDataPath":  "data/gallery-data.json",
     "outputDir":  "images/gallery/generated"
 }

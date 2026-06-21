@@ -365,13 +365,6 @@ function Invoke-Generate {
       }
     }
 
-    $thumbFs = Join-Path $outputResolved (Join-Path $item.albumId (Join-Path "thumb" "$id.jpg"))
-    $largeFs = Join-Path $outputResolved (Join-Path $item.albumId (Join-Path "large" "$id.jpg"))
-    $heroFs = Join-Path $outputResolved (Join-Path $item.albumId (Join-Path "hero" "$id.jpg"))
-    Save-ResizedJpeg -SourcePath $item.fullPath -TargetPath $thumbFs -MaxWidth 480
-    Save-ResizedJpeg -SourcePath $item.fullPath -TargetPath $largeFs -MaxWidth 1800
-    Save-ResizedJpeg -SourcePath $item.fullPath -TargetPath $heroFs -MaxWidth 2400
-
     $title = $entry["title"]
     if ([string]::IsNullOrWhiteSpace($title)) {
       if ($UseExistingAsPlaceholders -and $placeholderTitles.ContainsKey($sourceName)) {
@@ -386,6 +379,17 @@ function Invoke-Generate {
       $caption = $placeholderCaptions[$sourceName]
     }
     $isHero = $entry["state"] -eq "hero"
+    $thumbFs = Join-Path $outputResolved (Join-Path $item.albumId (Join-Path "thumb" "$id.jpg"))
+    $largeFs = Join-Path $outputResolved (Join-Path $item.albumId (Join-Path "large" "$id.jpg"))
+    $heroFs = Join-Path $outputResolved (Join-Path $item.albumId (Join-Path "hero" "$id.jpg"))
+    $thumbPublic = Convert-ToPublicPath (Join-Path $OutputDir (Join-Path $item.albumId (Join-Path "thumb" "$id.jpg")))
+    $largePublic = Convert-ToPublicPath (Join-Path $OutputDir (Join-Path $item.albumId (Join-Path "large" "$id.jpg")))
+    $heroPublic = $(if ($isHero) { Convert-ToPublicPath (Join-Path $OutputDir (Join-Path $item.albumId (Join-Path "hero" "$id.jpg"))) } else { $largePublic })
+    Save-ResizedJpeg -SourcePath $item.fullPath -TargetPath $thumbFs -MaxWidth 480
+    Save-ResizedJpeg -SourcePath $item.fullPath -TargetPath $largeFs -MaxWidth 1800
+    if ($isHero) {
+      Save-ResizedJpeg -SourcePath $item.fullPath -TargetPath $heroFs -MaxWidth 2400
+    }
     $photo = @{
       id = $id
       albumId = $item.albumId
@@ -395,9 +399,9 @@ function Invoke-Generate {
       state = $entry["state"]
       isHero = $isHero
       focalPoint = $entry["focalPoint"]
-      thumb = Convert-ToPublicPath (Join-Path $OutputDir (Join-Path $item.albumId (Join-Path "thumb" "$id.jpg")))
-      large = Convert-ToPublicPath (Join-Path $OutputDir (Join-Path $item.albumId (Join-Path "large" "$id.jpg")))
-      hero = Convert-ToPublicPath (Join-Path $OutputDir (Join-Path $item.albumId (Join-Path "hero" "$id.jpg")))
+      thumb = $thumbPublic
+      large = $largePublic
+      hero = $heroPublic
       alt = $title
     }
     $photos += $photo
