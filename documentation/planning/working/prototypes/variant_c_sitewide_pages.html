@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Throwaway Variant C Sitewide Prototype</title>
+  <style>
+    :root {
+      --ink: #242220;
+      --paper: #fffdf9;
+      --soft: #f4f1ed;
+      --line: #d9d2c8;
+      --rose: #8f3f4d;
+      --sage: #64766a;
+      --blue: #2f5268;
+      --gold: #b28b42;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.55;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .prototype-banner {
+      padding: 10px 18px;
+      color: var(--white);
+      background: var(--ink);
+      font: 700 12px/1.3 Arial, Helvetica, sans-serif;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 20px;
+      overflow-x: auto;
+      background: rgba(255, 253, 249, .96);
+      border-bottom: 1px solid var(--line);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .brand {
+      flex: 0 0 auto;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 18px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .site-nav ul {
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+      gap: 6px;
+      min-width: max-content;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .site-nav a {
+      display: inline-flex;
+      min-height: 38px;
+      align-items: center;
+      padding: 8px 10px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .site-nav a:hover,
+    .site-nav a:focus {
+      border-color: var(--line);
+      background: var(--white);
+    }
+
+    .eyebrow {
+      color: var(--rose);
+      font: 700 12px/1.2 Arial, Helvetica, sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .button-row a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+      padding: 10px 14px;
+      font: 700 14px/1 Arial, Helvetica, sans-serif;
+      text-decoration: none;
+    }
+
+    .button-row a.primary {
+      color: var(--white);
+      background: var(--rose);
+      border-color: var(--rose);
+    }
+
+    .variant-page {
+      border-bottom: 1px solid var(--line);
+      background: var(--paper);
+    }
+
+    .journal-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr);
+      min-height: 76vh;
+      background: var(--white);
+    }
+
+    .journal-photo {
+      background: var(--soft);
+    }
+
+    .journal-photo img {
+      height: 100%;
+      min-height: 520px;
+      object-fit: cover;
+    }
+
+    .journal-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 64px 42px;
+      background: var(--white);
+    }
+
+    .journal-text h1,
+    .page-intro h2 {
+      margin: 10px 0 12px;
+      font-size: 48px;
+      line-height: 1.05;
+      font-weight: 400;
+    }
+
+    .journal-text p,
+    .page-intro p {
+      max-width: 680px;
+      margin: 0;
+      color: #5e5a54;
+      font-size: 18px;
+    }
+
+    .journal-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+      background: var(--white);
+    }
+
+    .journal-list a {
+      min-height: 150px;
+      padding: 24px;
+      border-right: 1px solid var(--line);
+      text-decoration: none;
+    }
+
+    .journal-list a:last-child {
+      border-right: 0;
+    }
+
+    .journal-list strong,
+    .req-tag {
+      display: block;
+      color: var(--sage);
+      font: 700 13px/1.2 Arial, Helvetica, sans-serif;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .journal-list span {
+      display: block;
+      margin-top: 10px;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    .page-intro {
+      display: grid;
+      grid-template-columns: minmax(0, .8fr) minmax(260px, .2fr);
+      gap: 28px;
+      align-items: end;
+      padding: 72px 28px 38px;
+      background: var(--white);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .route-card {
+      border: 1px solid var(--line);
+      padding: 18px;
+      background: var(--paper);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+    }
+
+    .route-card strong {
+      display: block;
+      margin-bottom: 6px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 20px;
+      font-weight: 400;
+    }
+
+    .content-band {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 46px 24px 64px;
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: minmax(240px, .38fr) minmax(0, .62fr);
+      gap: 32px;
+      align-items: start;
+    }
+
+    .feature-image {
+      border: 1px solid var(--line);
+      background: var(--white);
+    }
+
+    .feature-image img {
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+    }
+
+    .caption {
+      margin: 0;
+      padding: 14px;
+      color: #5e5a54;
+      font: 14px/1.45 Arial, Helvetica, sans-serif;
+    }
+
+    .prose {
+      max-width: 760px;
+    }
+
+    .prose h3,
+    .context-card h3,
+    .album-header h3 {
+      margin: 0 0 10px;
+      font-size: 28px;
+      line-height: 1.1;
+      font-weight: 400;
+    }
+
+    .prose p {
+      margin: 0 0 18px;
+      color: #3f3b37;
+      font-size: 18px;
+    }
+
+    .context-grid,
+    .gallery-grid,
+    .req-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .context-card,
+    .gallery-card,
+    .policy-card,
+    .req-card {
+      border: 1px solid var(--line);
+      background: var(--white);
+    }
+
+    .context-card img,
+    .gallery-card img {
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+    }
+
+    .context-card div,
+    .gallery-card div,
+    .policy-card,
+    .req-card {
+      padding: 18px;
+    }
+
+    .context-card p,
+    .gallery-card p,
+    .policy-card p,
+    .req-card p {
+      margin: 0;
+      color: #5e5a54;
+      font: 14px/1.5 Arial, Helvetica, sans-serif;
+    }
+
+    .album-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .album-header p {
+      margin: 0;
+      color: var(--sage);
+      font: 700 14px/1.2 Arial, Helvetica, sans-serif;
+    }
+
+    .policy-stack {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .policy-card h3 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      font-weight: 400;
+    }
+
+    .archive-note {
+      margin-top: 28px;
+      padding: 22px;
+      border-left: 4px solid var(--sage);
+      background: var(--soft);
+    }
+
+    .archive-note p {
+      margin: 0;
+      color: #3f3b37;
+    }
+
+    .requirements-readout {
+      background: var(--soft);
+    }
+
+    .req-card {
+      min-height: 170px;
+    }
+
+    .req-card h3 {
+      margin: 8px 0;
+      font-size: 22px;
+      font-weight: 400;
+    }
+
+    @media (max-width: 900px) {
+      .journal-hero,
+      .journal-list,
+      .page-intro,
+      .two-column,
+      .context-grid,
+      .gallery-grid,
+      .req-grid,
+      .policy-stack {
+        grid-template-columns: 1fr;
+      }
+
+      .site-nav {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .site-nav ul {
+        justify-content: flex-start;
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      .journal-photo img {
+        height: auto;
+        min-height: 0;
+      }
+
+      .journal-text,
+      .page-intro {
+        padding: 38px 22px;
+      }
+
+      .journal-text h1,
+      .page-intro h2 {
+        font-size: 36px;
+      }
+
+      .journal-list a {
+        min-height: 104px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="prototype-banner">Throwaway prototype: Variant C across existing pages. No production code.</div>
+  <nav class="site-nav" aria-label="Prototype page sections">
+    <a class="brand" href="#home">Sonia and Steve</a>
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="#story">Story</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#info">Info</a></li>
+      <li><a href="#hotels">Hotels</a></li>
+      <li><a href="#syracuse">Syracuse</a></li>
+      <li><a href="#requirements">Requirements</a></li>
+    </ul>
+  </nav>
+
+  <section id="home" class="variant-page">
+    <div class="journal-hero">
+      <div class="journal-photo">
+        <img src="../../../../images/sonia_steve.jpg" alt="Sonia and Steve portrait">
+      </div>
+      <div class="journal-text">
+        <span class="eyebrow">Wedding Archive</span>
+        <h1>A Photo-First Wedding Journal</h1>
+        <p>A quiet archive for the story, photographs, and Syracuse wedding weekend context from May 2017.</p>
+        <div class="button-row">
+          <a class="primary" href="#gallery">Browse Photos</a>
+          <a href="#info">Weekend Notes</a>
+        </div>
+      </div>
+    </div>
+    <div class="journal-list">
+      <a href="#story"><strong>01</strong><span>Wedding Story</span></a>
+      <a href="#gallery"><strong>02</strong><span>Photo Gallery</span></a>
+      <a href="#syracuse"><strong>03</strong><span>Syracuse Context</span></a>
+    </div>
+  </section>
+
+  <section id="story" class="variant-page">
+    <header class="page-intro">
+      <div>
+        <span class="eyebrow">Existing route: about.html</span>
+        <h2>Wedding Story</h2>
+        <p>The story page should feel like an archive chapter, not a separate Bootstrap-era page.</p>
+      </div>
+      <aside class="route-card">
+        <strong>Requirement fit</strong>
+        REQ-002, REQ-003, REQ-006. Internal story copy stays readable without third-party services.
+      </aside>
+    </header>
+    <div class="content-band two-column">
+      <figure class="feature-image">
+        <img src="../../../../images/sonia_drawing.jpg" alt="Illustration of Sonia">
+        <figcaption class="caption">Existing art can become a chapter image instead of a rounded Bootstrap portrait.</figcaption>
+      </figure>
+      <article class="prose">
+        <h3>Our Story</h3>
+        <p>This prototype keeps the existing story route but gives the page a calmer reading shape: a chapter image, editorial text width, and fewer competing UI treatments.</p>
+        <p>The production pass can preserve the current story content while converting the surrounding layout to the same journal system used on the home page.</p>
+        <div class="archive-note">
+          <p>Implementation note: keep this as static HTML and avoid introducing a template system in the first hardening sprint.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="gallery" class="variant-page">
+    <header class="page-intro">
+      <div>
+        <span class="eyebrow">Existing route: gallery.html</span>
+        <h2>Photo Gallery</h2>
+        <p>The generated gallery can share the journal language while staying static and metadata-driven.</p>
+      </div>
+      <aside class="route-card">
+        <strong>Requirement fit</strong>
+        REQ-021 and REQ-031. Keep generated album sections and lightbox behavior; only the page shell and card styling are being tested here.
+      </aside>
+    </header>
+    <div class="content-band">
+      <div class="album-header">
+        <h3>Wedding Archive</h3>
+        <p>Sample generated album</p>
+      </div>
+      <div class="gallery-grid">
+        <article class="gallery-card">
+          <img src="../../../../images/gallery/generated/wedding-archive/thumb/sonia-steve.jpg" alt="Sonia and Steve">
+          <div><span class="req-tag">Hero</span><h3>Together</h3><p>Generated thumbnails can sit inside the same journal card pattern.</p></div>
+        </article>
+        <article class="gallery-card">
+          <img src="../../../../images/gallery/generated/wedding-archive/thumb/sonia-steve2.jpg" alt="Wedding memory">
+          <div><span class="req-tag">Memory</span><h3>Wedding Memory</h3><p>Captionless photos still work because a title can carry the card.</p></div>
+        </article>
+        <article class="gallery-card">
+          <img src="../../../../images/gallery/generated/wedding-archive/thumb/img-43151.jpg" alt="Wedding day">
+          <div><span class="req-tag">Archive</span><h3>Wedding Day</h3><p>The production renderer can reuse this look without changing the data contract.</p></div>
+        </article>
+        <article class="gallery-card">
+          <img src="../../../../images/gallery/generated/wedding-archive/thumb/img-56321.jpg" alt="Weekend">
+          <div><span class="req-tag">Weekend</span><h3>Weekend</h3><p>Album cards should remain static links/buttons in production.</p></div>
+        </article>
+        <article class="gallery-card">
+          <img src="../../../../images/gallery/generated/wedding-archive/thumb/rose-border.jpg" alt="Floral detail">
+          <div><span class="req-tag">Detail</span><h3>Floral Detail</h3><p>Small detail photos help the gallery feel like an album instead of a file dump.</p></div>
+        </article>
+        <article class="gallery-card">
+          <img src="../../../../images/gallery/generated/wedding-archive/thumb/golden-rose.jpg" alt="Golden rose">
+          <div><span class="req-tag">Detail</span><h3>Golden Rose</h3><p>The grid should scale to real photos after curation without new visitor-facing features.</p></div>
+        </article>
+      </div>
+      <div class="archive-note">
+        <p>Prototype boundary: this page does not rebuild the lightbox. It tests whether the generated gallery can visually join Variant C while preserving static behavior.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="info" class="variant-page">
+    <header class="page-intro">
+      <div>
+        <span class="eyebrow">Existing route: contact.html</span>
+        <h2>Archive Info</h2>
+        <p>The old contact page can become a clear no-collection information page.</p>
+      </div>
+      <aside class="route-card">
+        <strong>Requirement fit</strong>
+        REQ-010, REQ-011, REQ-012, REQ-013. No RSVP, address, message, upload, or PHP behavior.
+      </aside>
+    </header>
+    <div class="content-band policy-stack">
+      <article class="policy-card">
+        <h3>No Collection</h3>
+        <p>This archive does not collect RSVPs, addresses, messages, uploads, comments, or accounts.</p>
+      </article>
+      <article class="policy-card">
+        <h3>Static Archive</h3>
+        <p>All public content is served as static HTML, CSS, JavaScript, and optimized image assets.</p>
+      </article>
+      <article class="policy-card">
+        <h3>Wedding Weekend</h3>
+        <p>Event details can remain as historical context without sounding like active planning tasks.</p>
+      </article>
+      <article class="policy-card">
+        <h3>Private Originals</h3>
+        <p>Original photos and curation notes stay local; only public web-sized outputs belong on the site.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="hotels" class="variant-page">
+    <header class="page-intro">
+      <div>
+        <span class="eyebrow">Existing route: hotels.html</span>
+        <h2>Suggested Hotels</h2>
+        <p>Hotel information should read as preserved wedding-weekend context, not as a live booking guide.</p>
+      </div>
+      <aside class="route-card">
+        <strong>Requirement fit</strong>
+        REQ-007, REQ-009, REQ-006. Internal context remains useful even if third-party hotel links change.
+      </aside>
+    </header>
+    <div class="content-band context-grid">
+      <article class="context-card">
+        <img src="../../../../images/hotel_syracuse.jpg" alt="Marriott Syracuse Downtown">
+        <div><span class="req-tag">Sangeet anchor</span><h3>Hotel Syracuse</h3><p>Preserve the place memory and move current booking details into a secondary link or historical note.</p></div>
+      </article>
+      <article class="context-card">
+        <img src="../../../../images/jefferson.jpg" alt="Jefferson Clinton Hotel">
+        <div><span class="req-tag">Downtown context</span><h3>Jefferson Clinton</h3><p>Keep lodging distance/context readable without depending on live rates.</p></div>
+      </article>
+      <article class="context-card">
+        <img src="../../../../images/court_yard.jpg" alt="Courtyard Syracuse Downtown at Armory Square">
+        <div><span class="req-tag">Travel note</span><h3>Courtyard Marriott</h3><p>Cards reduce table clutter and match the archive journal tone.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="syracuse" class="variant-page">
+    <header class="page-intro">
+      <div>
+        <span class="eyebrow">Existing route: syracuse.html</span>
+        <h2>Syracuse Context</h2>
+        <p>Local entertainment can become a visual memory/context page with safer historical framing.</p>
+      </div>
+      <aside class="route-card">
+        <strong>Requirement fit</strong>
+        REQ-008, REQ-009, REQ-006. Stale external references should be audited later, but internal context can still be polished now.
+      </aside>
+    </header>
+    <div class="content-band context-grid">
+      <article class="context-card">
+        <img src="../../../../images/ice_rink.jpg" alt="Ice rink in Syracuse">
+        <div><span class="req-tag">Local memory</span><h3>Downtown</h3><p>Use descriptive captions instead of image-only thumbnail links.</p></div>
+      </article>
+      <article class="context-card">
+        <img src="../../../../images/clarks.jpg" alt="Clinton Square in Syracuse">
+        <div><span class="req-tag">City context</span><h3>Clinton Square</h3><p>The page can still point outward, but the archive should not depend on those links being current.</p></div>
+      </article>
+      <article class="context-card">
+        <img src="../../../../images/university.jpg" alt="Syracuse University campus">
+        <div><span class="req-tag">Weekend guide</span><h3>Explore Syracuse</h3><p>Cards make the travel context easier to scan on desktop and mobile.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="requirements" class="variant-page requirements-readout">
+    <header class="page-intro">
+      <div>
+        <span class="eyebrow">Requirements readout</span>
+        <h2>What This Prototype Proves</h2>
+        <p>Variant C can cover the existing page set if production work uses two patterns: a landing journal and interior journal pages.</p>
+      </div>
+      <aside class="route-card">
+        <strong>Prototype decision</strong>
+        Absorb the direction into the publishable-site hardening sprint, but do not copy this throwaway file into production.
+      </aside>
+    </header>
+    <div class="content-band req-grid">
+      <article class="req-card">
+        <span class="req-tag">REQ-001 to REQ-006</span>
+        <h3>Static archive pages</h3>
+        <p>The design supports a home entry, internal navigation, deploy-safe assets, mobile stacking, and readable core content.</p>
+      </article>
+      <article class="req-card">
+        <span class="req-tag">REQ-007 to REQ-011</span>
+        <h3>Historical context</h3>
+        <p>Hotels, Syracuse, and Info can become archive chapters without reviving active contact or booking workflows.</p>
+      </article>
+      <article class="req-card">
+        <span class="req-tag">REQ-012 to REQ-018</span>
+        <h3>Publish safely</h3>
+        <p>The prototype uses no backend, no build step, no form, and no external runtime dependency.</p>
+      </article>
+      <article class="req-card">
+        <span class="req-tag">REQ-021 / REQ-031</span>
+        <h3>Gallery alignment</h3>
+        <p>The gallery can visually join Variant C while preserving generated static assets and lightbox behavior as production responsibilities.</p>
+      </article>
+      <article class="req-card">
+        <span class="req-tag">REQ-032</span>
+        <h3>Hero decision</h3>
+        <p>A fixed known-good hero best preserves the accepted Variant C look until real photo curation proves a rotating hero set.</p>
+      </article>
+      <article class="req-card">
+        <span class="req-tag">Open risk</span>
+        <h3>Browser review</h3>
+        <p>This prototype still needs visual review in a real browser before production implementation is accepted.</p>
+      </article>
+    </div>
+  </section>
+</body>
+</html>

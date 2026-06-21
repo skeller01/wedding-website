@@ -4,6 +4,7 @@
   var hero = document.getElementById("archive-hero");
   if (!hero) return;
   var heroImage = document.getElementById("archive-hero-image");
+  var heroMode = hero.getAttribute("data-hero-mode") || "random";
 
   var data = window.WEDDING_GALLERY_DATA || {};
   var heroPhotos = (data.heroPhotos || []).filter(function (photo) {
@@ -13,20 +14,36 @@
   var storageKey = "weddingArchiveHeroId";
 
   function chooseHero() {
-    if (!heroPhotos.length) {
+    if (heroMode === "fixed" || !heroPhotos.length) {
       return null;
     }
-    var saved = window.sessionStorage ? sessionStorage.getItem(storageKey) : "";
+    var saved = getStoredHeroId();
     var match = heroPhotos.find(function (photo) {
       return photo.id === saved;
     });
     if (match) return match;
 
     var next = heroPhotos[Math.floor(Math.random() * heroPhotos.length)];
-    if (window.sessionStorage) {
-      sessionStorage.setItem(storageKey, next.id);
-    }
+    setStoredHeroId(next.id);
     return next;
+  }
+
+  function getStoredHeroId() {
+    try {
+      return window.sessionStorage ? sessionStorage.getItem(storageKey) : "";
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function setStoredHeroId(id) {
+    try {
+      if (window.sessionStorage) {
+        sessionStorage.setItem(storageKey, id);
+      }
+    } catch (error) {
+      return;
+    }
   }
 
   function applyHero(photo) {
